@@ -140,7 +140,7 @@ class REGISTER_MAIN(QWidget):
             # DATE OF REGISTRATION
             self.dor = QLabel("Date of Registration")
             self.dor_text = QLineEdit()
-            date = QDate.currentDate().toString(Qt.DefaultLocaleLongDate)
+            date = QDate.currentDate().toString(Qt.DefaultLocaleShortDate)
             self.dor_text.setText(date)
 
             # Next
