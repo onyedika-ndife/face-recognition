@@ -7,7 +7,7 @@ from PIL import Image
 def train(name):
     recognizer = cv2.face.LBPHFaceRecognizer_create()
 
-    path = f"./assets/face_data/student-{name}"
+    path = f"./assets/face_data/student/{name}"
 
     if not os.path.exists("./assets/training_data"):
         os.makedirs("./assets/training_data")
