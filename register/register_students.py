@@ -281,7 +281,7 @@ class REGISTER_STUDENT(QDialog):
 
             if sampleNum == 20:
                 break
-            elif cv2.waitKey(1) & 0xFF == ord("q"):
+            elif cv2.waitKey(20) & 0xFF == ord("q"):
                 break
 
         cam.release()
