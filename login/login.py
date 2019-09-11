@@ -31,6 +31,8 @@ class LOGIN(QDialog):
         self.credentials_incorrect = QLabel()
         self.credentials_incorrect.setStyleSheet("font-weight: bold; color: red")
         self.credentials_incorrect.setAlignment(Qt.AlignCenter)
+        self.credentials_incorrect.setMaximumHeight(10)
+        self.credentials_incorrect.setMinimumHeight(5)
 
         self.login_btn = QPushButton("Login")
 
