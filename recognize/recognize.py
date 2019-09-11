@@ -55,12 +55,23 @@ class RECOGNIZE:
                     if profile[0] == Id:
                         cv2.putText(
                             image,
-                            f"Name: {profile[3]} {profile[2]} {profile[1]}",
+                            f"Name: {profile[3]}\n{profile[2]}\n{profile[1]}",
                             (x, y + h + 20),
                             cv2.FONT_HERSHEY_COMPLEX_SMALL,
                             1,
-                            (255, 255, 255),
+                            (0, 255, 0),
                         )
+                    else:
+                        cv2.putText(
+                            image,
+                            f"Individual Unknown",
+                            (x, y + h + 20),
+                            cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                            1,
+                            (0, 0, 255),
+                        )
+                else:
+                    break
             cv2.imshow("Face", image)
             if cv2.waitKey(1) == ord("q"):
                 break
