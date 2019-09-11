@@ -272,6 +272,11 @@ class REGISTER_STUDENT(QDialog):
             )
             for (x, y, w, h) in faces:
                 roi_gray = gray[y : y + h, x : x + w]
+                cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
+
+            cv2.imshow("Register Face", image)
+
+            if cv2.waitKey(1) & 0xFF == 255:
                 sample_number += 1
                 if not os.path.exists(f"./assets/face_data/student/{str(name)}"):
                     os.makedirs(f"./assets/face_data/student/{str(name)}")
@@ -279,13 +284,7 @@ class REGISTER_STUDENT(QDialog):
                     f"./assets/face_data/student/{str(name)}/{str(name)}.{str(sample_number)}.jpg",
                     roi_gray,
                 )
-                cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
-
-            cv2.imshow("Register Face", image)
-
-            if sample_number == 20:
-                break
-            elif cv2.waitKey(20) & 0xFF == ord("q"):
+            elif sample_number == 20:
                 break
 
         cam.release()
