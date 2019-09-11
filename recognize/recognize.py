@@ -24,6 +24,8 @@ class RECOGNIZE:
             name = f"{row[3]}_{row[1]}".lower()
             name_lst.append(name)
 
+        self.verify()
+
     def verify(self):
         def get_profile():
             profile = None
