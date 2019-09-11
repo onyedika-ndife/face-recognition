@@ -58,7 +58,7 @@ class RECOGNIZE:
                             image,
                             f"Name: {profile[3]}\n{profile[2]}\n{profile[1]}",
                             (x, y + h + 20),
-                            cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                            cv2.FONT_HERSHEY_SIMPLEX,
                             1,
                             (0, 255, 0),
                         )
