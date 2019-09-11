@@ -1,17 +1,14 @@
 import cv2
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
 from database import db
 
 
-class RECOGNIZE(QWidget):
+class RECOGNIZE:
     datab = db.Database()
 
     def __init__(self):
         super().__init__()
+
         self.faceDetect = cv2.CascadeClassifier(
             "./assets/classifiers/haarcascade_frontalface_default.xml"
         )
