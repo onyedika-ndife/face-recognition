@@ -25,7 +25,7 @@ class RECOGNIZE:
             name_lst.append(name)
 
     def verify(self):
-        def getProfile():
+        def get_profile():
             profile = None
             self.datab.cur.execute("SELECT * FROM Students")
             for row in self.datab.cur:
@@ -49,7 +49,7 @@ class RECOGNIZE:
             for (x, y, w, h) in faces:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
                 Id, conf = self.recognizer.predict(gray[y : y + h, x : x + w])
-                profile = getProfile()
+                profile = get_profile()
                 # print()
                 if profile != None:
                     if profile[0] == Id:
