@@ -147,6 +147,7 @@ class REGISTER_MAIN(QWidget):
             self._next = QPushButton()
 
         def calender_show(self):
+
             self.initial_layout = QVBoxLayout()
 
             self.calender_view = QWidget()
@@ -162,6 +163,7 @@ class REGISTER_MAIN(QWidget):
             self.calender_view.setLayout(self.initial_layout)
 
             self.calender_view.show()
+            self.calender_view.setGeometry(500, 200, 350, 250)
 
             self.calender.clicked[QDate].connect(self.select_date)
 
