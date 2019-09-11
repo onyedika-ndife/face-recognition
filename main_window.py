@@ -54,9 +54,9 @@ class MAIN_WINDOW(QMainWindow):
 
         self.stacked_layout.setCurrentIndex(1)
 
-        register.clicked.connect(self.Reg_Stud_Open)
+        register.clicked.connect(self.reg_view)
 
-    def Reg_Stud_Open(self):
+    def reg_view(self):
         self.setWindowTitle("REGISTER")
 
         self.reg_view = register_main.REGISTER_MAIN()
@@ -64,6 +64,9 @@ class MAIN_WINDOW(QMainWindow):
         self.stacked_layout.addWidget(self.reg_view.main_widget)
 
         self.stacked_layout.setCurrentIndex(2)
+
+    def edit_view(self):
+        self.setWindowTitle("Edit")
 
 
 if __name__ == "__main__":
