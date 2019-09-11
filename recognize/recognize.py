@@ -27,7 +27,6 @@ class RECOGNIZE:
     def verify(self):
         def get_profile():
             profile = None
-            self.datab.cur.execute("SELECT * FROM Students")
             for row in self.datab.cur:
                 profile = row
             return profile
