@@ -1,5 +1,7 @@
 import sys
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from database import db
 
 
@@ -26,6 +28,10 @@ class LOGIN(QDialog):
         self.pass_word_input = QLineEdit()
         self.pass_word_input.setEchoMode(QLineEdit.Password)
 
+        self.credentials_incorrect = QLabel()
+        self.credentials_incorrect.setStyleSheet("font-weight: bold; color: red")
+        self.credentials_incorrect.setAlignment(Qt.AlignCenter)
+
         self.login_btn = QPushButton("Login")
 
     def setupUI(self):
@@ -34,6 +40,8 @@ class LOGIN(QDialog):
 
         self.main_grid.addWidget(self.pass_word_label, 1, 0)
         self.main_grid.addWidget(self.pass_word_input, 1, 1)
+
+        self.main_grid.addWidget(self.credentials_incorrect, 2, 0, 1, 0)
 
         self.main_grid.addWidget(self.login_btn, 3, 0, 1, 0)
 
@@ -56,3 +64,19 @@ class LOGIN(QDialog):
                 and row[2] == self.pass_word_input.text()
             ):
                 main_view()
+            elif (
+                not row[1] == self.user_name_input.text()
+                and not row[2] == self.pass_word_input.text()
+            ):
+                self.credentials_incorrect.setText("Username and Password Incorrect!!")
+            elif (
+                not row[1] == self.user_name_input.text()
+                and row[2] == self.pass_word_input.text()
+            ):
+                self.credentials_incorrect.setText("Username Incorrect!!")
+            elif (
+                row[1] == self.user_name_input.text()
+                and not row[2] == self.pass_word_input.text()
+            ):
+                self.credentials_incorrect.setText("Password Incorrect!!")
+
