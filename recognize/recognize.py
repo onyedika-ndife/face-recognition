@@ -10,7 +10,7 @@ class RECOGNIZE:
         super().__init__()
 
         self.faceDetect = cv2.CascadeClassifier(
-            "./assets/classifiers/haarcascade_frontalface_default.xml"
+            "./assets/classifiers/haarcascade_frontalface_alt2.xml"
         )
         self.cam = cv2.VideoCapture(0)
 
