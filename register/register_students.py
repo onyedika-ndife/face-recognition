@@ -255,7 +255,7 @@ class REGISTER_STUDENT(QDialog):
         )
 
         cam = cv2.VideoCapture(0)
-        sampleNum = 0
+        sample_number = 0
 
         time.sleep(2.0)
 
@@ -272,18 +272,18 @@ class REGISTER_STUDENT(QDialog):
             )
             for (x, y, w, h) in faces:
                 roi_gray = gray[y : y + h, x : x + w]
-                sampleNum += 1
+                sample_number += 1
                 if not os.path.exists(f"./assets/face_data/student/{str(name)}"):
                     os.makedirs(f"./assets/face_data/student/{str(name)}")
                 cv2.imwrite(
-                    f"./assets/face_data/student/{str(name)}/{str(name)}.{str(sampleNum)}.jpg",
+                    f"./assets/face_data/student/{str(name)}/{str(name)}.{str(sample_number)}.jpg",
                     roi_gray,
                 )
                 cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
 
             cv2.imshow("Register Face", image)
 
-            if sampleNum == 20:
+            if sample_number == 20:
                 break
             elif cv2.waitKey(20) & 0xFF == ord("q"):
                 break
