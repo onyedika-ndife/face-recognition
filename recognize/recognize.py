@@ -71,7 +71,7 @@ class RECOGNIZE:
                         )
                 else:
                     break
-            cv2.imshow("Face", image)
+            cv2.imshow("Recognize", image)
             if cv2.waitKey(1) == ord("q"):
                 break
         cam.release()
