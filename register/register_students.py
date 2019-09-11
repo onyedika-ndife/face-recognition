@@ -237,43 +237,47 @@ class REGISTER_STUDENT(QDialog):
         self.comp.datab.cur.execute(
             f"INSERT INTO Students(first_name, middle_name, last_name,date_of_birth, age, gender, jamb_number,college,dept,level,matric_number,date_of_reg) VALUES('{first_name}','{middle_name}','{last_name}','{date_of_birth}',{int(age)},'{gender}','{jamb_number}','{college}','{dept}','{level}','{matric_number}','{date_of_reg}')"
         )
-        self.comp.datab.conn.commit()
 
         self.register_faces()
+        self.comp.datab.conn.commit()
         self.close()
 
     def register_faces(self):
         self.comp.datab.cur.execute("SELECT * FROM Students")
 
+        id_count = 0
         for row in self.comp.datab.cur:
-            _id = f"{row[3]}_{row[1]}".lower()
+            _id = row[0]
+            name = f"{row[3]}_{row[1]}".lower()
 
-        faceDetect = cv2.CascadeClassifier(
-            "./assets/classifiers/haarcascade_frontalface_default.xml"
+        face_cascade = cv2.CascadeClassifier(
+            "./assets/classifiers/haarcascade_frontalface_alt2.xml" 
         )
 
         cam = cv2.VideoCapture(0)
         sampleNum = 0
 
+        time.sleep(2.0)
+
         while True:
             # Capture Image-by-Image
             ret, image = cam.read()
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            faces = faceDetect.detectMultiScale(
+            faces = face_cascade.detectMultiScale(
                 gray,
-                scaleFactor=1.3,
+                scaleFactor=1.5,
                 minNeighbors=5,
                 minSize=(30, 30),
                 flags=cv2.CASCADE_SCALE_IMAGE,
             )
             for (x, y, w, h) in faces:
-                time.sleep(0.5)
-                sampleNum = sampleNum + 1
-                if not os.path.exists(f"./assets/face_data/student/{str(_id)}"):
-                    os.makedirs(f"./assets/face_data/student/{str(_id)}")
+                roi_gray = gray[y : y + h, x : x + w]
+                sampleNum += 1
+                if not os.path.exists(f"./assets/face_data/student/{str(name)}"):
+                    os.makedirs(f"./assets/face_data/student/{str(name)}")
                 cv2.imwrite(
-                    f"./assets/face_data/student/{str(_id)}/{str(_id)}.{str(sampleNum)}.jpg",
-                    gray[y : y + h, x : x + w],
+                    f"./assets/face_data/student/{str(name)}/{str(name)}.{str(sampleNum)}.jpg",
+                    roi_gray,
                 )
                 cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
 
@@ -285,6 +289,6 @@ class REGISTER_STUDENT(QDialog):
                 break
 
         cam.release()
-        train(_id)
+        train(_id,name)
         cv2.destroyAllWindows()
         self.comp.datab.conn.close()
