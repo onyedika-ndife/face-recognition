@@ -6,7 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from .trainer import train
+from function import trainer
 
 
 class REGISTER_STUDENT(QDialog):
@@ -288,6 +288,6 @@ class REGISTER_STUDENT(QDialog):
                 break
 
         cam.release()
-        train(_id,name)
+        trainer.trainer.TRAINER(_id,name)
         cv2.destroyAllWindows()
         self.comp.datab.conn.close()
