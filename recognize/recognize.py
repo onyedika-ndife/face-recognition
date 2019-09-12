@@ -61,6 +61,8 @@ class RECOGNIZE:
                             cv2.FONT_HERSHEY_SIMPLEX,
                             1,
                             (0, 255, 0),
+                            1,
+                            cv2.LINE_AA,
                         )
                     else:
                         cv2.putText(
