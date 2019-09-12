@@ -23,6 +23,8 @@ class MAIN_WINDOW(QWidget):
         self.main_grid = QGridLayout()
         self.back_btn = QCommandLinkButton("Back")
 
+        self.main_grid.addWidget(self.back_btn, 0, 0)
+
         self.login_view()
 
     def login_view(self):
