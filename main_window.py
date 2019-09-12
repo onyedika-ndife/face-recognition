@@ -24,6 +24,7 @@ class MAIN_WINDOW(QWidget):
         self.back_btn = QCommandLinkButton("Back")
 
         self.main_grid.addWidget(self.back_btn, 0, 0)
+        self.main_grid.addWidget(self.stacked, 1, 0, 1, 0)
 
         self.login_view()
 
