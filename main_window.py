@@ -68,7 +68,7 @@ class MAIN_WINDOW(QWidget):
 
         self.stacked.setLayout(self.reg_view.initial_layout)
 
-        self.main_layout.addWidget(self.main_grid)
+        self.main_layout.addWidget(self.main_grid_widget)
         # self.main_layout.addWidget(self.reg_view.main_widget)
 
         self.main_layout.setCurrentIndex(2)
