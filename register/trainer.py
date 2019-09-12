@@ -27,5 +27,5 @@ def train(Id, name):
         return np.array(_ids), faces
 
     Ids, faces = get_images_with_id(path)
-    recognizer.train(faces, Ids)
+    recognizer.train(Ids, faces)
     recognizer.save(f"./assets/training_data/{name}-training_data.yml")
