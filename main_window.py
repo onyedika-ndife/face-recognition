@@ -12,7 +12,7 @@ class MAIN_WINDOW(QWidget):
         self.setWindowTitle("Face Recognition")
         self.setGeometry(500, 200, 350, 250)
 
-        # self.setStyleSheet(open("./assets/css/main.css").read())
+        self.setStyleSheet(open("./assets/css/main.css").read())
 
         self.main_layout = QStackedLayout()
 
@@ -22,11 +22,15 @@ class MAIN_WINDOW(QWidget):
         self.stacked = QStackedWidget()
         self.main_grid_widget = QWidget()
         self.main_grid = QGridLayout()
-        self.back_btn = QCommandLinkButton("Back")
+        self.back_btn = QCommandLinkButton()
+        self.back_btn.setIcon(QIcon("./assets/img/arrow_back.svg"))
         self.main_grid_widget.setLayout(self.main_grid)
 
-        self.main_grid.addWidget(self.back_btn, 0, 1)
+        self.main_grid.addWidget(self.back_btn, 0, 0)
         self.main_grid.addWidget(self.stacked, 1, 0, 1, 0)
+
+        self.back_btn.clicked.connect(self.back)
+        self.back_btn.setMaximumWidth(35)
 
         self.login_view()
 
@@ -47,6 +51,22 @@ class MAIN_WINDOW(QWidget):
         register = QPushButton("Register")
         chk_ver = QPushButton("Verify Student")
         edit = QPushButton("Edit Student Details")
+
+        view = [register, chk_ver, edit]
+        for btn in view:
+            btn.setStyleSheet(
+                "QPushButton {\n"
+                "text-transform: uppercase;\n"
+                "font-weight: 600;\n"
+                "border-radius: none;\n"
+                "background: #1abc9c;\n"
+                "color: #fff;\n"
+                "font-size: 20px;\n"
+                "padding: 5px;\n"
+                "margin: 0 100px;}\n"
+                "QPushButton:pressed {\n"
+                "background: #16a085;}"
+            )
 
         self.initial_layout.addWidget(register)
         self.initial_layout.addWidget(chk_ver)
@@ -75,6 +95,9 @@ class MAIN_WINDOW(QWidget):
 
     def edit_view(self):
         self.setWindowTitle("Edit")
+
+    def back(self):
+        self.main_layout.setCurrentIndex(1)
 
 
 if __name__ == "__main__":

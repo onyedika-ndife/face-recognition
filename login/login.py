@@ -35,6 +35,19 @@ class LOGIN(QDialog):
         self.credentials_incorrect.setMinimumHeight(5)
 
         self.login_btn = QPushButton("Login")
+        self.login_btn.setStyleSheet(
+            "QPushButton {\n"
+            "text-transform: uppercase;\n"
+            "font-weight: 600;\n"
+            "border-radius: none;\n"
+            "background: #1abc9c;\n"
+            "color: #fff;\n"
+            "font-size: 20px;\n"
+            "padding: 5px;\n"
+            "margin: 0 100px;}\n"
+            "QPushButton:pressed {\n"
+            "background: #16a085;}"
+        )
 
     def setupUI(self):
         self.main_grid.addWidget(self.user_name_label, 0, 0)

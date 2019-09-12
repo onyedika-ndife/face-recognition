@@ -25,6 +25,22 @@ class REGISTER_MAIN(QWidget):
         self.reg_staf = QPushButton("Register Staff")
         self.reg_stud = QPushButton("Register Student")
 
+        view = [self.reg_stud, self.reg_staf]
+        for btn in view:
+            btn.setStyleSheet(
+                "QPushButton {\n"
+                "text-transform: uppercase;\n"
+                "font-weight: 600;\n"
+                "border-radius: none;\n"
+                "background: #1abc9c;\n"
+                "color: #fff;\n"
+                "font-size: 20px;\n"
+                "padding: 5px;\n"
+                "margin: 0 100px;}\n"
+                "QPushButton:pressed {\n"
+                "background: #16a085;}"
+            )
+
         self.initial_layout.addWidget(self.reg_stud)
         self.initial_layout.addWidget(self.reg_staf)
 
@@ -38,21 +54,19 @@ class REGISTER_MAIN(QWidget):
     @classmethod
     def reg_stud_win(self, components):
         self.stud_dialog = REGISTER_STUDENT(components)
-        self.flags = Qt.WindowFlags(Qt.WindowStaysOnTopHint)
-        self.stud_dialog.setWindowFlags(self.flags)
         self.stud_dialog.show()
 
     @classmethod
     def reg_staf_win(self, components):
         self.staf_dialog = REGISTER_STAFF(components)
-        self.flags = Qt.WindowFlags(Qt.WindowStaysOnTopHint)
-        self.staf_dialog.setWindowFlags(self.flags)
         self.staf_dialog.show()
 
     class components:
         def __init__(self):
             self.datab = db.Database()
             self.main_grid = QGridLayout()
+
+            # PROFILE PICTURE
 
             # FIRST NAME
             self.f_name = QLabel("First Name")
@@ -145,6 +159,19 @@ class REGISTER_MAIN(QWidget):
 
             # Next
             self._next = QPushButton()
+            self._next.setStyleSheet(
+                "QPushButton {\n"
+                "text-transform: uppercase;\n"
+                "font-weight: 600;\n"
+                "border-radius: none;\n"
+                "background: #1abc9c;\n"
+                "color: #fff;\n"
+                "font-size: 20px;\n"
+                "padding: 5px;\n"
+                "margin: 0 100px;}\n"
+                "QPushButton:pressed {\n"
+                "background: #16a085;}"
+            )
 
         def calender_show(self):
 
@@ -156,8 +183,8 @@ class REGISTER_MAIN(QWidget):
             self.calender = QCalendarWidget()
             self.calender.setGridVisible(True)
 
-            self.flags = Qt.WindowFlags(Qt.WindowStaysOnTopHint)
-            self.calender_view.setWindowFlags(self.flags)
+            # self.flags = Qt.WindowFlags()
+            self.calender_view.setWindowFlags(Qt.WindowStaysOnTopHint)
 
             self.initial_layout.addWidget(self.calender)
             self.calender_view.setLayout(self.initial_layout)

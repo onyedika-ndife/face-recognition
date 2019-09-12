@@ -20,7 +20,6 @@ class REGISTER_STUDENT(QDialog):
         self.setupUI()
 
     def setupUI(self):
-        # self.comp.dob_date_choose.setStyleSheet("border-radius: inherit")
 
         # ADDING WIDGETS
         self.comp.main_grid.addWidget(self.comp.f_name, 0, 0)
