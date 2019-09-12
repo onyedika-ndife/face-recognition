@@ -1,17 +1,12 @@
 import sys
-from PyQt5.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QPushButton,
-    QStackedLayout,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from register import register_main
 from login import login
 
 
-class MAIN_WINDOW(QMainWindow):
+class MAIN_WINDOW(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Face Recognition")
@@ -19,24 +14,29 @@ class MAIN_WINDOW(QMainWindow):
 
         self.setStyleSheet(open("./assets/css/main.css").read())
 
-        self.stacked_layout = QStackedLayout()
+        self.main_layout = QStackedLayout()
 
-        central_widget = QWidget()
-        central_widget.setLayout(self.stacked_layout)
-        self.setCentralWidget(central_widget)
+        self.setLayout(self.main_layout)
+
+        # For other screens aside Login Screen And Main View Screen
+        self.stacked = QStackedWidget()
+        self.main_grid = QGridLayout()
+        self.back_btn = QCommandLinkButton("Back")
 
         self.login_view()
 
     def login_view(self):
         self.log_view = login.LOGIN()
 
-        self.stacked_layout.addWidget(self.log_view.main_widget)
+        self.main_layout.addWidget(self.log_view.main_widget)
 
         self.log_view.login_btn.clicked.connect(
             lambda: self.log_view.login(self.main_view)
         )
 
     def main_view(self):
+        self.setWindowModality(Qt.ApplicationModal)
+        self.setEnabled(True)
         self.initial_layout = QVBoxLayout()
 
         register = QPushButton("Register")
@@ -50,9 +50,9 @@ class MAIN_WINDOW(QMainWindow):
         self.main_widget = QWidget()
         self.main_widget.setLayout(self.initial_layout)
 
-        self.stacked_layout.addWidget(self.main_widget)
+        self.main_layout.addWidget(self.main_widget)
 
-        self.stacked_layout.setCurrentIndex(1)
+        self.main_layout.setCurrentIndex(1)
 
         register.clicked.connect(self.reg_view)
 
@@ -61,9 +61,9 @@ class MAIN_WINDOW(QMainWindow):
 
         self.reg_view = register_main.REGISTER_MAIN()
 
-        self.stacked_layout.addWidget(self.reg_view.main_widget)
+        self.main_layout.addWidget(self.reg_view.main_widget)
 
-        self.stacked_layout.setCurrentIndex(2)
+        self.main_layout.setCurrentIndex(2)
 
     def edit_view(self):
         self.setWindowTitle("Edit")
