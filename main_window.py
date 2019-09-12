@@ -20,8 +20,10 @@ class MAIN_WINDOW(QWidget):
 
         # For other screens aside Login Screen And Main View Screen
         self.stacked = QStackedWidget()
+        self.main_grid_widget = QWidget()
         self.main_grid = QGridLayout()
         self.back_btn = QCommandLinkButton("Back")
+        self.main_grid_widget.setLayout(self.main_grid)
 
         self.main_grid.addWidget(self.back_btn, 0, 0)
         self.main_grid.addWidget(self.stacked, 1, 0, 1, 0)
@@ -64,7 +66,10 @@ class MAIN_WINDOW(QWidget):
 
         self.reg_view = register_main.REGISTER_MAIN()
 
-        self.main_layout.addWidget(self.reg_view.main_widget)
+        self.stacked.setLayout(self.reg_view.initial_layout)
+
+        self.main_layout.addWidget(self.main_grid)
+        # self.main_layout.addWidget(self.reg_view.main_widget)
 
         self.main_layout.setCurrentIndex(2)
 
