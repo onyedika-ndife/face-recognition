@@ -12,7 +12,7 @@ class MAIN_WINDOW(QWidget):
         self.setWindowTitle("Face Recognition")
         self.setGeometry(500, 200, 350, 250)
 
-        self.setStyleSheet(open("./assets/css/main.css").read())
+        # self.setStyleSheet(open("./assets/css/main.css").read())
 
         self.main_layout = QStackedLayout()
 
@@ -25,7 +25,7 @@ class MAIN_WINDOW(QWidget):
         self.back_btn = QCommandLinkButton("Back")
         self.main_grid_widget.setLayout(self.main_grid)
 
-        self.main_grid.addWidget(self.back_btn, 0, 0)
+        self.main_grid.addWidget(self.back_btn, 0, 1)
         self.main_grid.addWidget(self.stacked, 1, 0, 1, 0)
 
         self.login_view()
@@ -66,10 +66,10 @@ class MAIN_WINDOW(QWidget):
 
         self.reg_view = register_main.REGISTER_MAIN()
 
-        self.stacked.setLayout(self.reg_view.initial_layout)
+        self.stacked.addWidget(self.reg_view.main_widget)
+        self.stacked.setCurrentIndex(1)
 
         self.main_layout.addWidget(self.main_grid_widget)
-        # self.main_layout.addWidget(self.reg_view.main_widget)
 
         self.main_layout.setCurrentIndex(2)
 
