@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from database import db
+from MainWindow import main_window
 
 
 class LOGIN(QDialog):
@@ -10,15 +11,17 @@ class LOGIN(QDialog):
 
     def __init__(self):
         super().__init__()
+        self.move(500, 200)
+        self.setFixedSize(350, 250)
+
+        self.setStyleSheet(open("./assets/css/login.css").read())
+
         self.setWindowTitle("LOGIN")
 
-        self.component()
-        self.setupUI()
-        self.database()
+        self._component()
+        self._setup_ui()
 
-    def component(self):
-        self.initial_layout = QVBoxLayout()
-        self.main_widget = QWidget()
+    def _component(self):
         self.main_grid = QGridLayout()
 
         self.user_name_label = QLabel("Username:")
@@ -31,25 +34,13 @@ class LOGIN(QDialog):
         self.credentials_incorrect = QLabel()
         self.credentials_incorrect.setStyleSheet("font-weight: bold; color: red")
         self.credentials_incorrect.setAlignment(Qt.AlignCenter)
-        self.credentials_incorrect.setMaximumHeight(10)
-        self.credentials_incorrect.setMinimumHeight(5)
+        self.credentials_incorrect.setMaximumHeight(12)
 
         self.login_btn = QPushButton("Login")
-        self.login_btn.setStyleSheet(
-            "QPushButton {\n"
-            "text-transform: uppercase;\n"
-            "font-weight: 600;\n"
-            "border-radius: none;\n"
-            "background: #1abc9c;\n"
-            "color: #fff;\n"
-            "font-size: 20px;\n"
-            "padding: 5px;\n"
-            "margin: 0 100px;}\n"
-            "QPushButton:pressed {\n"
-            "background: #16a085;}"
-        )
 
-    def setupUI(self):
+        self.login_btn.clicked.connect(self._handle_login)
+
+    def _setup_ui(self):
         self.main_grid.addWidget(self.user_name_label, 0, 0)
         self.main_grid.addWidget(self.user_name_input, 0, 1)
 
@@ -60,17 +51,9 @@ class LOGIN(QDialog):
 
         self.main_grid.addWidget(self.login_btn, 3, 0, 1, 0)
 
-        self.main_widget.setLayout(self.main_grid)
+        self.setLayout(self.main_grid)
 
-        self.initial_layout.addWidget(self.main_widget)
-
-    def database(self):
-        self.datab.cur.execute(
-            "CREATE TABLE IF NOT EXISTS Admin (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL)"
-        )
-        self.datab.conn.commit()
-
-    def login(self, main_view):
+    def _handle_login(self):
         self.datab.cur.execute("SELECT * FROM Admin")
 
         for row in self.datab.cur:
@@ -78,7 +61,25 @@ class LOGIN(QDialog):
                 row[1] == self.user_name_input.text()
                 and row[2] == self.pass_word_input.text()
             ):
-                main_view()
+                self.hide()
+                self.app_view = main_window.MAIN_WINDOW()
+                self.app_view.show()
+            elif (
+                self.user_name_input.text() == "" and self.pass_word_input.text() == ""
+            ):
+                self.credentials_incorrect.setText(
+                    "Username and Password cannot be empty!"
+                )
+            elif (
+                not self.user_name_input.text() == ""
+                and self.pass_word_input.text() == ""
+            ):
+                self.credentials_incorrect.setText("Password cannot be empty!")
+            elif (
+                self.user_name_input.text() == ""
+                and not self.pass_word_input.text() == ""
+            ):
+                self.credentials_incorrect.setText("Username cannot be empty!")
             elif (
                 not row[1] == self.user_name_input.text()
                 and not row[2] == self.pass_word_input.text()
@@ -94,4 +95,16 @@ class LOGIN(QDialog):
                 and not row[2] == self.pass_word_input.text()
             ):
                 self.credentials_incorrect.setText("Password Incorrect!!")
+            else:
+                pass
 
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+
+    view = LOGIN()
+    view.show()
+    view.raise_()
+
+    sys.exit(app.exec_())

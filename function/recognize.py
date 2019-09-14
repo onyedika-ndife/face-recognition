@@ -18,23 +18,26 @@ class RECOGNIZE:
 
         self.datab.cur.execute("SELECT * FROM Students")
 
-        name_lst = list()
+        self.name_lst = list()
 
         for row in self.datab.cur:
             name = f"{row[3]}_{row[1]}".lower()
-            name_lst.append(name)
+            self.name_lst.append(name)
+
+            print(self.name_lst)
 
         self.verify()
 
     def verify(self):
+        for name in self.name_lst:
+            self.recognizer.read(f"./assets/training_data/{name}-training_data.yml")
+
         def get_profile():
             profile = None
+            self.datab.cur.execute("SELECT * FROM Students")
             for row in self.datab.cur:
                 profile = row
             return profile
-
-        for name in name_lst:
-            self.recognizer.read(f"./assets/training_data/{name}-training_data.yml")
 
         Id = 0
         while True:
@@ -51,7 +54,6 @@ class RECOGNIZE:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
                 Id, conf = self.recognizer.predict(gray[y : y + h, x : x + w])
                 profile = get_profile()
-                # print()
                 if profile != None:
                     if profile[0] == Id:
                         cv2.putText(
@@ -78,5 +80,5 @@ class RECOGNIZE:
             cv2.imshow("Recognize", image)
             if cv2.waitKey(1) == ord("q"):
                 break
-        cam.release()
+        self.cam.release()
         cv2.destroyAllWindows()

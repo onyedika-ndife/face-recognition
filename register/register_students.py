@@ -18,6 +18,7 @@ class REGISTER_STUDENT(QDialog):
         self.comp = components()
 
         self.setupUI()
+        self.train_faces = trainer
 
     def setupUI(self):
 
@@ -237,56 +238,57 @@ class REGISTER_STUDENT(QDialog):
             f"INSERT INTO Students(first_name, middle_name, last_name,date_of_birth, age, gender, jamb_number,college,dept,level,matric_number,date_of_reg) VALUES('{first_name}','{middle_name}','{last_name}','{date_of_birth}',{int(age)},'{gender}','{jamb_number}','{college}','{dept}','{level}','{matric_number}','{date_of_reg}')"
         )
 
-        self.register_faces()
         self.comp.datab.conn.commit()
+        self.register_faces()
         self.close()
 
     def register_faces(self):
         self.comp.datab.cur.execute("SELECT * FROM Students")
+        self.latest_register = self.comp.datab.cur.fetchall()[-1]
 
-        id_count = 0
-        for row in self.comp.datab.cur:
-            _id = row[0]
-            name = f"{row[3]}_{row[1]}".lower()
+        self._id = self.latest_register[0]
+        self.name = f"{self.latest_register[3]}_{self.latest_register[1]}".lower()
 
-        face_cascade = cv2.CascadeClassifier(
-            "./assets/classifiers/haarcascade_frontalface_alt2.xml" 
+        self.face_cascade = cv2.CascadeClassifier(
+            "./assets/classifiers/haarcascade_frontalface_alt2.xml"
         )
 
-        cam = cv2.VideoCapture(0)
-        sample_number = 0
-
-        time.sleep(2.0)
+        self.cam = cv2.VideoCapture(0)
+        self.sample_number = 0
 
         while True:
             # Capture Image-by-Image
-            ret, image = cam.read()
+            ret, image = self.cam.read()
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(
+            faces = self.face_cascade.detectMultiScale(
                 gray,
                 scaleFactor=1.5,
                 minNeighbors=5,
-                minSize=(30, 30),
+                minSize=(40, 40),
                 flags=cv2.CASCADE_SCALE_IMAGE,
             )
             for (x, y, w, h) in faces:
                 roi_gray = gray[y : y + h, x : x + w]
+                self.sample_number += 1
+                
+                time.sleep(0.5)
+                
+                if not os.path.exists(f"./assets/face_data/student/{str(self.name)}"):
+                    os.makedirs(f"./assets/face_data/student/{str(self.name)}")
+                cv2.imwrite(
+                    f"./assets/face_data/student/{str(self.name)}/{str(self.name)}.{str(self.sample_number)}.jpg",
+                    roi_gray,
+                )
                 cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
 
             cv2.imshow("Register Face", image)
 
-            if cv2.waitKey(1) & 0xFF == 255:
-                sample_number += 1
-                if not os.path.exists(f"./assets/face_data/student/{str(name)}"):
-                    os.makedirs(f"./assets/face_data/student/{str(name)}")
-                cv2.imwrite(
-                    f"./assets/face_data/student/{str(name)}/{str(name)}.{str(sample_number)}.jpg",
-                    roi_gray,
-                )
-            elif sample_number == 20:
+            if self.sample_number == 20:
+                break
+            elif cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
-        cam.release()
-        trainer.trainer.TRAINER(_id,name)
+        self.cam.release()
         cv2.destroyAllWindows()
+        self.train_faces.TRAINER(self._id, self.name)
         self.comp.datab.conn.close()

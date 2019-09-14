@@ -33,5 +33,5 @@ class TRAINER:
             return np.array(_ids), faces
 
         Ids, faces = get_images_with_id(self._dir)
-        self.recognizer.train(Ids, faces)
+        self.recognizer.train(faces, Ids)
         self.recognizer.save(f"./assets/training_data/{name}-training_data.yml")

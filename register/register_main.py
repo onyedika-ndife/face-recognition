@@ -35,8 +35,7 @@ class REGISTER_MAIN(QWidget):
                 "background: #1abc9c;\n"
                 "color: #fff;\n"
                 "font-size: 20px;\n"
-                "padding: 5px;\n"
-                "margin: 0 100px;}\n"
+                "padding: 5px;}\n"
                 "QPushButton:pressed {\n"
                 "background: #16a085;}"
             )
@@ -86,7 +85,6 @@ class REGISTER_MAIN(QWidget):
             self.dob_date_label.setStyleSheet("font-style: italic;font-weight: normal;")
             self.dob_date_choose = QPushButton("Choose Date")
             self.dob_layout = QHBoxLayout()
-            # self.dob_date_choose.setStyleSheet("border-radius: initial")
             self.dob_date_choose.clicked.connect(self.calender_show)
             self.dob_layout.addWidget(self.dob_date_label)
             self.dob_layout.addWidget(self.dob_date_choose)
@@ -183,14 +181,14 @@ class REGISTER_MAIN(QWidget):
             self.calender = QCalendarWidget()
             self.calender.setGridVisible(True)
 
-            # self.flags = Qt.WindowFlags()
-            self.calender_view.setWindowFlags(Qt.WindowStaysOnTopHint)
+            self.flags = Qt.WindowFlags(Qt.WindowStaysOnTopHint)
+            self.calender_view.setWindowFlags(self.flags)
 
             self.initial_layout.addWidget(self.calender)
             self.calender_view.setLayout(self.initial_layout)
 
             self.calender_view.show()
-            self.calender_view.setGeometry(500, 200, 350, 250)
+            self.calender_view.resize(350, 250)
 
             self.calender.clicked[QDate].connect(self.select_date)
 
