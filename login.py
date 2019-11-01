@@ -25,9 +25,11 @@ class LOGIN(QDialog):
         self.main_grid = QGridLayout()
 
         self.user_name_label = QLabel("Username:")
+        self.user_name_label.setObjectName("Label")
         self.user_name_input = QLineEdit()
 
         self.pass_word_label = QLabel("Password:")
+        self.pass_word_label.setObjectName("Label")
         self.pass_word_input = QLineEdit()
         self.pass_word_input.setEchoMode(QLineEdit.Password)
 

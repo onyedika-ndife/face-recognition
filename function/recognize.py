@@ -1,84 +1,75 @@
 import cv2
-
-from database import db
+import os
+from database.db import Database
 
 
 class RECOGNIZE:
-    datab = db.Database()
+    datab = Database()
 
-    def __init__(self):
+    def __init__(self, image_other):
         super().__init__()
+        self.profile = None
+
+        self.verified = False
+
+        self.image = image_other
 
         self.faceDetect = cv2.CascadeClassifier(
             "./assets/classifiers/haarcascade_frontalface_alt2.xml"
         )
-        self.cam = cv2.VideoCapture(0)
+        # self.cam = cv2.VideoCapture(0)
 
         self.recognizer = cv2.face.LBPHFaceRecognizer_create()
-
-        self.datab.cur.execute("SELECT * FROM Students")
-
-        self.name_lst = list()
-
-        for row in self.datab.cur:
-            name = f"{row[3]}_{row[1]}".lower()
-            self.name_lst.append(name)
-
-            print(self.name_lst)
 
         self.verify()
 
     def verify(self):
-        for name in self.name_lst:
-            self.recognizer.read(f"./assets/training_data/{name}-training_data.yml")
+        self.datab.cur.execute("SELECT * FROM Students")
+        self.student_list_all = self.datab.cur.fetchall()
 
-        def get_profile():
-            profile = None
-            self.datab.cur.execute("SELECT * FROM Students")
-            for row in self.datab.cur:
-                profile = row
-            return profile
+        self._dir = "./assets/training_data/"
+        self.train_path = [os.path.join(self._dir, f) for f in os.listdir(self._dir)]
 
         Id = 0
-        while True:
-            ret, image = self.cam.read()
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            faces = self.faceDetect.detectMultiScale(
-                gray,
-                scaleFactor=1.5,
-                minNeighbors=5,
-                minSize=(30, 30),
-                flags=cv2.CASCADE_SCALE_IMAGE,
-            )
-            for (x, y, w, h) in faces:
-                cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
-                Id, conf = self.recognizer.predict(gray[y : y + h, x : x + w])
-                profile = get_profile()
-                if profile != None:
-                    if profile[0] == Id:
-                        cv2.putText(
-                            image,
-                            f"Name: {profile[3]}\n{profile[2]}\n{profile[1]}",
-                            (x, y + h + 20),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            1,
-                            (0, 255, 0),
-                            1,
-                            cv2.LINE_AA,
-                        )
+        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+
+        faces = self.faceDetect.detectMultiScale(
+            gray,
+            scaleFactor=1.3,
+            minNeighbors=5,
+            minSize=(30, 30),
+            flags=cv2.CASCADE_SCALE_IMAGE,
+        )
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(self.image, (x, y), (x + w, y + h), (255, 255, 255), 1)
+            for train_data in self.train_path:
+                self.recognizer.read(train_data)
+                for row in self.student_list_all:
+                    self.profile = row
+                    Id, conf = self.recognizer.predict(gray[y : y + h, x : x + w])
+                    profile = self.profile
+                    if profile != None:
+                        if profile[0] == Id and conf <= 60:
+                            self.verified = True
+                            cv2.putText(
+                                self.image,
+                                f"Name: {profile[3]}\n{profile[2]}\n{profile[1]}",
+                                (x, y + h + 20),
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                1,
+                                (0, 255, 0),
+                                1,
+                                cv2.LINE_AA,
+                            )
+                        else:
+                            cv2.putText(
+                                self.image,
+                                f"Individual Unknown",
+                                (x, y + h + 20),
+                                cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                                1,
+                                (0, 0, 255),
+                            )
                     else:
-                        cv2.putText(
-                            image,
-                            f"Individual Unknown",
-                            (x, y + h + 20),
-                            cv2.FONT_HERSHEY_COMPLEX_SMALL,
-                            1,
-                            (0, 0, 255),
-                        )
-                else:
-                    break
-            cv2.imshow("Recognize", image)
-            if cv2.waitKey(1) == ord("q"):
-                break
-        self.cam.release()
-        cv2.destroyAllWindows()
+                        pass

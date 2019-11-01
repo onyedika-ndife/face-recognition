@@ -6,7 +6,11 @@ class Database:
     def __init__(self):
         try:
             self.conn = sql.connect(
-                host="localhost", user="root", password="C!$c@123", database="FaceBase"
+                host="localhost",
+                user="root",
+                password="C!$c@123",
+                database="FaceBase",
+                autocommit=False,
             )
             if self.conn.is_connected():
                 print("Database Connected")

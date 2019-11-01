@@ -3,10 +3,12 @@
 		Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 	font-size: 1.6rem;
 }
-QLabel {
+
+QLabel#Label {
 	font-weight: 600;
 	text-transform: uppercase;
 }
+
 QPushButton {
 	text-transform: uppercase;
 	font-weight: 600;

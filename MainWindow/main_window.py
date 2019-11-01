@@ -1,9 +1,8 @@
-import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from register import register_main
-from verify import verify
+from register.register_main import REGISTER_MAIN
+from student_detail.student_details import VERIFY
 
 
 class MAIN_WINDOW(QWidget):
@@ -26,35 +25,23 @@ class MAIN_WINDOW(QWidget):
         self.initial_layout = QVBoxLayout()
 
         self.register = QPushButton("Register")
-        self.verification = QPushButton("Verify Student")
-        self.edit = QPushButton("Edit Student Details")
+        self.verification = QPushButton("Student Details")
 
-        view = [self.register, self.verification, self.edit]
-        for btn in view:
-            btn.setStyleSheet(
-                "QPushButton {\n"
-                "text-transform: uppercase;\n"
-                "font-weight: 600;\n"
-                "border-radius: none;\n"
-                "background: #1abc9c;\n"
-                "color: #fff;\n"
-                "font-size: 20px;\n"
-                "padding: 5px;}\n"
-                "QPushButton:pressed {\n"
-                "background: #16a085;}"
-            )
+        self.register.setObjectName("btn")
+        self.verification.setObjectName("btn")
 
         self.initial_layout.addWidget(self.register)
         self.initial_layout.addWidget(self.verification)
-        self.initial_layout.addWidget(self.edit)
 
         self.main_widget = QWidget()
         self.main_widget.setLayout(self.initial_layout)
 
         self.main_layout.addWidget(self.main_widget)
 
-        self.register.clicked.connect(self._handle_open_register_view)
-        self.verification.clicked.connect(self._handle_open_verify_view)
+        self.register.clicked.connect(
+            lambda: self._handle_open_register_view(self.main_layout)
+        )
+        self.verification.clicked.connect(self._handle_open_student_details_view)
 
     def _other_view(self):
         # For other screens aside Login Screen And Main View Screen
@@ -62,7 +49,7 @@ class MAIN_WINDOW(QWidget):
         self.main_grid_widget = QWidget()
         self.main_grid = QGridLayout()
         self.back_btn = QCommandLinkButton()
-        self.back_btn.setIcon(QIcon("./assets/img/arrow_back.svg"))
+        self.back_btn.setIcon(QIcon("./assets/img/svg/arrow-left-circle.svg"))
         self.main_grid_widget.setLayout(self.main_grid)
 
         self.main_grid.addWidget(self.back_btn, 0, 0)
@@ -71,29 +58,26 @@ class MAIN_WINDOW(QWidget):
         self.back_btn.clicked.connect(self._handle_go_back)
         self.back_btn.setMaximumWidth(35)
 
-    def _handle_open_register_view(self):
+    def _handle_open_register_view(self, main_layout):
         self.setWindowTitle("REGISTER")
 
-        self.reg_view = register_main.REGISTER_MAIN()
+        self.reg_view = REGISTER_MAIN(main_layout)
 
         self.stacked.addWidget(self.reg_view.main_widget)
-        self.stacked.setCurrentIndex(1)
+        self.stacked.setCurrentWidget(self.reg_view.main_widget)
 
         self.main_layout.addWidget(self.main_grid_widget)
         self.main_layout.setCurrentWidget(self.main_grid_widget)
 
-    def _handle_open_verify_view(self):
-        self.setWindowTitle("SHOW STUDENT DETAILS")
+    def _handle_open_student_details_view(self):
 
-        prev_screen = self.main_layout
-        self.ver_view = verify.VERIFY(self._handle_go_back)
-
-        self.main_layout.addWidget(self.ver_view)
-        self.main_layout.setCurrentWidget(self.ver_view)
-
-    def _handle_open_edit_view(self):
-        self.win_title = "EDIT STUDENT DETAILS"
-        self.setWindowTitle(self.win_title)
+        self.ver_view = VERIFY(
+            self,
+            self.main_layout,
+            self.main_grid_widget,
+            self.stacked,
+            self._handle_go_back,
+        )
 
     def _handle_go_back(self):
         self.main_layout.setCurrentIndex(0)

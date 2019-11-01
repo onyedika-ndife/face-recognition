@@ -4,14 +4,11 @@
 	font-size: 1.6rem;
 }
 
-QVBoxLayout {
-	background-color: #fff;
-}
-
-QLabel {
+QLabel#Label {
 	font-weight: 600;
 	text-transform: uppercase;
 }
+
 
 QLineEdit {
 	border-radius: 0;
@@ -23,6 +20,16 @@ QLineEdit:focus {
 	border-bottom: 2px solid #1abc9c;
 }
 
+
+QPushButton#btn {
+	height: 100%;
+}
+
+
+/* QVBoxLayout {
+	background-color: #fff;
+}
+
 QComboBox {
 	border-radius: 0;
 	border: 2px solid #bdc3c7;
@@ -31,4 +38,4 @@ QComboBox {
 
 QComboBox:focus {
 	border: 2px solid #1abc9c;
-}
+} */

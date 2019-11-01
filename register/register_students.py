@@ -1,88 +1,257 @@
 import cv2
 import os
-import time
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from function import trainer
-
 
 class REGISTER_STUDENT(QDialog):
-    def __init__(self, components):
+    def __init__(self, main_layout, components):
         super().__init__()
+        self.main_layout = main_layout
+
         self.setWindowTitle("REGISTER STUDENT")
-        self.setStyleSheet(open("./assets/css/main.css").read())
+        components = components()
 
-        self.comp = components()
+        # For other screens
+        self.stacked = QStackedLayout()
 
-        self.setupUI()
-        self.train_faces = trainer
+        self.setupUI(components)
 
-    def setupUI(self):
+
+    def setupUI(self, components):
+        self.comp = components
+
+        self.personal_details()
+        
+        # SETTING LAYOUTS
+        self.setLayout(self.stacked)
+
+    def personal_details(self):
+        vbox = QVBoxLayout()
+        grid = QGridLayout()
+        group_box = QGroupBox("Personal Details")
+
+        _next = QPushButton("Next")
 
         # ADDING WIDGETS
-        self.comp.main_grid.addWidget(self.comp.f_name, 0, 0)
-        self.comp.main_grid.addWidget(self.comp.f_name_input, 0, 1)
+        grid.addWidget(self.comp.f_name, 0, 0)
+        grid.addWidget(self.comp.f_name_input, 0, 1)
 
-        self.comp.main_grid.addWidget(self.comp.m_name, 1, 0)
-        self.comp.main_grid.addWidget(self.comp.m_name_input, 1, 1)
+        grid.addWidget(self.comp.m_name, 1, 0)
+        grid.addWidget(self.comp.m_name_input, 1, 1)
 
-        self.comp.main_grid.addWidget(self.comp.l_name, 2, 0)
-        self.comp.main_grid.addWidget(self.comp.l_name_input, 2, 1)
+        grid.addWidget(self.comp.l_name, 2, 0)
+        grid.addWidget(self.comp.l_name_input, 2, 1)
 
-        self.comp.main_grid.addWidget(self.comp.dob_label, 3, 0)
-        self.comp.main_grid.addLayout(self.comp.dob_layout, 3, 1)
+        grid.addWidget(self.comp.dob_label, 3, 0)
+        grid.addLayout(self.comp.dob_layout, 3, 1)
 
-        self.comp.main_grid.addWidget(self.comp.age, 4, 0)
-        self.comp.main_grid.addWidget(self.comp.age_input, 4, 1)
+        grid.addWidget(self.comp.age, 4, 0)
+        grid.addWidget(self.comp.age_input, 4, 1)
 
-        self.comp.main_grid.addWidget(self.comp.gender, 5, 0)
-        self.comp.main_grid.addLayout(self.comp.gender_layout, 5, 1)
+        grid.addWidget(self.comp.gender, 5, 0)
+        grid.addLayout(self.comp.gender_layout, 5, 1)
 
-        self.comp.main_grid.addWidget(self.comp.j_num, 6, 0)
-        self.comp.main_grid.addWidget(self.comp.j_num_input, 6, 1)
+        grid.addWidget(self.comp.marital, 6, 0)
+        grid.addWidget(self.comp.marital_select, 6, 1)
 
-        self.comp.main_grid.addWidget(self.comp.college, 7, 0)
-        self.comp.main_grid.addWidget(self.comp.college_select, 7, 1)
+        grid.addWidget(self.comp.nationality, 7, 0)
+        grid.addWidget(self.comp.nationality_input, 7, 1)
 
-        self.comp.main_grid.addWidget(self.comp.dept, 8, 0)
-        self.comp.main_grid.addWidget(self.comp.dept_select, 8, 1)
+        grid.addWidget(self.comp.state_origin, 8, 0)
+        grid.addWidget(self.comp.state_origin_input, 8, 1)
 
-        self.comp.main_grid.addWidget(self.comp.level, 9, 0)
-        self.comp.main_grid.addWidget(self.comp.level_select, 9, 1)
+        grid.addWidget(self.comp.lga_origin, 9, 0)
+        grid.addWidget(self.comp.lga_origin_input, 9, 1)
 
-        self.comp.main_grid.addWidget(self.comp.m_num, 10, 0)
-        self.comp.main_grid.addWidget(self.comp.m_num_input, 10, 1)
+        grid.addWidget(_next, 10,0,1,0)
 
-        self.comp.main_grid.addWidget(self.comp.dor, 11, 0)
-        self.comp.main_grid.addWidget(self.comp.dor_text, 11, 1)
+        group_box.setLayout(grid)
+        vbox.addWidget(group_box)
 
-        self.comp.main_grid.addWidget(self.comp._next, 12, 0, 1, 0)
 
-        self.comp._next.setText("Capture Face")
+        self.pd_main_widget = QWidget()
+        self.pd_main_widget.setLayout(vbox)
 
-        # SETTING LAYOUTS
-        self.setLayout(self.comp.main_grid)
+        self.stacked.addWidget(self.pd_main_widget)
+        self.stacked.setCurrentWidget(self.pd_main_widget)
+
+        # When next button is clicked
+        _next.clicked.connect(self.school_details)
+
+    def school_details(self):
+        vbox = QVBoxLayout()
+        grid = QGridLayout()
+        group_box = QGroupBox("School Details")
+
+        btn_view = QHBoxLayout()
+        _next = QPushButton("Next")
+        _prev = QPushButton("Previous")
+
+        btn_view.addWidget(_prev)
+        btn_view.addWidget(_next)
+
+        grid.addWidget(self.comp.j_num, 0, 0)
+        grid.addWidget(self.comp.j_num_input, 0, 1)
+
+        grid.addWidget(self.comp.college, 1, 0)
+        grid.addWidget(self.comp.college_select, 1, 1)
+
+        grid.addWidget(self.comp.dept, 2, 0)
+        grid.addWidget(self.comp.dept_select, 2, 1)
+
+        grid.addWidget(self.comp.level, 3, 0)
+        grid.addWidget(self.comp.level_select, 3, 1)
+
+        grid.addWidget(self.comp.m_num, 4, 0)
+        grid.addWidget(self.comp.m_num_input, 4, 1)
+
+        grid.addLayout(btn_view, 5,0,1,0)
 
         # On change of College
         self.comp.college_select.currentIndexChanged.connect(self.school)
 
+        group_box.setLayout(grid)
+        vbox.addWidget(group_box)
+
+        self.sd_main_widget = QWidget()
+        self.sd_main_widget.setLayout(vbox)
+
+        self.stacked.addWidget(self.sd_main_widget)
+        self.stacked.setCurrentWidget(self.sd_main_widget)
+
+
+        # When prev button is clicked
+        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.pd_main_widget))
+
         # When next button is clicked
-        self.comp._next.clicked.connect(self.register_student_details)
+        _next.clicked.connect(self.contact_details)
+
+    def contact_details(self):
+        vbox = QVBoxLayout()
+        grid = QGridLayout()
+        group_box = QGroupBox("Contact Details")
+
+        btn_view = QHBoxLayout()
+        _next = QPushButton("Next")
+        _prev = QPushButton("Previous")
+
+        btn_view.addWidget(_prev)
+        btn_view.addWidget(_next)
+
+        grid.addWidget(self.comp.address, 0, 0)
+        grid.addWidget(self.comp.address_input, 0, 1)
+
+        grid.addWidget(self.comp.phone, 1, 0)
+        grid.addWidget(self.comp.phone_input, 1, 1)
+
+        grid.addWidget(self.comp.email, 2, 0)
+        grid.addWidget(self.comp.email_input, 2, 1)
+
+        grid.addLayout(btn_view, 3,0,1,0)
+
+
+        group_box.setLayout(grid)
+        vbox.addWidget(group_box)
+
+        self.cd_main_widget = QWidget()
+        self.cd_main_widget.setLayout(vbox)
+
+        self.stacked.addWidget(self.cd_main_widget)
+        self.stacked.setCurrentWidget(self.cd_main_widget)
+
+        # When prev button is clicked
+        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.sd_main_widget))
+
+        # When next button is clicked
+        _next.clicked.connect(self.parent_details)
+
+    def parent_details(self):
+        vbox = QVBoxLayout()
+        grid = QGridLayout()
+        group_box = QGroupBox("Parent/Sponsor Details")
+
+        btn_view = QHBoxLayout()
+        _next = QPushButton("Next")
+        _prev = QPushButton("Previous")
+
+        btn_view.addWidget(_prev)
+        btn_view.addWidget(_next)
+
+        grid.addWidget(self.comp.p_name, 0, 0)
+        grid.addWidget(self.comp.p_name_input, 0, 1)
+
+        grid.addWidget(self.comp.p_email, 1, 0)
+        grid.addWidget(self.comp.p_email_input, 1, 1)
+
+        grid.addWidget(self.comp.p_phone, 2, 0)
+        grid.addWidget(self.comp.p_phone_input, 2, 1)
+
+        grid.addLayout(btn_view, 3,0,1,0)
+
+
+        group_box.setLayout(grid)
+        vbox.addWidget(group_box)
+
+        self.psd_main_widget = QWidget()
+        self.psd_main_widget.setLayout(vbox)
+
+        self.stacked.addWidget(self.psd_main_widget)
+        self.stacked.setCurrentWidget(self.psd_main_widget)
+
+        # When prev button is clicked
+        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.cd_main_widget))
+
+        # When next button is clicked
+        _next.clicked.connect(self.done)
+
+    def done(self):
+        vbox = QVBoxLayout()
+        grid = QGridLayout()
+        group_box = QGroupBox()
+
+        btn_view = QHBoxLayout()
+        _next = QPushButton("Capture Face")
+        _prev = QPushButton("Previous")
+
+        btn_view.addWidget(_prev)
+        btn_view.addWidget(_next)
+
+
+        grid.addWidget(self.comp.dor, 0, 0)
+        grid.addWidget(self.comp.dor_text, 0, 1)
+
+        grid.addLayout(btn_view, 1,0,1,0)
+
+        group_box.setLayout(grid)
+        vbox.addWidget(group_box)
+
+        self.d_main_widget = QWidget()
+        self.d_main_widget.setLayout(vbox)
+
+        self.stacked.addWidget(self.d_main_widget)
+        self.stacked.setCurrentWidget(self.d_main_widget)
+
+        # When prev button is clicked
+        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.psd_main_widget))
+
+
+        # When next button is clicked
+        _next.clicked.connect(self.register_student_details)
 
     def school(self, i):
         if i == 0 or i == 1 or i == 4 or i == 6 or i == 7 or i == 9 or i == 10:
             self.comp.level_select.clear()
-            self.comp.level_select.addItems(["100L", "200L", "300", "400L"])
+            self.comp.level_select.addItems(["100L", "200L", "300L", "400L"])
         elif i == 2 or i == 3 or i == 5 or i == 8:
             self.comp.level_select.clear()
-            self.comp.level_select.addItems(["100L", "200L", "300", "400L", "500L"])
+            self.comp.level_select.addItems(["100L", "200L", "300L", "400L", "500L"])
         elif i == 11:
             self.comp.level_select.clear()
             self.comp.level_select.addItems(
-                ["100L", "200L", "300", "400L", "500L", "600L"]
+                ["100L", "200L", "300L", "400L", "500L", "600L"]
             )
 
         if i == 0:
@@ -224,25 +393,37 @@ class REGISTER_STUDENT(QDialog):
             if self.comp.gender_1.isChecked()
             else self.comp.gender_2.text()
         )
+        nationality = self.comp.nationality_input.text()
+        state_of_origin = self.comp.state_origin_input.text()
+        lga_origin = self.comp.lga_origin_input.text()
+        marital = self.comp.marital_select.currentText()
+        # Assigning Variables
         jamb_number = self.comp.j_num_input.text()
         college = self.comp.college_select.currentText()
         dept = self.comp.dept_select.currentText()
         level = self.comp.level_select.currentText()
         matric_number = self.comp.m_num_input.text()
+        # Assigning Variables
+        address = self.comp.address_input.text()
+        phone = self.comp.phone_input.text()
+        email = self.comp.email_input.text()
+        # Assigning Variables
+        p_name = self.comp.p_name_input.text()
+        p_email = self.comp.p_email_input.text()
+        p_phone = self.comp.p_phone_input.text()
         date_of_reg = self.comp.dor_text.text()
 
         self.comp.datab.cur.execute(
-            "CREATE TABLE IF NOT EXISTS Students (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,first_name VARCHAR(255) NOT NULL, middle_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, age INT(3) NOT NULL,date_of_birth VARCHAR(10) NOT NULL, gender VARCHAR(6) NOT NULL,jamb_number VARCHAR(10) NOT NULL, college VARCHAR(255) NOT NULL, dept VARCHAR(255) NOT NULL, level VARCHAR(4) NOT NULL,matric_number VARCHAR(255) NOT NULL, date_of_reg VARCHAR(255) NOT NULL)"
+            "CREATE TABLE IF NOT EXISTS Students (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,first_name VARCHAR(255) NOT NULL, middle_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, age INT(3) NOT NULL,date_of_birth VARCHAR(10) NOT NULL, gender VARCHAR(6) NOT NULL, nationality VARCHAR(255) NOT NULL,state_of_origin VARCHAR(255) NOT NULL,lga_origin VARCHAR(255) NOT NULL,marital_status VARCHAR(255) NOT NULL,jamb_number VARCHAR(10) NOT NULL, college VARCHAR(255) NOT NULL, dept VARCHAR(255) NOT NULL, level VARCHAR(4) NOT NULL,matric_number VARCHAR(255) NOT NULL, address VARCHAR(255) NOT NULL, phone VARCHAR(50) NOT NULL, email VARCHAR(255) NOT NULL, p_name VARCHAR(255) NOT NULL, p_email VARCHAR(255) NOT NULL, p_phone VARCHAR(255) NOT NULL, date_of_reg VARCHAR(255) NOT NULL)"
         )
+
         self.comp.datab.cur.execute(
-            f"INSERT INTO Students(first_name, middle_name, last_name,date_of_birth, age, gender, jamb_number,college,dept,level,matric_number,date_of_reg) VALUES('{first_name}','{middle_name}','{last_name}','{date_of_birth}',{int(age)},'{gender}','{jamb_number}','{college}','{dept}','{level}','{matric_number}','{date_of_reg}')"
+            f"INSERT INTO Students(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status,jamb_number,college,dept,level,matric_number,address,phone,email,p_name,p_email,p_phone,date_of_reg) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}','{jamb_number}','{college}','{dept}','{level}','{matric_number}','{address}','{phone}','{email}','{p_name}','{p_email}','{p_phone}','{date_of_reg}')"
         )
 
-        self.comp.datab.conn.commit()
-        self.register_faces()
-        self.close()
+        self.register_face()
 
-    def register_faces(self):
+    def register_face(self):
         self.comp.datab.cur.execute("SELECT * FROM Students")
         self.latest_register = self.comp.datab.cur.fetchall()[-1]
 
@@ -253,42 +434,83 @@ class REGISTER_STUDENT(QDialog):
             "./assets/classifiers/haarcascade_frontalface_alt2.xml"
         )
 
-        self.cam = cv2.VideoCapture(0)
-        self.sample_number = 0
+        self.video_widget = QWidget()
+        self.video_init_layout = QVBoxLayout()
 
-        while True:
-            # Capture Image-by-Image
-            ret, image = self.cam.read()
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            faces = self.face_cascade.detectMultiScale(
-                gray,
-                scaleFactor=1.5,
-                minNeighbors=5,
-                minSize=(40, 40),
-                flags=cv2.CASCADE_SCALE_IMAGE,
-            )
-            for (x, y, w, h) in faces:
-                roi_gray = gray[y : y + h, x : x + w]
-                self.sample_number += 1
-                
-                time.sleep(0.5)
-                
-                if not os.path.exists(f"./assets/face_data/student/{str(self.name)}"):
-                    os.makedirs(f"./assets/face_data/student/{str(self.name)}")
-                cv2.imwrite(
-                    f"./assets/face_data/student/{str(self.name)}/{str(self.name)}.{str(self.sample_number)}.jpg",
-                    roi_gray,
-                )
-                cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 1)
+        # Create Camera View
+        self.cam_view = QLabel()
+        self.cam_btn = QPushButton('Capture')
 
-            cv2.imshow("Register Face", image)
 
-            if self.sample_number == 20:
-                break
-            elif cv2.waitKey(1) & 0xFF == ord("q"):
-                break
+        self.video_init_layout.addWidget(self.cam_view)
+        self.video_init_layout.addWidget(self.cam_btn)
+        self.video_widget.setLayout(self.video_init_layout)
 
+        self.cam_btn.clicked.connect(self.snap)
+
+        self.main_layout.addWidget(self.video_widget)
+        self.main_layout.setCurrentWidget(self.video_widget)
+
+        # create a timer
+        self.timer = QTimer()
+
+        # set timer timeout callback function
+        self.timer.timeout.connect(self._video)
+
+        if not self.timer.isActive():
+            self.cam = cv2.VideoCapture(0)
+            self.timer.start(1)
+
+    def _video(self):
+        ret, self.image = self.cam.read()
+
+        image_copy = self.image.copy()
+
+        # Capture Image-by-Image
+        gray = cv2.cvtColor(image_copy, cv2.COLOR_BGR2GRAY)
+        faces = self.face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(40, 40),
+            flags=cv2.CASCADE_SCALE_IMAGE,
+        )
+        for (x, y, w, h) in faces:
+            cv2.rectangle(image_copy, (x, y), (x + w, y + h), (255, 255, 255), 1)
+
+        self.image_shown = cv2.cvtColor(image_copy, cv2.COLOR_BGR2RGB)
+
+        # get image infos
+        self.height, self.width, self.channel = self.image_shown.shape
+        self.step = self.channel * self.width
+
+        # create QImage from image
+        self.qImg = QImage(
+            self.image_shown.data,
+            self.width,
+            self.height,
+            self.step,
+            QImage.Format_RGB888,
+        )
+
+        # Set the data from qImg to cam_view
+        self.cam_view.setPixmap(QPixmap.fromImage(self.qImg))        
+
+        # self.train_faces.TRAINER(self._id, self.name)
+
+    def snap(self):
+        image_cropped = self.image[0:480, 80:560]
+        if not os.path.exists(f"./assets/student/{str(self.name)}"):
+            os.makedirs(f"./assets/student/{str(self.name)}")
+        cv2.imwrite(
+            f"./assets/student/{str(self.name)}/{str(self.name)}.jpg",
+            image_cropped,
+        )
+
+        self.timer.stop()
         self.cam.release()
-        cv2.destroyAllWindows()
-        self.train_faces.TRAINER(self._id, self.name)
+
+        self.comp.datab.conn.commit()
         self.comp.datab.conn.close()
+
+        self.main_layout.setCurrentIndex(0)
