@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from function.recognize_student import RECOGNIZE
+from function.recognize import RECOGNIZE
 from .view_details import VIEW_DETAILS
 from .edit_details import EDIT_DETAILS
 
@@ -72,7 +72,7 @@ class VERIFY(QWidget):
             self.MAIN_VIEW(self.previous, self.recognize.profile)
 
     def MAIN_VIEW(self, prev, profile):
-        self.title.setWindowTitle("STUDENT DETAILS")
+        self.title.setWindowTitle("STAFF DETAILS")
         self.profile = profile
         self.initial_layout = QVBoxLayout()
         self.main_widget = QWidget()

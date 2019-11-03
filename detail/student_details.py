@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from function.recognize_student import RECOGNIZE
+from function.recognize import RECOGNIZE
 from .view_details import VIEW_DETAILS
 from .edit_details import EDIT_DETAILS
 

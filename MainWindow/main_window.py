@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from register.register_main import REGISTER_MAIN
-from student_detail.student_details import VERIFY
+from student_detail.student_details import VERIFY as Student_Verify
+from staff_detail.staff_details import VERIFY as Staff_Verify
 
 
 class MAIN_WINDOW(QWidget):
@@ -25,13 +26,16 @@ class MAIN_WINDOW(QWidget):
         self.initial_layout = QVBoxLayout()
 
         self.register = QPushButton("Register")
-        self.verification = QPushButton("Student Details")
+        self.stud_det = QPushButton("Student Details")
+        self.staf_det = QPushButton("Staff Details")
 
         self.register.setObjectName("btn")
-        self.verification.setObjectName("btn")
+        self.stud_det.setObjectName("btn")
+        self.staf_det.setObjectName("btn")
 
         self.initial_layout.addWidget(self.register)
-        self.initial_layout.addWidget(self.verification)
+        self.initial_layout.addWidget(self.stud_det)
+        self.initial_layout.addWidget(self.staf_det)
 
         self.main_widget = QWidget()
         self.main_widget.setLayout(self.initial_layout)
@@ -41,7 +45,8 @@ class MAIN_WINDOW(QWidget):
         self.register.clicked.connect(
             lambda: self._handle_open_register_view(self.main_layout)
         )
-        self.verification.clicked.connect(self._handle_open_student_details_view)
+        self.stud_det.clicked.connect(self._handle_open_student_details_view)
+        self.staf_det.clicked.connect(self._handle_open_staff_details_view)
 
     def _other_view(self):
         # For other screens aside Login Screen And Main View Screen
@@ -71,7 +76,17 @@ class MAIN_WINDOW(QWidget):
 
     def _handle_open_student_details_view(self):
 
-        self.ver_view = VERIFY(
+        self.ver_view = Student_Verify(
+            self,
+            self.main_layout,
+            self.main_grid_widget,
+            self.stacked,
+            self._handle_go_back,
+        )
+
+    def _handle_open_staff_details_view(self):
+
+        self.ver_view = Staff_Verify(
             self,
             self.main_layout,
             self.main_grid_widget,
