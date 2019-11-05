@@ -4,7 +4,7 @@ import os
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-
+from function.trainer import TRAINER
 
 class REGISTER_STUDENT(QDialog):
     def __init__(self, main_layout, components):
@@ -80,6 +80,7 @@ class REGISTER_STUDENT(QDialog):
 
         # When next button is clicked
         _next.clicked.connect(self.school_details)
+        _next.setIcon(QIcon("./assets/img/Next.png"))
 
     def school_details(self):
         vbox = QVBoxLayout()
@@ -125,9 +126,11 @@ class REGISTER_STUDENT(QDialog):
 
         # When prev button is clicked
         _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.pd_main_widget))
+        _prev.setIcon(QIcon("./assets/img/Prev.png"))
 
         # When next button is clicked
         _next.clicked.connect(self.contact_details)
+        _next.setIcon(QIcon("./assets/img/Next.png"))
 
     def contact_details(self):
         vbox = QVBoxLayout()
@@ -164,9 +167,11 @@ class REGISTER_STUDENT(QDialog):
 
         # When prev button is clicked
         _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.sd_main_widget))
+        _prev.setIcon(QIcon("./assets/img/Prev.png"))
 
         # When next button is clicked
         _next.clicked.connect(self.parent_details)
+        _next.setIcon(QIcon("./assets/img/Next.png"))
 
     def parent_details(self):
         vbox = QVBoxLayout()
@@ -203,9 +208,12 @@ class REGISTER_STUDENT(QDialog):
 
         # When prev button is clicked
         _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.cd_main_widget))
+        _prev.setIcon(QIcon("./assets/img/Prev.png"))
+        
 
         # When next button is clicked
         _next.clicked.connect(self.done)
+        _next.setIcon(QIcon("./assets/img/Next.png"))
 
     def done(self):
         vbox = QVBoxLayout()
@@ -236,10 +244,14 @@ class REGISTER_STUDENT(QDialog):
 
         # When prev button is clicked
         _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.psd_main_widget))
+        _prev.setIcon(QIcon("./assets/img/Prev.png"))
 
 
         # When next button is clicked
         _next.clicked.connect(self.register_student_details)
+        _next.setIcon(QIcon("./assets/img/Capture.png"))
+        _next.setIconSize(QSize(20,20))
+
 
     def school(self, i):
         if i == 0 or i == 1 or i == 4 or i == 6 or i == 7 or i == 9 or i == 10:
@@ -496,8 +508,6 @@ class REGISTER_STUDENT(QDialog):
         # Set the data from qImg to cam_view
         self.cam_view.setPixmap(QPixmap.fromImage(self.qImg))        
 
-        # self.train_faces.TRAINER(self._id, self.name)
-
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
         if not os.path.exists(f"./assets/student/{str(self.name)}"):
@@ -512,5 +522,7 @@ class REGISTER_STUDENT(QDialog):
 
         self.comp.datab.conn.commit()
         self.comp.datab.conn.close()
+
+        trainer = TRAINER(self._id, self.name)
 
         self.main_layout.setCurrentIndex(0)

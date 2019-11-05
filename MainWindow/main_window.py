@@ -54,14 +54,15 @@ class MAIN_WINDOW(QWidget):
         self.main_grid_widget = QWidget()
         self.main_grid = QGridLayout()
         self.back_btn = QCommandLinkButton()
-        self.back_btn.setIcon(QIcon("./assets/img/svg/arrow-left-circle.svg"))
+        self.back_btn.setIcon(QIcon("./assets/img/Back.png"))
+        self.back_btn.setIconSize(QSize(30, 30))
         self.main_grid_widget.setLayout(self.main_grid)
 
         self.main_grid.addWidget(self.back_btn, 0, 0)
         self.main_grid.addWidget(self.stacked, 1, 0, 1, 0)
 
         self.back_btn.clicked.connect(self._handle_go_back)
-        self.back_btn.setMaximumWidth(35)
+        self.back_btn.setMaximumWidth(45)
 
     def _handle_open_register_view(self, main_layout):
         self.setWindowTitle("REGISTER")
