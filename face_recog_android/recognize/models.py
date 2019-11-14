@@ -11,7 +11,7 @@ class STUDENTS(models.Model):
     date_of_birth = models.DateField(auto_now=False, auto_now_add=False)
     gender = models.CharField(max_length=6)
     nationality = models.CharField(max_length=255)
-    state_of_origin = models.models.CharField(max_length=255)
+    state_of_origin = models.CharField(max_length=255)
     lga_origin = models.CharField(max_length=255)
     marital_status = models.CharField(max_length=255)
     jamb_number = models.CharField(max_length=10)
@@ -25,7 +25,7 @@ class STUDENTS(models.Model):
     parent_name = models.CharField(max_length=255)
     parent_email = models.EmailField(max_length=254)
     parent_phone = models.CharField(max_length=11)
-    date_of_registration = models.CharField(max_length=255)
+    date_of_registration = models.DateField(auto_now=False, auto_now_add=False)
 
 
 class STAFF(models.Model):
@@ -36,11 +36,11 @@ class STAFF(models.Model):
     date_of_birth = models.DateField(auto_now=False, auto_now_add=False)
     gender = models.CharField(max_length=6)
     nationality = models.CharField(max_length=255)
-    state_of_origin = models.models.CharField(max_length=255)
+    state_of_origin = models.CharField(max_length=255)
     lga_origin = models.CharField(max_length=255)
     marital_status = models.CharField(max_length=255)
     profession = models.CharField(max_length=255)
     address = models.CharField(max_length=500)
     phone_number = models.CharField(max_length=11)
     email = models.EmailField(max_length=254)
-    date_of_registration = models.CharField(max_length=255)
+    date_of_registration = models.DateField(auto_now=False, auto_now_add=False)

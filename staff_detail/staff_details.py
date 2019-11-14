@@ -80,6 +80,15 @@ class VERIFY(QWidget):
         self.view_details_btn = QPushButton("View Details")
         self.edit_details_btn = QPushButton("Edit Details")
 
+        self.view_details_btn.setObjectName("btn")
+        self.edit_details_btn.setObjectName("btn")
+
+        self.view_details_btn.setIcon(QIcon("./assets/img/View Details.png"))
+        self.edit_details_btn.setIcon(QIcon("./assets/img/Edit Details.png"))
+
+        self.view_details_btn.setIconSize(QSize(50, 50))
+        self.edit_details_btn.setIconSize(QSize(50, 50))
+
         self.initial_layout.addWidget(self.view_details_btn)
         self.initial_layout.addWidget(self.edit_details_btn)
 

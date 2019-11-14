@@ -33,8 +33,8 @@ class REGISTER_STAFF(QDialog):
         group_box = QGroupBox("Personal Details")
 
         _next = QPushButton("Next")
+        _next.setIcon(QIcon("./assets/img/Next.png"))
 
-        # ADDING WIDGETS
         # ADDING WIDGETS
         grid.addWidget(self.comp.f_name, 0, 0)
         grid.addWidget(self.comp.f_name_input, 0, 1)
@@ -88,6 +88,9 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Next")
         _prev = QPushButton("Previous")
+        _prev.setIcon(QIcon("./assets/img/Prev.png"))
+        _next.setIcon(QIcon("./assets/img/Next.png"))
+
 
         btn_view.addWidget(_prev)
         btn_view.addWidget(_next)
@@ -95,7 +98,7 @@ class REGISTER_STAFF(QDialog):
         grid.addWidget(self.comp.profession, 0, 0)
         grid.addWidget(self.comp.profession_input, 0, 1)
 
-        grid.addLayout(btn_view, 1,0,1,0)
+        grid.addLayout(btn_view, 1, 0, 1, 0)
 
         group_box.setLayout(grid)
         vbox.addWidget(group_box)
@@ -106,9 +109,10 @@ class REGISTER_STAFF(QDialog):
         self.stacked.addWidget(self.sd_main_widget)
         self.stacked.setCurrentWidget(self.sd_main_widget)
 
-
         # When prev button is clicked
-        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.pd_main_widget))
+        _prev.clicked.connect(
+            lambda: self.stacked.setCurrentWidget(self.pd_main_widget)
+        )
 
         # When next button is clicked
         _next.clicked.connect(self.contact_details)
@@ -121,6 +125,8 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Next")
         _prev = QPushButton("Previous")
+        _prev.setIcon(QIcon("./assets/img/Prev.png"))
+        _next.setIcon(QIcon("./assets/img/Next.png"))
 
         btn_view.addWidget(_prev)
         btn_view.addWidget(_next)
@@ -134,8 +140,7 @@ class REGISTER_STAFF(QDialog):
         grid.addWidget(self.comp.email, 2, 0)
         grid.addWidget(self.comp.email_input, 2, 1)
 
-        grid.addLayout(btn_view, 3,0,1,0)
-
+        grid.addLayout(btn_view, 3, 0, 1, 0)
 
         group_box.setLayout(grid)
         vbox.addWidget(group_box)
@@ -147,7 +152,9 @@ class REGISTER_STAFF(QDialog):
         self.stacked.setCurrentWidget(self.cd_main_widget)
 
         # When prev button is clicked
-        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.sd_main_widget))
+        _prev.clicked.connect(
+            lambda: self.stacked.setCurrentWidget(self.sd_main_widget)
+        )
 
         # When next button is clicked
         _next.clicked.connect(self.done)
@@ -160,15 +167,17 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Capture Face")
         _prev = QPushButton("Previous")
+        _prev.setIcon(QIcon("./assets/img/Prev.png"))
+        _next.setIcon(QIcon("./assets/img/Capture.png"))
+        _next.setIconSize(QSize(20,20))
 
         btn_view.addWidget(_prev)
         btn_view.addWidget(_next)
 
-
         grid.addWidget(self.comp.dor, 0, 0)
         grid.addWidget(self.comp.dor_text, 0, 1)
 
-        grid.addLayout(btn_view, 1,0,1,0)
+        grid.addLayout(btn_view, 1, 0, 1, 0)
 
         group_box.setLayout(grid)
         vbox.addWidget(group_box)
@@ -180,8 +189,9 @@ class REGISTER_STAFF(QDialog):
         self.stacked.setCurrentWidget(self.d_main_widget)
 
         # When prev button is clicked
-        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.cd_main_widget))
-
+        _prev.clicked.connect(
+            lambda: self.stacked.setCurrentWidget(self.cd_main_widget)
+        )
 
         # When next button is clicked
         _next.clicked.connect(self.register_staff_details)
@@ -202,23 +212,18 @@ class REGISTER_STAFF(QDialog):
         state_of_origin = self.comp.state_origin_input.text()
         lga_origin = self.comp.lga_origin_input.text()
         marital = self.comp.marital_select.currentText()
+        profession = self.comp.profession_input.text()
+        date_of_reg = self.comp.dor_text.text()
 
         self.comp.datab.cur.execute(
-            "CREATE TABLE IF NOT EXISTS Staff (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,first_name VARCHAR(255) NOT NULL, middle_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, age INT(3) NOT NULL,date_of_birth VARCHAR(10) NOT NULL, gender VARCHAR(6) NOT NULL, nationality VARCHAR(255) NOT NULL,state_of_origin VARCHAR(255) NOT NULL,lga_origin VARCHAR(255) NOT NULL,marital_status VARCHAR(255) NOT NULL"
+            f"INSERT INTO recognize_staff(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status, profession,address,phone_number,email,date_of_registration) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}','{profession}','{address}','{phone}','{email}','{date_of_reg}')"
         )
 
-        self.comp.datab.cur.execute(
-            f"INSERT INTO Students(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status,jamb_number,college,dept,level,matric_number,address,phone,email,p_name,p_email,p_phone,date_of_reg) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}')"
-        )
-
-        # ,'{jamb_number}','{college}','{dept}','{level}','{matric_number}','{address}','{phone}','{email}','{p_name}','{p_email}','{p_phone}','{date_of_reg}'
-
-        # ,jamb_number VARCHAR(10) NOT NULL, college VARCHAR(255) NOT NULL, dept VARCHAR(255) NOT NULL, level VARCHAR(4) NOT NULL,matric_number VARCHAR(255) NOT NULL, address VARCHAR(255) NOT NULL, phone VARCHAR(50) NOT NULL, email VARCHAR(255) NOT NULL, p_name VARCHAR(255) NOT NULL, p_email VARCHAR(255) NOT NULL, p_phone VARCHAR(255) NOT NULL, date_of_reg VARCHAR(255) NOT NULL)
 
         self.register_face()
 
     def register_face(self):
-        self.comp.datab.cur.execute("SELECT * FROM Students")
+        self.comp.datab.cur.execute("SELECT * FROM recognize_staff")
         self.latest_register = self.comp.datab.cur.fetchall()[-1]
 
         self._id = self.latest_register[0]
@@ -293,10 +298,15 @@ class REGISTER_STAFF(QDialog):
 
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
-        if not os.path.exists(f"./assets/student/{str(self.name)}"):
-            os.makedirs(f"./assets/student/{str(self.name)}")
+        if not os.path.exists(
+            f"./face_recog_android/assets/staff/{str(self.name)}"
+        ):
+            os.makedirs(
+                f"./face_recog_android/assets/staff/{str(self.name)}"
+            )
         cv2.imwrite(
-            f"./assets/student/{str(self.name)}/{str(self.name)}.jpg", image_cropped
+            f"./face_recog_android/assets/staff/{str(self.name)}/{str(self.name)}.jpg",
+            image_cropped,
         )
 
         self.timer.stop()
@@ -304,6 +314,8 @@ class REGISTER_STAFF(QDialog):
 
         self.comp.datab.conn.commit()
         self.comp.datab.conn.close()
+
+        # trainer = TRAINER.train_staff(self._id, self.name)
 
         self.main_layout.setCurrentIndex(0)
 

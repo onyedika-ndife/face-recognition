@@ -30,7 +30,7 @@ class VIEW_DETAILS(QMainWindow):
 
         comp = REGISTER_MAIN.components()
 
-        comp.datab.cur.execute(f"SELECT * FROM Students WHERE id = '{profile[0]}'")
+        comp.datab.cur.execute(f"SELECT * FROM recognize_staff WHERE id = '{profile[0]}'")
         
         self.profile = comp.datab.cur.fetchone()
 
@@ -41,16 +41,16 @@ class VIEW_DETAILS(QMainWindow):
         self.edit_menu = self.main_menu.addMenu("Edit")
 
         self.save_action = QAction(
-            QIcon("./assets/img/svg/save1.svg"), "Save File", self
+            QIcon("./assets/img/Save.png"), "Save File", self
         )
         self.save_action.setShortcut("Ctrl+S")
 
         self.edit_action = QAction(
-            QIcon("./assets/img/svg/edit1.svg"), "Edit Student Details", self
+            QIcon("./assets/img/Edit Details.png"), "Edit Student Details", self
         )
 
         self.exit_action = QAction(
-            QIcon("./assets/img/svg/arrow-left-circle.svg"), "Exit", self
+            QIcon("./assets/img/Exit.png"), "Exit", self
         )
         self.exit_action.setShortcut("Ctrl+Q")
 
@@ -103,11 +103,11 @@ class VIEW_DETAILS(QMainWindow):
 
         self.sd_view.addLayout(self.sd_detail_view)
         self.sd_view.addWidget(comp.profile_pic)
-        for image in os.listdir('./assets/student'):
+        for image in os.listdir('./face_recog_android/assets/staff'):
             name = f"{self.profile[3]}_{self.profile[1]}".lower()
             folder_name = image
             if folder_name == name:
-                pic = QImage(f'./assets/student/{folder_name}/{folder_name}.jpg')
+                pic = QImage(f'./face_recog_android/assets/staff/{folder_name}/{folder_name}.jpg')
                 comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
 
         self.sd_detail_view.addWidget(comp.m_num, 0, 0)
@@ -264,11 +264,11 @@ class VIEW_DETAILS(QMainWindow):
         can_1 = canvas.Canvas(packet_1, pagesize=A4)
         can_2 = canvas.Canvas(packet_2, pagesize=A4)
 
-        for image in os.listdir('./assets/student'):
+        for image in os.listdir('./face_recog_android/assets/staff'):
             name = f"{self.profile[3]}_{self.profile[1]}".lower()
             folder_name = image
             if folder_name == name:
-                pic = f'./assets/student/{folder_name}/{folder_name}.jpg'
+                pic = f'./face_recog_android/assets/staff/{folder_name}/{folder_name}.jpg'
                 can_1.drawInlineImage(pic,453,550, width=3.7*cm,height=3.7*cm)
 
         can_1.setFont("Helvetica", 10)
@@ -358,7 +358,7 @@ class VIEW_DETAILS(QMainWindow):
         new_pdf_2 = PdfFileReader(packet_2)
 
         # read your existing PDF
-        existing_pdf = PdfFileReader(open("./assets/doc/details/student-details.pdf", "rb"))
+        existing_pdf = PdfFileReader(open("./face_recog_android/assets/doc/staff-details.pdf", "rb"))
         self.output = PdfFileWriter()
 
         # add the "watermark" (which is the new pdf) on the existing page

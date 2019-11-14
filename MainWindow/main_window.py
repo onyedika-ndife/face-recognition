@@ -23,19 +23,27 @@ class MAIN_WINDOW(QWidget):
         self._other_view()
 
     def _view(self):
-        self.initial_layout = QVBoxLayout()
+        self.initial_layout = QGridLayout()
 
         self.register = QPushButton("Register")
+        self.register.setIcon(QIcon("./assets/img/Add User Group Woman Man_96px.png"))
+        self.register.setIconSize(QSize(50, 50))
+
         self.stud_det = QPushButton("Student Details")
+        self.stud_det.setIcon(QIcon("./assets/img/Student.png"))
+        self.stud_det.setIconSize(QSize(50, 50))
+
         self.staf_det = QPushButton("Staff Details")
+        self.staf_det.setIcon(QIcon("./assets/img/Staff.png"))
+        self.staf_det.setIconSize(QSize(50, 50))
 
         self.register.setObjectName("btn")
         self.stud_det.setObjectName("btn")
         self.staf_det.setObjectName("btn")
 
-        self.initial_layout.addWidget(self.register)
-        self.initial_layout.addWidget(self.stud_det)
-        self.initial_layout.addWidget(self.staf_det)
+        self.initial_layout.addWidget(self.register, 0, 0, 1, 0)
+        self.initial_layout.addWidget(self.stud_det, 1, 0)
+        self.initial_layout.addWidget(self.staf_det, 1, 1)
 
         self.main_widget = QWidget()
         self.main_widget.setLayout(self.initial_layout)

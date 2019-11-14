@@ -80,6 +80,15 @@ class VERIFY(QWidget):
         self.view_details_btn = QPushButton("View Details")
         self.edit_details_btn = QPushButton("Edit Details")
 
+        self.view_details_btn.setObjectName("btn")
+        self.edit_details_btn.setObjectName("btn")
+
+        self.view_details_btn.setIcon(QIcon("./assets/img/View Details.png"))
+        self.edit_details_btn.setIcon(QIcon("./assets/img/Edit Details.png"))
+
+        self.view_details_btn.setIconSize(QSize(50, 50))
+        self.edit_details_btn.setIconSize(QSize(50, 50))
+
         self.initial_layout.addWidget(self.view_details_btn)
         self.initial_layout.addWidget(self.edit_details_btn)
 
@@ -95,6 +104,7 @@ class VERIFY(QWidget):
         self.edit_details_btn.clicked.connect(self._handle_edit_details)
 
     def _handle_view_details(self):
+        # pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS
         view_details = VIEW_DETAILS(
             self.title,
             lambda: self.main_layout.setCurrentWidget(self.grid_widget),

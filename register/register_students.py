@@ -4,7 +4,6 @@ import os
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from function.trainer import TRAINER
 
 class REGISTER_STUDENT(QDialog):
     def __init__(self, main_layout, components):
@@ -34,6 +33,8 @@ class REGISTER_STUDENT(QDialog):
         group_box = QGroupBox("Personal Details")
 
         _next = QPushButton("Next")
+        _next.setIcon(QIcon("./assets/img/Next.png"))
+        # _next.setLayoutDirection()
 
         # ADDING WIDGETS
         grid.addWidget(self.comp.f_name, 0, 0)
@@ -80,7 +81,6 @@ class REGISTER_STUDENT(QDialog):
 
         # When next button is clicked
         _next.clicked.connect(self.school_details)
-        _next.setIcon(QIcon("./assets/img/Next.png"))
 
     def school_details(self):
         vbox = QVBoxLayout()
@@ -131,6 +131,8 @@ class REGISTER_STUDENT(QDialog):
         # When next button is clicked
         _next.clicked.connect(self.contact_details)
         _next.setIcon(QIcon("./assets/img/Next.png"))
+        # _next.setLayoutDirection
+
 
     def contact_details(self):
         vbox = QVBoxLayout()
@@ -426,24 +428,20 @@ class REGISTER_STUDENT(QDialog):
         date_of_reg = self.comp.dor_text.text()
 
         self.comp.datab.cur.execute(
-            "CREATE TABLE IF NOT EXISTS Students (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,first_name VARCHAR(255) NOT NULL, middle_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, age INT(3) NOT NULL,date_of_birth VARCHAR(10) NOT NULL, gender VARCHAR(6) NOT NULL, nationality VARCHAR(255) NOT NULL,state_of_origin VARCHAR(255) NOT NULL,lga_origin VARCHAR(255) NOT NULL,marital_status VARCHAR(255) NOT NULL,jamb_number VARCHAR(10) NOT NULL, college VARCHAR(255) NOT NULL, dept VARCHAR(255) NOT NULL, level VARCHAR(4) NOT NULL,matric_number VARCHAR(255) NOT NULL, address VARCHAR(255) NOT NULL, phone VARCHAR(50) NOT NULL, email VARCHAR(255) NOT NULL, p_name VARCHAR(255) NOT NULL, p_email VARCHAR(255) NOT NULL, p_phone VARCHAR(255) NOT NULL, date_of_reg VARCHAR(255) NOT NULL)"
-        )
-
-        self.comp.datab.cur.execute(
-            f"INSERT INTO Students(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status,jamb_number,college,dept,level,matric_number,address,phone,email,p_name,p_email,p_phone,date_of_reg) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}','{jamb_number}','{college}','{dept}','{level}','{matric_number}','{address}','{phone}','{email}','{p_name}','{p_email}','{p_phone}','{date_of_reg}')"
+            f"INSERT INTO recognize_students(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status,jamb_number,college,department,level,matric_number,address,phone_number,email,parent_name,parent_email,parent_phone,date_of_registration) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}','{jamb_number}','{college}','{dept}','{level}','{matric_number}','{address}','{phone}','{email}','{p_name}','{p_email}','{p_phone}','{date_of_reg}')"
         )
 
         self.register_face()
 
     def register_face(self):
-        self.comp.datab.cur.execute("SELECT * FROM Students")
+        self.comp.datab.cur.execute("SELECT * FROM recognize_students")
         self.latest_register = self.comp.datab.cur.fetchall()[-1]
 
         self._id = self.latest_register[0]
         self.name = f"{self.latest_register[3]}_{self.latest_register[1]}".lower()
 
         self.face_cascade = cv2.CascadeClassifier(
-            "./assets/classifiers/haarcascade_frontalface_alt2.xml"
+            "./assets/classifier/haarcascade_frontalface_alt2.xml"
         )
 
         self.video_widget = QWidget()
@@ -510,10 +508,10 @@ class REGISTER_STUDENT(QDialog):
 
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
-        if not os.path.exists(f"./assets/student/{str(self.name)}"):
-            os.makedirs(f"./assets/student/{str(self.name)}")
+        if not os.path.exists(f"./face_recog_android/assets/student/{str(self.name)}"):
+            os.makedirs(f"./face_recog_android/assets/student/{str(self.name)}")
         cv2.imwrite(
-            f"./assets/student/{str(self.name)}/{str(self.name)}.jpg",
+            f"./face_recog_android/assets/student/{str(self.name)}/{str(self.name)}.jpg",
             image_cropped,
         )
 
@@ -523,6 +521,5 @@ class REGISTER_STUDENT(QDialog):
         self.comp.datab.conn.commit()
         self.comp.datab.conn.close()
 
-        trainer = TRAINER(self._id, self.name)
 
         self.main_layout.setCurrentIndex(0)

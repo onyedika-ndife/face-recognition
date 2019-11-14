@@ -14,7 +14,7 @@ class Database:
             )
             if self.conn.is_connected():
                 print("Database Connected")
-        except sql.Error as err:
+        except sql.DatabaseError as err:
             if errorcode.ER_ACCESS_DENIED_ERROR:
                 print("Something is wrong with your username or password")
             elif errorcode.ER_BAD_DB_ERROR:
@@ -24,3 +24,4 @@ class Database:
         else:
             # Database Cursor
             self.cur = self.conn.cursor()
+

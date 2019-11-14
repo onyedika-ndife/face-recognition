@@ -24,7 +24,7 @@ class EDIT_DETAILS(QMainWindow):
     def MAIN_VIEW(self, profile):
         self.comp = REGISTER_MAIN.components()
 
-        self.comp.datab.cur.execute(f"SELECT * FROM Students WHERE id = '{profile[0]}'")
+        self.comp.datab.cur.execute(f"SELECT * FROM recognize_students WHERE id = '{profile[0]}'")
         self.profile = self.comp.datab.cur.fetchone()
 
         self.main_menu = self.menuBar()
@@ -33,12 +33,12 @@ class EDIT_DETAILS(QMainWindow):
         self.file_menu = self.main_menu.addMenu("File")
 
         self.save_action = QAction(
-            QIcon("./assets/img/svg/save1.svg"), "Save File", self
+            QIcon("./assets/img/Save.png"), "Save File", self
         )
         self.save_action.setShortcut("Ctrl+S")
 
         self.exit_action = QAction(
-            QIcon("./assets/img/svg/arrow-left-circle.svg"), "Exit", self
+            QIcon("./assets/img/Exit.png"), "Exit", self
         )
         self.exit_action.setShortcut("Ctrl+Q")
 
@@ -149,7 +149,7 @@ class EDIT_DETAILS(QMainWindow):
 
         _grid.addWidget(self.comp.dob_label, 4, 0)
         _grid.addLayout(self.comp.dob_layout, 4, 1)
-        self.comp.dob_date_label.setText(self.profile[5])
+        self.comp.dob_date_label.setText(str(self.profile[5]))
 
 
         _grid.addWidget(self.comp.nationality, 5, 0)
@@ -224,7 +224,7 @@ class EDIT_DETAILS(QMainWindow):
         _grid.addWidget(self.comp.dor, 0,0)
         self.dor_text = QLabel()
         _grid.addWidget(self.dor_text, 0,1)
-        self.dor_text.setText(self.profile[22])
+        self.dor_text.setText(str(self.profile[22]))
 
         _group_box.setLayout(_grid)
 
@@ -232,6 +232,9 @@ class EDIT_DETAILS(QMainWindow):
         self.vbox.addWidget(_group_box)
 
         self.save_2_db = QPushButton('SAVE')
+        self.save_2_db.setIcon(QIcon('./assets/img/Save_DB.png'))
+        self.save_2_db.setIconSize(QSize(20,20))
+        
         self.vbox.addWidget(self.save_2_db)
 
         self.save_2_db.clicked.connect(self._save)
@@ -270,7 +273,7 @@ class EDIT_DETAILS(QMainWindow):
         p_email = self.comp.p_email_input.text()
         p_phone = self.comp.p_phone_input.text()
 
-        self.comp.datab.cur.execute(f"UPDATE Students SET first_name = '{first_name}', middle_name = '{middle_name}', last_name = '{last_name}',age = '{age}',date_of_birth = '{date_of_birth}', gender = '{gender}', nationality = '{nationality}', state_of_origin = '{state_of_origin}', lga_origin = '{lga_origin}',marital_status = '{marital}',jamb_number = '{jamb_number}',college = '{college}',dept = '{dept}', level = '{level}',matric_number = '{matric_number}',address = '{address}',phone = '{phone}',email = '{email}',p_name = '{p_name}',p_email = '{p_email}',p_phone = '{p_phone}' WHERE ID = '{_id}'")
+        self.comp.datab.cur.execute(f"UPDATE recognize_students SET first_name = '{first_name}', middle_name = '{middle_name}', last_name = '{last_name}',age = '{age}',date_of_birth = '{date_of_birth}', gender = '{gender}', nationality = '{nationality}', state_of_origin = '{state_of_origin}', lga_origin = '{lga_origin}',marital_status = '{marital}',jamb_number = '{jamb_number}',college = '{college}',department = '{dept}', level = '{level}',matric_number = '{matric_number}',address = '{address}',phone_number = '{phone}',email = '{email}',parent_name = '{p_name}',parent_email = '{p_email}',parent_phone = '{p_phone}' WHERE ID = '{_id}'")
 
         self.comp.datab.conn.commit()
         self.comp.datab.cur.close()
