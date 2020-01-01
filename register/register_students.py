@@ -33,7 +33,7 @@ class REGISTER_STUDENT(QDialog):
         group_box = QGroupBox("Personal Details")
 
         _next = QPushButton("Next")
-        _next.setIcon(QIcon("./assets/img/Next.png"))
+        
         # _next.setLayoutDirection()
 
         # ADDING WIDGETS
@@ -126,11 +126,11 @@ class REGISTER_STUDENT(QDialog):
 
         # When prev button is clicked
         _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.pd_main_widget))
-        _prev.setIcon(QIcon("./assets/img/Prev.png"))
+        
 
         # When next button is clicked
         _next.clicked.connect(self.contact_details)
-        _next.setIcon(QIcon("./assets/img/Next.png"))
+        
         # _next.setLayoutDirection
 
 
@@ -169,11 +169,11 @@ class REGISTER_STUDENT(QDialog):
 
         # When prev button is clicked
         _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.sd_main_widget))
-        _prev.setIcon(QIcon("./assets/img/Prev.png"))
+        
 
         # When next button is clicked
         _next.clicked.connect(self.parent_details)
-        _next.setIcon(QIcon("./assets/img/Next.png"))
+        
 
     def parent_details(self):
         vbox = QVBoxLayout()
@@ -210,12 +210,12 @@ class REGISTER_STUDENT(QDialog):
 
         # When prev button is clicked
         _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.cd_main_widget))
-        _prev.setIcon(QIcon("./assets/img/Prev.png"))
+        
         
 
         # When next button is clicked
         _next.clicked.connect(self.done)
-        _next.setIcon(QIcon("./assets/img/Next.png"))
+        
 
     def done(self):
         vbox = QVBoxLayout()
@@ -246,7 +246,7 @@ class REGISTER_STUDENT(QDialog):
 
         # When prev button is clicked
         _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.psd_main_widget))
-        _prev.setIcon(QIcon("./assets/img/Prev.png"))
+        
 
 
         # When next button is clicked
@@ -433,6 +433,7 @@ class REGISTER_STUDENT(QDialog):
 
         self.register_face()
 
+
     def register_face(self):
         self.comp.datab.cur.execute("SELECT * FROM recognize_students")
         self.latest_register = self.comp.datab.cur.fetchall()[-1]
@@ -508,15 +509,17 @@ class REGISTER_STUDENT(QDialog):
 
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
-        if not os.path.exists(f"./face_recog_android/assets/student/{str(self.name)}"):
-            os.makedirs(f"./face_recog_android/assets/student/{str(self.name)}")
+        if not os.path.exists(f"./face_recog_android/media/image/student/{str(self.name)}"):
+            os.makedirs(f"./face_recog_android/media/image/student/{str(self.name)}")
         cv2.imwrite(
-            f"./face_recog_android/assets/student/{str(self.name)}/{str(self.name)}.jpg",
+            f"./face_recog_android/media/image/student/{str(self.name)}/{str(self.name)}.jpg",
             image_cropped,
         )
 
         self.timer.stop()
         self.cam.release()
+
+        self.comp.datab.cur.execute(f"INSERT INTO recognize_students(pic) VALUES('image/student/{str(self.name)}/{str(self.name)}.jpg')")
 
         self.comp.datab.conn.commit()
         self.comp.datab.conn.close()

@@ -33,7 +33,7 @@ class REGISTER_STAFF(QDialog):
         group_box = QGroupBox("Personal Details")
 
         _next = QPushButton("Next")
-        _next.setIcon(QIcon("./assets/img/Next.png"))
+        
 
         # ADDING WIDGETS
         grid.addWidget(self.comp.f_name, 0, 0)
@@ -88,8 +88,7 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Next")
         _prev = QPushButton("Previous")
-        _prev.setIcon(QIcon("./assets/img/Prev.png"))
-        _next.setIcon(QIcon("./assets/img/Next.png"))
+        
 
 
         btn_view.addWidget(_prev)
@@ -125,8 +124,7 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Next")
         _prev = QPushButton("Previous")
-        _prev.setIcon(QIcon("./assets/img/Prev.png"))
-        _next.setIcon(QIcon("./assets/img/Next.png"))
+        
 
         btn_view.addWidget(_prev)
         btn_view.addWidget(_next)
@@ -167,7 +165,6 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Capture Face")
         _prev = QPushButton("Previous")
-        _prev.setIcon(QIcon("./assets/img/Prev.png"))
         _next.setIcon(QIcon("./assets/img/Capture.png"))
         _next.setIconSize(QSize(20,20))
 
@@ -213,12 +210,15 @@ class REGISTER_STAFF(QDialog):
         lga_origin = self.comp.lga_origin_input.text()
         marital = self.comp.marital_select.currentText()
         profession = self.comp.profession_input.text()
+        address= self.comp.address_input.text()
+        phone = self.comp.phone_input.text()
+        email = self.comp.email_input.text()
         date_of_reg = self.comp.dor_text.text()
 
         self.comp.datab.cur.execute(
-            f"INSERT INTO recognize_staff(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status, profession,address,phone_number,email,date_of_registration) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}','{profession}','{address}','{phone}','{email}','{date_of_reg}')"
+            f"INSERT INTO recognize_staff(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status, profession,address,phone_number,email,date_of_registration,pic) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}','{profession}','{address}','{phone}','{email}','{date_of_reg}','a')"
         )
-
+        self.comp.datab.conn.commit()
 
         self.register_face()
 
@@ -230,7 +230,7 @@ class REGISTER_STAFF(QDialog):
         self.name = f"{self.latest_register[3]}_{self.latest_register[1]}".lower()
 
         self.face_cascade = cv2.CascadeClassifier(
-            "./assets/classifiers/haarcascade_frontalface_alt2.xml"
+            "./assets/classifier/haarcascade_frontalface_alt2.xml"
         )
 
         self.video_widget = QWidget()
@@ -299,23 +299,24 @@ class REGISTER_STAFF(QDialog):
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
         if not os.path.exists(
-            f"./face_recog_android/assets/staff/{str(self.name)}"
+            f"./face_recog_android/media/image/staff/{str(self.name)}"
         ):
             os.makedirs(
-                f"./face_recog_android/assets/staff/{str(self.name)}"
+                f"./face_recog_android/media/image/staff/{str(self.name)}"
             )
         cv2.imwrite(
-            f"./face_recog_android/assets/staff/{str(self.name)}/{str(self.name)}.jpg",
+            f"./face_recog_android/media/image/staff/{str(self.name)}/{str(self.name)}.jpg",
             image_cropped,
         )
 
         self.timer.stop()
         self.cam.release()
 
+        self.comp.datab.cur.execute(f"UPDATE recognize_staff SET pic = 'image/staff/{str(self.name)}/{str(self.name)}.jpg'")
+
         self.comp.datab.conn.commit()
         self.comp.datab.conn.close()
 
-        # trainer = TRAINER.train_staff(self._id, self.name)
 
         self.main_layout.setCurrentIndex(0)
 

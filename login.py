@@ -63,12 +63,12 @@ class LOGIN(QDialog):
         self.setLayout(self.main_grid)
 
     def _handle_login(self):
-        self.datab.cur.execute("SELECT * FROM Admin")
+        self.datab.cur.execute("SELECT * FROM admin")
 
         for row in self.datab.cur:
             if (
-                row[1] == self.user_name_input.text()
-                and row[2] == self.pass_word_input.text()
+                row[0] == self.user_name_input.text()
+                and row[1] == self.pass_word_input.text()
             ):
                 self.hide()
                 self.app_view = main_window.MAIN_WINDOW()
@@ -90,18 +90,18 @@ class LOGIN(QDialog):
             ):
                 self.credentials_incorrect.setText("Username cannot be empty!")
             elif (
-                not row[1] == self.user_name_input.text()
-                and not row[2] == self.pass_word_input.text()
+                not row[0] == self.user_name_input.text()
+                and not row[1] == self.pass_word_input.text()
             ):
                 self.credentials_incorrect.setText("Username and Password Incorrect!!")
             elif (
-                not row[1] == self.user_name_input.text()
-                and row[2] == self.pass_word_input.text()
+                not row[0] == self.user_name_input.text()
+                and row[1] == self.pass_word_input.text()
             ):
                 self.credentials_incorrect.setText("Username Incorrect!!")
             elif (
-                row[1] == self.user_name_input.text()
-                and not row[2] == self.pass_word_input.text()
+                row[0] == self.user_name_input.text()
+                and not row[1] == self.pass_word_input.text()
             ):
                 self.credentials_incorrect.setText("Password Incorrect!!")
             else:
@@ -110,7 +110,6 @@ class LOGIN(QDialog):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setStyle("Fusion")
 
     view = LOGIN()
     view.show()

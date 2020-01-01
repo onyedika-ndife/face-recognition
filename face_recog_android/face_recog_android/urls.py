@@ -20,10 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("recognize/", include("recognize.urls")),
-]
+urlpatterns = [path("admin/", admin.site.urls), path("api/", include("recognize.urls"))]
 
 
 urlpatterns += staticfiles_urlpatterns()

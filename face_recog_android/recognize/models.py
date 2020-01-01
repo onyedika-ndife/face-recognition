@@ -4,6 +4,7 @@ from django.db import models
 
 
 class STUDENTS(models.Model):
+    pic = models.ImageField(max_length=255)
     first_name = models.CharField(max_length=255)
     middle_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -29,6 +30,7 @@ class STUDENTS(models.Model):
 
 
 class STAFF(models.Model):
+    pic = models.ImageField(max_length=255)
     first_name = models.CharField(max_length=255)
     middle_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)

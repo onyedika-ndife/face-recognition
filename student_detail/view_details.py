@@ -103,11 +103,11 @@ class VIEW_DETAILS(QMainWindow):
 
         self.sd_view.addLayout(self.sd_detail_view)
         self.sd_view.addWidget(comp.profile_pic)
-        for image in os.listdir('./face_recog_android/assets/student'):
+        for image in os.listdir('./face_recog_android/media/image/student'):
             name = f"{self.profile[3]}_{self.profile[1]}".lower()
             folder_name = image
             if folder_name == name:
-                pic = QImage(f'./face_recog_android/assets/student/{folder_name}/{folder_name}.jpg')
+                pic = QImage(f'./face_recog_android/media/image/student/{folder_name}/{folder_name}.jpg')
                 comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
 
         self.sd_detail_view.addWidget(comp.m_num, 0, 0)
@@ -264,72 +264,72 @@ class VIEW_DETAILS(QMainWindow):
         can_1 = canvas.Canvas(packet_1, pagesize=A4)
         can_2 = canvas.Canvas(packet_2, pagesize=A4)
 
-        for image in os.listdir('./face_recog_android/assets/student'):
+        for image in os.listdir('./face_recog_android/media/image/student'):
             name = f"{self.profile[3]}_{self.profile[1]}".lower()
             folder_name = image
             if folder_name == name:
-                pic = f'./face_recog_android/assets/student/{folder_name}/{folder_name}.jpg'
+                pic = f'./face_recog_android/media/image/student/{folder_name}/{folder_name}.jpg'
                 can_1.drawInlineImage(pic,453,550, width=3.7*cm,height=3.7*cm)
 
         can_1.setFont("Helvetica", 10)
         # Matric no
-        can_1.drawString(234, 640, self.m_num_text.text())
+        can_1.drawString(234, 638, self.m_num_text.text())
         
         # # Jamb no
-        can_1.drawString(234, 610, self.j_num_text.text())
+        can_1.drawString(234, 606, self.j_num_text.text())
         
         # # college
-        can_1.drawString(234, 583, self.college_text.text())
+        can_1.drawString(234, 580, self.college_text.text())
 
         # # level
-        can_1.drawString(234, 523, self.level_text.text())
+        can_1.drawString(234, 520, self.level_text.text())
         
         # # last_name
-        can_1.drawString(370, 494, self.l_name_text.text())
+        can_1.drawString(370, 488, self.l_name_text.text())
         
         # # middle_name
-        can_1.drawString(370, 464, self.m_name_text.text())
+        can_1.drawString(370, 458, self.m_name_text.text())
         
         # # first_name
-        can_1.drawString(370, 435, self.f_name_text.text())
+        can_1.drawString(370, 428, self.f_name_text.text())
         
         # # age
-        can_1.drawString(234, 406, self.age_text.text())
+        can_1.drawString(234, 398, self.age_text.text())
         
         # # gender
-        can_1.drawString(234, 376, self.gender_text.text())
+        can_1.drawString(234, 366, self.gender_text.text())
         
         
         # # dob
-        can_1.drawString(234, 331, self.dob_text.text()[8:])
-        can_1.drawString(343, 331, self.dob_text.text()[5:7])
-        can_1.drawString(453, 331, self.dob_text.text()[:4])
+        can_1.drawString(234, 322, self.dob_text.text()[8:])
+        can_1.drawString(343, 322, self.dob_text.text()[5:7])
+        can_1.drawString(453, 322, self.dob_text.text()[:4])
         
         # # nationality
-        can_1.drawString(234, 290, self.nationality_text.text())
+        can_1.drawString(234, 280, self.nationality_text.text())
         
         # # state of origin
-        can_1.drawString(234, 259, self.state_origin_text.text())
+        can_1.drawString(234, 248, self.state_origin_text.text())
         
         # # Marital status
-        can_1.drawString(234, 218, self.marital_text.text())
+        can_1.drawString(234, 208, self.marital_text.text())
 
         # # cell phone
-        can_1.drawString(240, 102, self.phone_text.text())
+        can_1.drawString(240, 88, self.phone_text.text())
 
         # # email
-        can_1.drawString(240, 76, self.email_text.text())
+        can_1.drawString(240, 58, self.email_text.text())
 
 
         can_1.setFont("Helvetica", 9)
         # # dept
-        can_1.drawString(234, 553, self.dept_text.text())
+        can_1.drawString(234, 550, self.dept_text.text())
         
         # # lga_origin
-        can_1.drawString(399, 260, self.lga_origin_text.text())
+        can_1.drawString(399, 248, self.lga_origin_text.text())
         
         # # home address
-        can_1.drawString(240, 130, self.address_text.text())
+        can_1.drawString(240, 118, self.address_text.text())
 
         can_1.save()
 
@@ -337,16 +337,16 @@ class VIEW_DETAILS(QMainWindow):
         can_2.setFont("Helvetica", 10)
 
         # # parent's name
-        can_2.drawString(240, 772, self.p_name_text.text())
+        can_2.drawString(240, 750, self.p_name_text.text())
 
         # # parent's email
-        can_2.drawString(240, 744, self.p_email_text.text())
+        can_2.drawString(240, 720, self.p_email_text.text())
         
         # # parent's cell phone
-        can_2.drawString(240, 715, self.p_phone_text.text())
+        can_2.drawString(240, 696, self.p_phone_text.text())
 
         # m dor
-        can_2.drawString(214, 656, self.dor_text.text())
+        can_2.drawString(214, 622, self.dor_text.text())
 
         can_2.save()
         
@@ -358,7 +358,7 @@ class VIEW_DETAILS(QMainWindow):
         new_pdf_2 = PdfFileReader(packet_2)
 
         # read your existing PDF
-        existing_pdf = PdfFileReader(open("./face_recog_android/assets/doc/student-details.pdf", "rb"))
+        existing_pdf = PdfFileReader(open("./face_recog_android/assets/doc/student_details.pdf", "rb"))
         self.output = PdfFileWriter()
 
         # add the "watermark" (which is the new pdf) on the existing page

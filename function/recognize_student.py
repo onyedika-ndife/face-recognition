@@ -31,9 +31,9 @@ class RECOGNIZE:
 
     def _load_faces(self, name, _id):
         # Load a sample picture and learn how to recognize it.
-        for image in os.listdir(f"./face_recog_android/assets/student/{name}"):
+        for image in os.listdir(f"./face_recog_android/media/image/student/{name}"):
             _image = face_recognition.load_image_file(
-                f"./face_recog_android/assets/student/{name}/{image}"
+                f"./face_recog_android/media/image/student/{name}/{image}"
             )
             _image_face_encoding = face_recognition.face_encodings(_image)[0]
 
