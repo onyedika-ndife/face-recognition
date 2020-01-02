@@ -1,5 +1,5 @@
 import os
-
+from PIL import Image
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -42,8 +42,10 @@ def _verify_stud(request):
             if image_processed == serializer.data[count]["id"]:
                 return Response(serializer.data[count])
             else:
-                photo = f"{django_settings.MEDIA_URL}unknown_user.jpeg"
-                response = HttpResponse(photo, content_type="image/jpeg")
+                photo = f"{django_settings.MEDIA_ROOT}unknown_user.jpeg"
+                response = HttpResponse(
+                    open(photo, "rb").read(), content_type="image/jpeg"
+                )
                 return response
 
 
@@ -61,13 +63,15 @@ def _verify_staff(request):
         for staf in staff:
             count += 1
 
-            image_processed = _recog_staf(staff, image)
+            image_processed = _recog_staf(staff, image_file)
 
             if image_processed == serializer.data[count]["id"]:
                 return Response(serializer.data[count])
             else:
                 photo = f"{django_settings.MEDIA_URL}unknown_user.jpeg"
-                response = HttpResponse(photo, content_type="image/jpeg")
+                response = HttpResponse(
+                    open(photo, "rb").read(), content_type="image/jpeg"
+                )
                 return response
 
 
