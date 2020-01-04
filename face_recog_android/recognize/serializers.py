@@ -33,7 +33,6 @@ class STAFF_SERIALIZERS(serializers.ModelSerializer):
             "middle_name",
             "first_name",
             "age",
-            "level",
             "profession",
             "image",
         )

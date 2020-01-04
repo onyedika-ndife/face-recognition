@@ -131,7 +131,7 @@ def _create_staf_pdf(staff):
     can_1 = canvas.Canvas(packet_1, pagesize=A4)
 
     for image in os.listdir(f"{django_settings.MEDIA_ROOT}image/staff"):
-        full_name = f"{student.last_name}_{student.first_name}".lower()
+        full_name = f"{staff.last_name}_{staff.first_name}".lower()
         folder_name = image
         if folder_name == full_name:
             pic = f"{django_settings.MEDIA_ROOT}image/staff/{folder_name}/{folder_name}.jpg"
@@ -158,15 +158,15 @@ def _create_staf_pdf(staff):
     can_1.drawString(158, 448, staff.gender)
 
     # # dob
-    can_1.drawString(158, 404, staff.date_of_birth[8:])
-    can_1.drawString(295, 404, staff.date_of_birth[5:7])
-    can_1.drawString(429, 404, staff.date_of_birth[:4])
+    can_1.drawString(158, 404, str(staff.date_of_birth)[8:])
+    can_1.drawString(295, 404, str(staff.date_of_birth)[5:7])
+    can_1.drawString(429, 404, str(staff.date_of_birth)[:4])
 
     # # nationality
     can_1.drawString(158, 360, staff.nationality)
 
     # # state of origin
-    can_1.drawString(158, 328, staff.state_origin)
+    can_1.drawString(158, 328, staff.state_of_origin)
 
     # # Marital status
     can_1.drawString(158, 284, staff.marital_status)
@@ -175,7 +175,7 @@ def _create_staf_pdf(staff):
     can_1.drawString(240, 160, staff.phone_number)
 
     # m dor
-    can_1.drawString(216, 56, staff.date_of_registration)
+    can_1.drawString(216, 56, str(staff.date_of_registration))
 
     can_1.setFont("Helvetica", 9)
     # # lga_origin

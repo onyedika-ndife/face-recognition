@@ -1,5 +1,4 @@
 import django_heroku
-
 """
 Django settings for face_recog_android project.
 
@@ -77,15 +76,16 @@ WSGI_APPLICATION = "face_recog_android.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+#DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        # "ENGINE": "django.db.backends.postgresql_psycopg2",
+	    "ENGINE": "django.db.backends.mysql",
         "NAME": "FaceBase",
         "USER": "root",
         "PASSWORD": "C!$c@123",
         "HOST": "localhost",
-        "PORT": "",
+        # "PORT": "",
     }
 }
 
@@ -137,3 +137,7 @@ STATICFILES_FINDERS = [
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 django_heroku.settings(locals())
+
+#import dj_database_url
+
+#DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)

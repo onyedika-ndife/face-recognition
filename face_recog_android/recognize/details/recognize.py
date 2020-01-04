@@ -6,7 +6,7 @@ import json
 from imutil import Image
 from django.conf import settings as django_settings
 import face_recognition
-from .create_pdf import _create_stud_pdf
+from .create_pdf import _create_stud_pdf, _create_staf_pdf
 
 
 def _recog_stud(student, image):
@@ -59,33 +59,6 @@ def _recog_stud(student, image):
                 _create_stud_pdf(student)
                 return student.id
         else:
-            # Scale back up face locations since the self.image we detected in was scaled to 1/4 size
-            # top *= 4
-            # right *= 4
-            # bottom *= 4
-            # left *= 4
-
-            # Draw a box around the face
-            a = cv2.rectangle(img, (left, top), (right, bottom), (0, 0, 255), 1)
-
-            # Draw a label with a name below the face
-            b = cv2.rectangle(
-                img, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED
-            )
-
-            c = cv2.putText(
-                img,
-                f"Unknown",
-                (left + 6, bottom - 6),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1.0,
-                (255, 255, 255),
-                2,
-                cv2.LINE_AA,
-            )
-
-            d = cv2.imwrite(f"{django_settings.MEDIA_ROOT}unknown_user.jpeg", img)
-
             return "Unknown Individual"
 
 
@@ -136,34 +109,7 @@ def _recog_staf(staff, image):
             _id = known_face_id[best_match_index]
 
             if staff.id == _id:
-                _create_stud_pdf(staff)
+                _create_staf_pdf(staff)
                 return staff.id
         else:
-            # Scale back up face locations since the self.image we detected in was scaled to 1/4 size
-            # top *= 4
-            # right *= 4
-            # bottom *= 4
-            # left *= 4
-
-            # Draw a box around the face
-            a = cv2.rectangle(img, (left, top), (right, bottom), (0, 0, 255), 1)
-
-            # Draw a label with a name below the face
-            b = cv2.rectangle(
-                img, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED
-            )
-
-            c = cv2.putText(
-                img,
-                f"Unknown",
-                (left + 6, bottom - 6),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1.0,
-                (255, 255, 255),
-                2,
-                cv2.LINE_AA,
-            )
-
-            d = cv2.imwrite(f"{django_settings.MEDIA_ROOT}unknown_user.jpeg", img)
-
             return "Unknown Individual"
