@@ -2,7 +2,6 @@ from django.urls import path, include
 
 from . import views, serializers
 
-app_name = "reg"
 
 urlpatterns = [
     # ex: api/
