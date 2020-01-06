@@ -8,8 +8,17 @@ face_data
 
 training_data
 
+${workspaceFolder}
+
+
 svg
 
 bbc.pdf
 
+a.pdf
+
+server Session.sql
+
 Face_Base Session.sql
+
+db.sqlite3

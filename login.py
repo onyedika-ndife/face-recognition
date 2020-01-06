@@ -14,8 +14,10 @@ from PyQt5.QtGui import QIcon
 from MainWindow import main_window
 
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
+
+
 class LOGIN(QDialog):
     def __init__(self):
         super().__init__()

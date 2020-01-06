@@ -6,8 +6,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
 class REGISTER_STUDENT(QDialog):
     def __init__(self, main_layout, components):
         super().__init__()

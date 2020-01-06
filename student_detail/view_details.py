@@ -1,16 +1,18 @@
 import io
 import os
+import requests
+from PIL import Image
+
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import cm
-from reportlab.pdfgen import canvas
 
 from register.register_main import REGISTER_MAIN
 
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
 class VIEW_DETAILS(QMainWindow):
     def __init__(self, title,prev_scrn, profile, main_layout):
         super().__init__()
@@ -27,10 +29,8 @@ class VIEW_DETAILS(QMainWindow):
         components = REGISTER_MAIN.components
 
         comp = REGISTER_MAIN.components()
-
-        comp.datab.cur.execute(f"SELECT * FROM recognize_students WHERE id = '{profile[0]}'")
         
-        self.profile = comp.datab.cur.fetchone()
+        self.profile = profile
 
         self.main_menu = self.menuBar()
         self.toolbar = QToolBar()
@@ -113,27 +113,27 @@ class VIEW_DETAILS(QMainWindow):
         self.sd_detail_view.addWidget(comp.m_num, 0, 0)
         self.m_num_text = QLabel()
         self.sd_detail_view.addWidget(self.m_num_text, 0, 1)
-        self.m_num_text.setText(self.profile[15])
+        self.m_num_text.setText(self.profile["matric_number"])
 
         self.sd_detail_view.addWidget(comp.j_num, 1, 0)
         self.j_num_text = QLabel()
         self.sd_detail_view.addWidget(self.j_num_text, 1, 1)
-        self.j_num_text.setText(self.profile[11])
+        self.j_num_text.setText(self.profile["jamb_number"])
 
         self.sd_detail_view.addWidget(comp.college, 2, 0)
         self.college_text = QLabel()
         self.sd_detail_view.addWidget(self.college_text, 2, 1)
-        self.college_text.setText(self.profile[12])
+        self.college_text.setText(self.profile["college"])
 
         self.sd_detail_view.addWidget(comp.dept, 3, 0)
         self.dept_text = QLabel()
         self.sd_detail_view.addWidget(self.dept_text, 3, 1)
-        self.dept_text.setText(self.profile[13])
+        self.dept_text.setText(self.profile["department"])
 
         self.sd_detail_view.addWidget(comp.level, 4, 0)
         self.level_text = QLabel()
         self.sd_detail_view.addWidget(self.level_text, 4, 1)
-        self.level_text.setText(self.profile[14])
+        self.level_text.setText(self.profile["level"])
 
         self.pd_detail_view = QGridLayout()
         self.name = QLabel("Name:")
@@ -143,18 +143,18 @@ class VIEW_DETAILS(QMainWindow):
         self.pd_detail_view.addWidget(comp.l_name, 0, 0)
         self.l_name_text = QLabel()
         self.pd_detail_view.addWidget(self.l_name_text, 0, 1)
-        self.l_name_text.setText(self.profile[3])
+        self.l_name_text.setText(self.profile["last_name"])
 
 
         self.pd_detail_view.addWidget(comp.m_name, 1, 0)
         self.m_name_text = QLabel()
         self.pd_detail_view.addWidget(self.m_name_text, 1, 1)
-        self.m_name_text.setText(self.profile[2])
+        self.m_name_text.setText(self.profile["middle_name"])
 
         self.pd_detail_view.addWidget(comp.f_name, 2, 0)
         self.f_name_text = QLabel()
         self.pd_detail_view.addWidget(self.f_name_text, 2, 1)
-        self.f_name_text.setText(self.profile[1])
+        self.f_name_text.setText(self.profile["first_name"])
 
 
         comp.main_grid.addLayout(self.pd_detail_view, 1, 1)
@@ -162,41 +162,41 @@ class VIEW_DETAILS(QMainWindow):
         comp.main_grid.addWidget(comp.age, 2, 0)
         self.age_text = QLabel()
         comp.main_grid.addWidget(self.age_text, 2, 1)
-        self.age_text.setText(str(self.profile[4]))
+        self.age_text.setText(str(self.profile["age"]))
 
         comp.main_grid.addWidget(comp.gender, 3, 0)
         self.gender_text = QLabel()
         comp.main_grid.addWidget(self.gender_text, 3, 1)
-        self.gender_text.setText(self.profile[6])
+        self.gender_text.setText(self.profile["gender"])
 
         comp.main_grid.addWidget(comp.dob_label, 4, 0)
         self.dob_text = QLabel()
         comp.main_grid.addWidget(self.dob_text, 4, 1)
-        self.dob_text.setText(str(self.profile[5]))
+        self.dob_text.setText(str(self.profile["date_of_birth"]))
 
 
         comp.main_grid.addWidget(comp.nationality, 5, 0)
         self.nationality_text = QLabel()
         comp.main_grid.addWidget(self.nationality_text, 5, 1)
-        self.nationality_text.setText(self.profile[7])
+        self.nationality_text.setText(self.profile["nationality"])
 
 
         comp.main_grid.addWidget(comp.state_origin, 6, 0)
         self.state_origin_text = QLabel()
         comp.main_grid.addWidget(self.state_origin_text, 6, 1)
-        self.state_origin_text.setText(self.profile[8])
+        self.state_origin_text.setText(self.profile["state_of_origin"])
 
 
         comp.main_grid.addWidget(comp.lga_origin, 7, 0)
         self.lga_origin_text = QLabel()
         comp.main_grid.addWidget(self.lga_origin_text, 7, 1)
-        self.lga_origin_text.setText(self.profile[9])
+        self.lga_origin_text.setText(self.profile["lga_origin"])
 
 
         comp.main_grid.addWidget(comp.marital, 8, 0)
         self.marital_text = QLabel()
         comp.main_grid.addWidget(self.marital_text, 8, 1)
-        self.marital_text.setText(self.profile[10])
+        self.marital_text.setText(self.profile["marital_status"])
 
         self.vbox.addWidget(comp.main_group_box)
 
@@ -208,18 +208,18 @@ class VIEW_DETAILS(QMainWindow):
         comp.main_grid.addWidget(comp.address, 0,0)
         self.address_text = QLabel()
         comp.main_grid.addWidget(self.address_text, 0,1)
-        self.address_text.setText(self.profile[16])
+        self.address_text.setText(self.profile["address"])
 
         comp.main_grid.addWidget(comp.phone, 1,0)
         self.phone_text = QLabel()
         comp.main_grid.addWidget(self.phone_text, 1,1)
-        self.phone_text.setText(self.profile[17])
+        self.phone_text.setText(self.profile["phone_number"])
 
 
         comp.main_grid.addWidget(comp.email, 2,0)
         self.email_text = QLabel()
         comp.main_grid.addWidget(self.email_text, 2,1)
-        self.email_text.setText(self.profile[18])
+        self.email_text.setText(self.profile["email"])
 
         self.vbox.addWidget(comp.main_group_box)
 
@@ -231,19 +231,19 @@ class VIEW_DETAILS(QMainWindow):
         comp.main_grid.addWidget(comp.p_name, 0,0)
         self.p_name_text = QLabel()
         comp.main_grid.addWidget(self.p_name_text, 0,1)
-        self.p_name_text.setText(self.profile[19])
+        self.p_name_text.setText(self.profile["parent_name"])
 
 
         comp.main_grid.addWidget(comp.p_email, 1,0)
         self.p_email_text = QLabel()
         comp.main_grid.addWidget(self.p_email_text, 1,1)
-        self.p_email_text.setText(self.profile[20])
+        self.p_email_text.setText(self.profile["parent_email"])
 
 
         comp.main_grid.addWidget(comp.p_phone, 2,0)
         self.p_phone_text = QLabel()
         comp.main_grid.addWidget(self.p_phone_text, 2,1)
-        self.p_phone_text.setText(self.profile[21])
+        self.p_phone_text.setText(self.profile["parent_phone"])
 
         self.vbox.addWidget(comp.main_group_box)
 
@@ -253,126 +253,14 @@ class VIEW_DETAILS(QMainWindow):
         comp.main_grid.addWidget(comp.dor, 0,0)
         self.dor_text = QLabel()
         comp.main_grid.addWidget(self.dor_text, 0,1)
-        self.dor_text.setText(str(self.profile[22]))
+        self.dor_text.setText(str(self.profile["date_of_registration"]))
 
 
         self.vbox.addWidget(comp.main_group_box)
 
-    def _create_pdf(self):
-        packet_1 = io.BytesIO()
-        packet_2 = io.BytesIO()
-        can_1 = canvas.Canvas(packet_1, pagesize=A4)
-        can_2 = canvas.Canvas(packet_2, pagesize=A4)
-
-        for image in os.listdir('./face_recog_android/media/image/student'):
-            name = f"{self.profile[3]}_{self.profile[1]}".lower()
-            folder_name = image
-            if folder_name == name:
-                pic = f'./face_recog_android/media/image/student/{folder_name}/{folder_name}.jpg'
-                can_1.drawInlineImage(pic,453,550, width=3.7*cm,height=3.7*cm)
-
-        can_1.setFont("Helvetica", 10)
-        # Matric no
-        can_1.drawString(234, 638, self.m_num_text.text())
-        
-        # # Jamb no
-        can_1.drawString(234, 606, self.j_num_text.text())
-        
-        # # college
-        can_1.drawString(234, 580, self.college_text.text())
-
-        # # level
-        can_1.drawString(234, 520, self.level_text.text())
-        
-        # # last_name
-        can_1.drawString(370, 488, self.l_name_text.text())
-        
-        # # middle_name
-        can_1.drawString(370, 458, self.m_name_text.text())
-        
-        # # first_name
-        can_1.drawString(370, 428, self.f_name_text.text())
-        
-        # # age
-        can_1.drawString(234, 398, self.age_text.text())
-        
-        # # gender
-        can_1.drawString(234, 366, self.gender_text.text())
-        
-        
-        # # dob
-        can_1.drawString(234, 322, self.dob_text.text()[8:])
-        can_1.drawString(343, 322, self.dob_text.text()[5:7])
-        can_1.drawString(453, 322, self.dob_text.text()[:4])
-        
-        # # nationality
-        can_1.drawString(234, 280, self.nationality_text.text())
-        
-        # # state of origin
-        can_1.drawString(234, 248, self.state_origin_text.text())
-        
-        # # Marital status
-        can_1.drawString(234, 208, self.marital_text.text())
-
-        # # cell phone
-        can_1.drawString(240, 88, self.phone_text.text())
-
-        # # email
-        can_1.drawString(240, 58, self.email_text.text())
-
-
-        can_1.setFont("Helvetica", 9)
-        # # dept
-        can_1.drawString(234, 550, self.dept_text.text())
-        
-        # # lga_origin
-        can_1.drawString(399, 248, self.lga_origin_text.text())
-        
-        # # home address
-        can_1.drawString(240, 118, self.address_text.text())
-
-        can_1.save()
-
-        # # set font
-        can_2.setFont("Helvetica", 10)
-
-        # # parent's name
-        can_2.drawString(240, 750, self.p_name_text.text())
-
-        # # parent's email
-        can_2.drawString(240, 720, self.p_email_text.text())
-        
-        # # parent's cell phone
-        can_2.drawString(240, 696, self.p_phone_text.text())
-
-        # m dor
-        can_2.drawString(214, 622, self.dor_text.text())
-
-        can_2.save()
-        
-
-        # move to the beginning of the StringIO buffer
-        packet_1.seek(0)
-        packet_2.seek(0)
-        new_pdf_1 = PdfFileReader(packet_1)
-        new_pdf_2 = PdfFileReader(packet_2)
-
-        # read your existing PDF
-        existing_pdf = PdfFileReader(open("./face_recog_android/assets/doc/student_details.pdf", "rb"))
-        self.output = PdfFileWriter()
-
-        # add the "watermark" (which is the new pdf) on the existing page
-        page_1 = existing_pdf.getPage(0)
-        page_2 = existing_pdf.getPage(1)
-
-        page_1.mergePage(new_pdf_1.getPage(0))
-        page_2.mergePage(new_pdf_2.getPage(0))
-
-        self.output.addPage(page_1)
-        self.output.addPage(page_2)
-
     def _save_file(self):
-        self._create_pdf()
+        r = requests.get(url=f"{APP_URL}/recognize/d_stud/")
+
 
         name = QFileDialog.getSaveFileName(self, filter='(*.pdf)')
 
@@ -383,9 +271,9 @@ class VIEW_DETAILS(QMainWindow):
         else:
             file = file_name
 
-        outputStream = open(f"{file}.pdf", "wb")
-        self.output.write(outputStream)
-        outputStream.close()
+        with open(f"{file}.pdf", 'wb') as outputStream:
+            outputStream.write(response.content)
+            outputStream.close()
 
     def _edit_screen(self):
         from student_detail.edit_details import EDIT_DETAILS

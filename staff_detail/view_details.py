@@ -1,22 +1,19 @@
 import io
 import os
 import requests
-import PIL
+from PIL import Image
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import cm
-from reportlab.pdfgen import canvas
 
 from register.register_main import REGISTER_MAIN
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
 class VIEW_DETAILS(QMainWindow):
-    def __init__(self, title, prev_scrn, profile, main_layout):
+    def __init__(self, title,prev_scrn, profile, main_layout):
         super().__init__()
         self.title = title
         self.title.setWindowTitle("VIEW STAFF DETAILS")
@@ -25,13 +22,13 @@ class VIEW_DETAILS(QMainWindow):
 
         self.previous = prev_scrn
 
-        self.MAIN_VIEW(profile)
+        self.MAIN_VIEW(profile)   
 
     def MAIN_VIEW(self, profile):
         components = REGISTER_MAIN.components
 
         comp = REGISTER_MAIN.components()
-
+        
         self.profile = profile
 
         self.main_menu = self.menuBar()
@@ -40,14 +37,18 @@ class VIEW_DETAILS(QMainWindow):
         self.file_menu = self.main_menu.addMenu("File")
         self.edit_menu = self.main_menu.addMenu("Edit")
 
-        self.save_action = QAction(QIcon("./assets/img/Save.png"), "Save File", self)
+        self.save_action = QAction(
+            QIcon("./assets/img/Save.png"), "Save File", self
+        )
         self.save_action.setShortcut("Ctrl+S")
 
         self.edit_action = QAction(
             QIcon("./assets/img/Edit Details.png"), "Edit Student Details", self
         )
 
-        self.exit_action = QAction(QIcon("./assets/img/Exit.png"), "Exit", self)
+        self.exit_action = QAction(
+            QIcon("./assets/img/Exit.png"), "Exit", self
+        )
         self.exit_action.setShortcut("Ctrl+Q")
 
         self.file_menu.addAction(self.save_action)
@@ -98,10 +99,12 @@ class VIEW_DETAILS(QMainWindow):
         self.pd_view.addLayout(self.pd_detail_view)
         self.pd_view.addWidget(comp.profile_pic)
 
+
         self.pd_detail_view.addWidget(comp.l_name, 0, 0)
         self.l_name_text = QLabel()
         self.pd_detail_view.addWidget(self.l_name_text, 0, 1)
         self.l_name_text.setText(self.profile["last_name"])
+
 
         self.pd_detail_view.addWidget(comp.m_name, 1, 0)
         self.m_name_text = QLabel()
@@ -125,11 +128,12 @@ class VIEW_DETAILS(QMainWindow):
 
         r = requests.get(url=self.profile["pic"], stream=True)
 
-        r.raw.decode_content = True  # handle spurious Content-Encoding
+        r.raw.decode_content = True # handle spurious Content-Encoding
         im = Image.open(r.raw)
 
         pic = QImage(im)
         comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
+
 
         comp.main_grid.addWidget(comp.dob_label, 1, 0)
         self.dob_text = QLabel()
@@ -141,20 +145,24 @@ class VIEW_DETAILS(QMainWindow):
         comp.main_grid.addWidget(self.gender_text, 2, 1)
         self.gender_text.setText(self.profile["gender"])
 
+
         comp.main_grid.addWidget(comp.nationality, 3, 0)
         self.nationality_text = QLabel()
         comp.main_grid.addWidget(self.nationality_text, 3, 1)
         self.nationality_text.setText(self.profile["nationality"])
+
 
         comp.main_grid.addWidget(comp.state_origin, 4, 0)
         self.state_origin_text = QLabel()
         comp.main_grid.addWidget(self.state_origin_text, 4, 1)
         self.state_origin_text.setText(self.profile["state_of_origin"])
 
+
         comp.main_grid.addWidget(comp.lga_origin, 5, 0)
         self.lga_origin_text = QLabel()
         comp.main_grid.addWidget(self.lga_origin_text, 5, 1)
         self.lga_origin_text.setText(self.profile["lga_origin"])
+
 
         comp.main_grid.addWidget(comp.marital, 6, 0)
         self.marital_text = QLabel()
@@ -163,58 +171,59 @@ class VIEW_DETAILS(QMainWindow):
 
         self.vbox.addWidget(comp.main_group_box)
 
-    def contact_details(self, component):
+    def contact_details(self,component):
         comp = component()
 
-        comp.main_group_box.setTitle("Contact Details")
+        comp.main_group_box.setTitle('Contact Details')
 
-        comp.main_grid.addWidget(comp.address, 0, 0)
+        comp.main_grid.addWidget(comp.address, 0,0)
         self.address_text = QLabel()
-        comp.main_grid.addWidget(self.address_text, 0, 1)
+        comp.main_grid.addWidget(self.address_text, 0,1)
         self.address_text.setText(self.profile["address"])
 
-        comp.main_grid.addWidget(comp.phone, 1, 0)
+        comp.main_grid.addWidget(comp.phone, 1,0)
         self.phone_text = QLabel()
-        comp.main_grid.addWidget(self.phone_text, 1, 1)
+        comp.main_grid.addWidget(self.phone_text, 1,1)
         self.phone_text.setText(self.profile["phone_number"])
 
-        comp.main_grid.addWidget(comp.email, 2, 0)
+
+        comp.main_grid.addWidget(comp.email, 2,0)
         self.email_text = QLabel()
-        comp.main_grid.addWidget(self.email_text, 2, 1)
+        comp.main_grid.addWidget(self.email_text, 2,1)
         self.email_text.setText(self.profile["email"])
 
         self.vbox.addWidget(comp.main_group_box)
 
+
+
     def other_detail(self, component):
         comp = component()
 
-        comp.main_grid.addWidget(comp.dor, 0, 0)
+        comp.main_grid.addWidget(comp.dor, 0,0)
         self.dor_text = QLabel()
-        comp.main_grid.addWidget(self.dor_text, 0, 1)
+        comp.main_grid.addWidget(self.dor_text, 0,1)
         self.dor_text.setText(str(self.profile["date_of_registration"]))
+
 
         self.vbox.addWidget(comp.main_group_box)
 
     def _save_file(self):
         r = requests.get(url=f"{APP_URL}/recognize/d_staf/")
 
-        name = QFileDialog.getSaveFileName(self, filter="(*.pdf)")
+        name = QFileDialog.getSaveFileName(self, filter='(*.pdf)')
 
         file_name = f"{name[0]}"
 
-        if file_name.endswith(".pdf"):
-            file = file_name.replace(".pdf", "")
+        if file_name.endswith('.pdf'):
+            file = file_name.replace('.pdf','')
         else:
             file = file_name
 
-        with open(f"{file}.pdf", "wb") as outputStream:
+        with open(f"{file}.pdf", 'wb') as outputStream:
             outputStream.write(response.content)
             outputStream.close()
 
     def _edit_screen(self):
         from staff_detail.edit_details import EDIT_DETAILS
 
-        edit_details = EDIT_DETAILS(
-            self.title, self.previous, self.profile, self.main_layout
-        )
-
+        edit_details = EDIT_DETAILS(self.title, self.previous, self.profile, self.main_layout)

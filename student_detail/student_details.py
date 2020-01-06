@@ -6,13 +6,14 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from function.recognize_student import RECOGNIZE
 from .view_details import VIEW_DETAILS
 from .edit_details import EDIT_DETAILS
 
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
+
+
 class VERIFY(QWidget):
     def __init__(self, title, main_layout, grid_widget, stacked, prev):
         super().__init__()

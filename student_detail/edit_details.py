@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import *
 from register.register_main import REGISTER_MAIN
 from register.register_students import REGISTER_STUDENT
 
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
 class EDIT_DETAILS(QMainWindow):
     def __init__(self, title, prev_scrn, profile, main_layout):
         super().__init__()
@@ -273,7 +275,7 @@ class EDIT_DETAILS(QMainWindow):
             "date_of_registration":str(self.comp.dor_text.text()),
         }
 
-        r = requests.put(url=f"{APP_URL}/users/staff/{_id}", data=data)
+        r = requests.post(url=f"{APP_URL}/users/staff/{_id}", data=data)
 
     def _save(self):
         self._save_2_db()
