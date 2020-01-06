@@ -101,13 +101,15 @@ class VIEW_DETAILS(QMainWindow):
 
         self.sd_view.addLayout(self.sd_detail_view)
         self.sd_view.addWidget(comp.profile_pic)
-        for image in os.listdir('./face_recog_android/media/image/student'):
-            name = f"{self.profile[3]}_{self.profile[1]}".lower()
-            folder_name = image
-            if folder_name == name:
-                pic = QImage(f'./face_recog_android/media/image/student/{folder_name}/{folder_name}.jpg')
-                comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
+        
+        r = requests.get(url=self.profile["pic"], stream=True)
 
+        r.raw.decode_content = True # handle spurious Content-Encoding
+        im = Image.open(r.raw)
+
+        pic = QImage(im)
+        comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
+        
         self.sd_detail_view.addWidget(comp.m_num, 0, 0)
         self.m_num_text = QLabel()
         self.sd_detail_view.addWidget(self.m_num_text, 0, 1)

@@ -151,8 +151,7 @@ class VERIFY(QWidget):
             r = requests.post(url=f"{APP_URL}/recognize/staff/", files=file)
 
             if r.text == "Unknown Individual":
-                lambda: self.previous()
+                self.previous()
             else:
                 profile = r.json()
-                print(profile)
                 self.MAIN_VIEW(self.previous, profile)
