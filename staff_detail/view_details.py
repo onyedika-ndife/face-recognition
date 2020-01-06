@@ -1,6 +1,7 @@
 import io
 import os
 import requests
+import PIL
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PyQt5.QtCore import *
@@ -128,10 +129,12 @@ class VIEW_DETAILS(QMainWindow):
         self.pd_detail_view.addWidget(self.age_text, 4, 1)
         self.age_text.setText(str(self.profile["age"]))
 
-        r = requests.get(url=f'{APP_URL}/media/image/staff/{self.profile["last_name"]}_{self.profile["first_name"]}/{self.profile["last_name"]}_{self.profile["first_name"]}.jpg'.lower())
+        r = requests.get(url=f'{APP_URL}/media/image/staff/{self.profile["last_name"]}_{self.profile["first_name"]}/{self.profile["last_name"]}_{self.profile["first_name"]}.jpg'.lower(), stream=True)
 
+        r.raw.decode_content = True # handle spurious Content-Encoding
+        im = Image.open(r.raw)
 
-        pic = QImage(r.content())
+        pic = QImage(im)
         comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
 
 
@@ -219,9 +222,9 @@ class VIEW_DETAILS(QMainWindow):
         else:
             file = file_name
 
-        outputStream = open(f"{file}.pdf", "wb")
-        self.output.write(outputStream)
-        outputStream.close()
+        with open(f"{file}.pdf", 'wb') as outputStream:
+            outputStream.write(response.content)
+            outputStream.close()
 
     def _edit_screen(self):
         from staff_detail.edit_details import EDIT_DETAILS
