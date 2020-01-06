@@ -1,10 +1,19 @@
 import cv2
 import os
-import requests, json
+import requests
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize, QTimer
+from PyQt5.QtGui import QIcon, QPixmap, QImage
+from PyQt5.QtWidgets import (
+    QWidget,
+    QDialog,
+    QVBoxLayout,
+    QGroupBox,
+    QGridLayout,
+    QLabel,
+    QPushButton,
+    QHBoxLayout
+)
 
 # APP_URL = "http://127.0.0.1:8000"
 APP_URL = "https://face-recog-server.herokuapp.com"

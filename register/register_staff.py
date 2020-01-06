@@ -2,12 +2,23 @@ import cv2
 import os
 import requests
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize, QTimer
+from PyQt5.QtGui import QIcon, QPixmap, QImage
+from PyQt5.QtWidgets import (
+    QWidget,
+    QDialog,
+    QVBoxLayout,
+    QGroupBox,
+    QGridLayout,
+    QLabel,
+    QPushButton,
+    QHBoxLayout
+)
 
 # APP_URL = "http://127.0.0.1:8000"
 APP_URL = "https://face-recog-server.herokuapp.com"
+
+
 class REGISTER_STAFF(QDialog):
     def __init__(self, main_layout, components):
         super().__init__()
@@ -35,7 +46,6 @@ class REGISTER_STAFF(QDialog):
         group_box = QGroupBox("Personal Details")
 
         _next = QPushButton("Next")
-        
 
         # ADDING WIDGETS
         grid.addWidget(self.comp.f_name, 0, 0)
@@ -90,8 +100,6 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Next")
         _prev = QPushButton("Previous")
-        
-
 
         btn_view.addWidget(_prev)
         btn_view.addWidget(_next)
@@ -126,7 +134,6 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Next")
         _prev = QPushButton("Previous")
-        
 
         btn_view.addWidget(_prev)
         btn_view.addWidget(_next)
@@ -168,7 +175,7 @@ class REGISTER_STAFF(QDialog):
         _next = QPushButton("Capture Face")
         _prev = QPushButton("Previous")
         _next.setIcon(QIcon("./assets/img/Capture.png"))
-        _next.setIconSize(QSize(20,20))
+        _next.setIconSize(QSize(20, 20))
 
         btn_view.addWidget(_prev)
         btn_view.addWidget(_next)
@@ -197,37 +204,39 @@ class REGISTER_STAFF(QDialog):
 
     def register_staff_details(self):
         data = {
-            "first_name":str(self.comp.f_name_input.text()),
-            "middle_name":str(self.comp.m_name_input.text()),
-            "last_name":str(self.comp.l_name_input.text()),
-            "date_of_birth":str(self.comp.dob_date_label.text()),
-            "age":str(self.comp.age_input.text()),
-            "gender":str((
-                self.comp.gender_1.text()
-                if self.comp.gender_1.isChecked()
-                else self.comp.gender_2.text()
-            )),
-            "nationality":str(self.comp.nationality_input.text()),
-            "state_of_origin":str(self.comp.state_origin_input.text()),
-            "lga_origin":str(self.comp.lga_origin_input.text()),
-            "marital_status":str(self.comp.marital_select.currentText()),
+            "first_name": str(self.comp.f_name_input.text()),
+            "middle_name": str(self.comp.m_name_input.text()),
+            "last_name": str(self.comp.l_name_input.text()),
+            "date_of_birth": str(self.comp.dob_date_label.text()),
+            "age": str(self.comp.age_input.text()),
+            "gender": str(
+                (
+                    self.comp.gender_1.text()
+                    if self.comp.gender_1.isChecked()
+                    else self.comp.gender_2.text()
+                )
+            ),
+            "nationality": str(self.comp.nationality_input.text()),
+            "state_of_origin": str(self.comp.state_origin_input.text()),
+            "lga_origin": str(self.comp.lga_origin_input.text()),
+            "marital_status": str(self.comp.marital_select.currentText()),
             # Assigning Variables
             "profession": str(self.comp.profession_input.text()),
             # Assigning Variables
-            "address":str(self.comp.address_input.text()),
-            "phone_number":str(self.comp.phone_input.text()),
-            "email":str(self.comp.email_input.text()),
+            "address": str(self.comp.address_input.text()),
+            "phone_number": str(self.comp.phone_input.text()),
+            "email": str(self.comp.email_input.text()),
             # Assigning Variables
-            "date_of_registration":str(self.comp.dor_text.text()),
+            "date_of_registration": str(self.comp.dor_text.text()),
         }
 
-        # sending post request and saving response as response object 
-        r = requests.post(url = f"{APP_URL}/register/staff/", data = data)
-        
+        # sending post request and saving response as response object
+        r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
+
         self.register_face()
 
     def register_face(self):
-        r = requests.get(url = f"{APP_URL}/register/staff/")
+        r = requests.get(url=f"{APP_URL}/register/staff/")
 
         staff = r.json()
 
@@ -303,17 +312,15 @@ class REGISTER_STAFF(QDialog):
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
         cv2.imwrite(
-            "./assets/img/temp/temp.jpg",
-            image_cropped,
+            "./assets/img/temp/temp.jpg", image_cropped,
         )
-        
+
         self.timer.stop()
         self.cam.release()
 
         for image in os.listdir("./assets/img/temp/"):
-            file = {"image":open(f"./assets/img/temp/{image}", "rb").read()}
-            r = requests.put(url = f"{APP_URL}/register/staff/{self._id}", files=file)
-
+            file = {"image": open(f"./assets/img/temp/{image}", "rb").read()}
+            r = requests.put(url=f"{APP_URL}/register/staff/{self._id}", files=file)
 
         self.main_layout.setCurrentIndex(0)
 

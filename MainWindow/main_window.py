@@ -1,10 +1,9 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QStackedLayout, QCommandLinkButton
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QIcon
 from register.register_main import REGISTER_MAIN
 from student_detail.student_details import VERIFY as Student_Verify
 from staff_detail.staff_details import VERIFY as Staff_Verify
-
 
 class MAIN_WINDOW(QWidget):
     def __init__(self):

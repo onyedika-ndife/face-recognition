@@ -1,12 +1,12 @@
-import io
 import os
+
 import requests
 from PIL import Image
-
-from PyPDF2 import PdfFileReader, PdfFileWriter
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize, QTimer
+from PyQt5.QtGui import QIcon, QImage, QPixmap
+from PyQt5.QtWidgets import (QAction, QFileDialog, QGridLayout, QGroupBox,
+                             QHBoxLayout, QLabel, QMainWindow, QPushButton,
+                             QScrollArea, QToolBar, QVBoxLayout, QWidget)
 
 from register.register_main import REGISTER_MAIN
 

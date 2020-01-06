@@ -1,6 +1,6 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize, QDate,Qt
+from PyQt5.QtGui import QIcon, QIntValidator
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QGroupBox, QGridLayout,QLabel, QLineEdit, QPushButton, QHBoxLayout,QRadioButton, QComboBox,QCalendarWidget
 from PyQt5.QtSvg import *
 
 from .register_staff import REGISTER_STAFF

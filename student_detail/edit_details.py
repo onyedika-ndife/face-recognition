@@ -1,9 +1,9 @@
-import io
 import requests
-
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import (QAction, QGridLayout, QGroupBox, QHBoxLayout,
+                             QLabel, QMainWindow, QPushButton, QScrollArea,
+                             QToolBar, QVBoxLayout, QWidget)
 
 from register.register_main import REGISTER_MAIN
 from register.register_students import REGISTER_STUDENT
@@ -430,4 +430,3 @@ class EDIT_DETAILS(QMainWindow):
                     "VERTINARY PUBLIC HEALTH AND PREVENTIVE MEDICINE",
                 ]
             )
-

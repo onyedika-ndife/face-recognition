@@ -2,9 +2,17 @@ import cv2
 import os
 import requests
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize, QTimer
+from PyQt5.QtGui import QIcon, QPixmap, QImage
+from PyQt5.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QGroupBox,
+    QGridLayout,
+    QLabel,
+    QPushButton,
+    QHBoxLayout
+)
 
 from .view_details import VIEW_DETAILS
 from .edit_details import EDIT_DETAILS
