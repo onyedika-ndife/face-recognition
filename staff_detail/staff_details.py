@@ -1,4 +1,6 @@
 import cv2
+import os
+import requests
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -8,7 +10,8 @@ from function.recognize_staff import RECOGNIZE
 from .view_details import VIEW_DETAILS
 from .edit_details import EDIT_DETAILS
 
-
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 class VERIFY(QWidget):
     def __init__(self, title, main_layout, grid_widget, stacked, prev):
         super().__init__()
@@ -27,9 +30,13 @@ class VERIFY(QWidget):
 
         # Create Camera View
         self.cam_view = QLabel()
+        self.cam_btn = QPushButton("Capture")
 
         self.video_init_layout.addWidget(self.cam_view)
+        self.video_init_layout.addWidget(self.cam_btn)
         self.video_widget.setLayout(self.video_init_layout)
+
+        self.cam_btn.clicked.connect(self.snap)
 
         self.main_layout.addWidget(self.video_widget)
         self.main_layout.setCurrentWidget(self.video_widget)
@@ -46,17 +53,34 @@ class VERIFY(QWidget):
 
     def _video(self):
         ret, self.image = self.cam.read()
-        self.recognize = RECOGNIZE(self.image)
 
-        self.image_copy = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+        image_copy = self.image.copy()
+
+        self.face_cascade = cv2.CascadeClassifier(
+            "./assets/classifier/haarcascade_frontalface_alt2.xml"
+        )
+
+        # Capture Image-by-Image
+        gray = cv2.cvtColor(image_copy, cv2.COLOR_BGR2GRAY)
+        faces = self.face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(40, 40),
+            flags=cv2.CASCADE_SCALE_IMAGE,
+        )
+        for (x, y, w, h) in faces:
+            cv2.rectangle(image_copy, (x, y), (x + w, y + h), (255, 255, 255), 1)
+
+        self.image_shown = cv2.cvtColor(image_copy, cv2.COLOR_BGR2RGB)
 
         # get image infos
-        self.height, self.width, self.channel = self.image_copy.shape
+        self.height, self.width, self.channel = self.image_shown.shape
         self.step = self.channel * self.width
 
         # create QImage from image
         self.qImg = QImage(
-            self.image_copy.data,
+            self.image_shown.data,
             self.width,
             self.height,
             self.step,
@@ -65,11 +89,6 @@ class VERIFY(QWidget):
 
         # Set the data from qImg to cam_view
         self.cam_view.setPixmap(QPixmap.fromImage(self.qImg))
-
-        if self.recognize.verified == True:
-            self.timer.stop()
-            self.cam.release()
-            self.MAIN_VIEW(self.previous, self.recognize.profile)
 
     def MAIN_VIEW(self, prev, profile):
         self.title.setWindowTitle("STUDENT DETAILS")
@@ -118,3 +137,22 @@ class VERIFY(QWidget):
             self.profile,
             self.main_layout,
         )
+
+    def snap(self):
+        image_cropped = self.image[0:480, 80:560]
+
+        cv2.imwrite("./assets/img/temp/temp.jpg", image_cropped)
+
+        self.timer.stop()
+        self.cam.release()
+
+        for image in os.listdir("./assets/img/temp/"):
+            file = {"image": open(f"./assets/img/temp/{image}", "rb").read()}
+            r = requests.post(url=f"{APP_URL}/recognize/staff/", files=file)
+
+            if r.text == "Unknown Individual":
+                lambda: self.previous()
+            else:
+                profile = r.json()
+                print(profile)
+                self.MAIN_VIEW(self.previous, profile)

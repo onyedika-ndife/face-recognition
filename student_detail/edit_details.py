@@ -6,10 +6,8 @@ from PyQt5.QtWidgets import *
 
 from register.register_main import REGISTER_MAIN
 from register.register_students import REGISTER_STUDENT
-from database.db import Database
 
 class EDIT_DETAILS(QMainWindow):
-    datab = Database()
     def __init__(self, title, prev_scrn, profile, main_layout):
         super().__init__()
         self.title = title

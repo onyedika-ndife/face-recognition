@@ -10,10 +10,8 @@ from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
 
 from register.register_main import REGISTER_MAIN
-from database.db import Database
 
 class VIEW_DETAILS(QMainWindow):
-    datab = Database()
     def __init__(self, title,prev_scrn, profile, main_layout):
         super().__init__()
         self.title = title

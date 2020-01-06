@@ -1,21 +1,22 @@
 import sys
+import requests
 from PyQt5.QtWidgets import (
     QGridLayout,
     QLabel,
     QLineEdit,
     QPushButton,
     QDialog,
+    QMessageBox,
     QApplication,
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from database import db
 from MainWindow import main_window
 
 
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 class LOGIN(QDialog):
-    datab = db.Database()
-
     def __init__(self):
         super().__init__()
         self.move(500, 200)
@@ -63,53 +64,47 @@ class LOGIN(QDialog):
         self.setLayout(self.main_grid)
 
     def _handle_login(self):
-        self.datab.cur.execute("SELECT * FROM admin")
+        # self.datab.cur.execute("SELECT * FROM admin")
 
-        for row in self.datab.cur:
-            if (
-                row[0] == self.user_name_input.text()
-                and row[1] == self.pass_word_input.text()
-            ):
-                self.hide()
-                self.app_view = main_window.MAIN_WINDOW()
-                self.app_view.show()
-            elif (
-                self.user_name_input.text() == "" and self.pass_word_input.text() == ""
-            ):
-                self.credentials_incorrect.setText(
-                    "Username and Password cannot be empty!"
-                )
-            elif (
-                not self.user_name_input.text() == ""
-                and self.pass_word_input.text() == ""
-            ):
-                self.credentials_incorrect.setText("Password cannot be empty!")
-            elif (
-                self.user_name_input.text() == ""
-                and not self.pass_word_input.text() == ""
-            ):
-                self.credentials_incorrect.setText("Username cannot be empty!")
-            elif (
-                not row[0] == self.user_name_input.text()
-                and not row[1] == self.pass_word_input.text()
-            ):
-                self.credentials_incorrect.setText("Username and Password Incorrect!!")
-            elif (
-                not row[0] == self.user_name_input.text()
-                and row[1] == self.pass_word_input.text()
-            ):
-                self.credentials_incorrect.setText("Username Incorrect!!")
-            elif (
-                row[0] == self.user_name_input.text()
-                and not row[1] == self.pass_word_input.text()
-            ):
-                self.credentials_incorrect.setText("Password Incorrect!!")
-            else:
-                pass
+        user_name = str(self.user_name_input.text())
+        pass_word = str(self.pass_word_input.text())
+
+        data = {"user_name": user_name, "pass_word": pass_word}
+
+        r = requests.post(url=f"{APP_URL}", data=data)
+
+        if r.text == "Success!!":
+            self.hide()
+            self.app_view = main_window.MAIN_WINDOW()
+            self.app_view.show()
+        elif self.user_name_input.text() == "" and self.pass_word_input.text() == "":
+            self.credentials_incorrect.setText("Username and Password cannot be empty!")
+        elif (
+            not self.user_name_input.text() == "" and self.pass_word_input.text() == ""
+        ):
+            self.credentials_incorrect.setText("Password cannot be empty!")
+        elif (
+            self.user_name_input.text() == "" and not self.pass_word_input.text() == ""
+        ):
+            self.credentials_incorrect.setText("Username cannot be empty!")
+        else:
+            self.credentials_incorrect.setText("Username and Password Incorrect!!")
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+
+    try:
+        r = requests.get(url=f"{APP_URL}")
+    except requests.exceptions.ConnectionError as e:
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle("Information")
+        msg.setText("Connect to the Internet to use app")
+        msg.show()
+
+        if msg.exec_() or msg == QMessageBox.Ok:
+            sys.exit()
 
     view = LOGIN()
     view.show()

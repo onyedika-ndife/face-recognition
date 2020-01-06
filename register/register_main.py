@@ -3,8 +3,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtSvg import *
 
-from database import db
-
 from .register_staff import REGISTER_STAFF
 from .register_students import REGISTER_STUDENT
 
@@ -28,17 +26,15 @@ class REGISTER_MAIN(QWidget):
     def reg_stud_win(self, main_layout, components):
         self.stud_dialog = REGISTER_STUDENT(main_layout, components)
         self.main_widget.addTab(self.stud_dialog, "Register Student")
-        self.main_widget.setTabIcon(0, QIcon('./assets/img/Register.png'))
+        self.main_widget.setTabIcon(0, QIcon("./assets/img/Register.png"))
 
     def reg_staf_win(self, main_layout, components):
         self.staf_dialog = REGISTER_STAFF(main_layout, components)
         self.main_widget.addTab(self.staf_dialog, "Register Staff")
-        self.main_widget.setTabIcon(1, QIcon('./assets/img/Register.png'))
-
+        self.main_widget.setTabIcon(1, QIcon("./assets/img/Register.png"))
 
     class components:
         def __init__(self):
-            self.datab = db.Database()
 
             self.main_vView = QVBoxLayout()
             self.main_group_box = QGroupBox()

@@ -2,12 +2,9 @@ import os
 import face_recognition
 import cv2
 import numpy as np
-from database.db import Database
 
 
 class RECOGNIZE:
-    datab = Database()
-
     def __init__(self, image_other):
         super().__init__()
 

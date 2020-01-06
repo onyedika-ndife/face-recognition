@@ -1,5 +1,6 @@
 import io
 import os
+import requests
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PyQt5.QtCore import *
@@ -10,10 +11,10 @@ from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
 
 from register.register_main import REGISTER_MAIN
-from database.db import Database
 
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 class VIEW_DETAILS(QMainWindow):
-    datab = Database()
     def __init__(self, title,prev_scrn, profile, main_layout):
         super().__init__()
         self.title = title
@@ -29,10 +30,8 @@ class VIEW_DETAILS(QMainWindow):
         components = REGISTER_MAIN.components
 
         comp = REGISTER_MAIN.components()
-
-        comp.datab.cur.execute(f"SELECT * FROM recognize_staff WHERE id = '{profile[0]}'")
         
-        self.profile = comp.datab.cur.fetchone()
+        self.profile = profile
 
         self.main_menu = self.menuBar()
         self.toolbar = QToolBar()
@@ -106,70 +105,69 @@ class VIEW_DETAILS(QMainWindow):
         self.pd_detail_view.addWidget(comp.l_name, 0, 0)
         self.l_name_text = QLabel()
         self.pd_detail_view.addWidget(self.l_name_text, 0, 1)
-        self.l_name_text.setText(self.profile[3])
+        self.l_name_text.setText(self.profile["last_name"])
 
 
         self.pd_detail_view.addWidget(comp.m_name, 1, 0)
         self.m_name_text = QLabel()
         self.pd_detail_view.addWidget(self.m_name_text, 1, 1)
-        self.m_name_text.setText(self.profile[2])
+        self.m_name_text.setText(self.profile["middle_name"])
 
         self.pd_detail_view.addWidget(comp.f_name, 2, 0)
         self.f_name_text = QLabel()
         self.pd_detail_view.addWidget(self.f_name_text, 2, 1)
-        self.f_name_text.setText(self.profile[1])
+        self.f_name_text.setText(self.profile["first_name"])
 
         self.pd_detail_view.addWidget(comp.profession, 3, 0)
         self.profession_text = QLabel()
         self.pd_detail_view.addWidget(self.profession_text, 3, 1)
-        self.profession_text.setText(self.profile[11])
+        self.profession_text.setText(self.profile["profession"])
 
         self.pd_detail_view.addWidget(comp.age, 4, 0)
         self.age_text = QLabel()
         self.pd_detail_view.addWidget(self.age_text, 4, 1)
-        self.age_text.setText(str(self.profile[4]))
+        self.age_text.setText(str(self.profile["age"]))
 
-        for image in os.listdir('./face_recog_android/media/image/staff'):
-            name = f"{self.profile[3]}_{self.profile[1]}".lower()
-            folder_name = image
-            if folder_name == name:
-                pic = QImage(f'./face_recog_android/media/image/staff/{folder_name}/{folder_name}.jpg')
-                comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
+        r = requests.get(url=f'{APP_URL}/media/image/staff/{self.profile["last_name"]}_{self.profile["first_name"]}/{self.profile["last_name"]}_{self.profile["first_name"]}.jpg'.lower())
+
+
+        pic = QImage(r.content())
+        comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
 
 
         comp.main_grid.addWidget(comp.dob_label, 1, 0)
         self.dob_text = QLabel()
         comp.main_grid.addWidget(self.dob_text, 1, 1)
-        self.dob_text.setText(str(self.profile[5]))
+        self.dob_text.setText(str(self.profile["date_of_birth"]))
 
         comp.main_grid.addWidget(comp.gender, 2, 0)
         self.gender_text = QLabel()
         comp.main_grid.addWidget(self.gender_text, 2, 1)
-        self.gender_text.setText(self.profile[6])
+        self.gender_text.setText(self.profile["gender"])
 
 
         comp.main_grid.addWidget(comp.nationality, 3, 0)
         self.nationality_text = QLabel()
         comp.main_grid.addWidget(self.nationality_text, 3, 1)
-        self.nationality_text.setText(self.profile[7])
+        self.nationality_text.setText(self.profile["nationality"])
 
 
         comp.main_grid.addWidget(comp.state_origin, 4, 0)
         self.state_origin_text = QLabel()
         comp.main_grid.addWidget(self.state_origin_text, 4, 1)
-        self.state_origin_text.setText(self.profile[8])
+        self.state_origin_text.setText(self.profile["state_of_origin"])
 
 
         comp.main_grid.addWidget(comp.lga_origin, 5, 0)
         self.lga_origin_text = QLabel()
         comp.main_grid.addWidget(self.lga_origin_text, 5, 1)
-        self.lga_origin_text.setText(self.profile[9])
+        self.lga_origin_text.setText(self.profile["lga_origin"])
 
 
         comp.main_grid.addWidget(comp.marital, 6, 0)
         self.marital_text = QLabel()
         comp.main_grid.addWidget(self.marital_text, 6, 1)
-        self.marital_text.setText(self.profile[10])
+        self.marital_text.setText(self.profile["marital_status"])
 
         self.vbox.addWidget(comp.main_group_box)
 
@@ -181,18 +179,18 @@ class VIEW_DETAILS(QMainWindow):
         comp.main_grid.addWidget(comp.address, 0,0)
         self.address_text = QLabel()
         comp.main_grid.addWidget(self.address_text, 0,1)
-        self.address_text.setText(self.profile[12])
+        self.address_text.setText(self.profile["address"])
 
         comp.main_grid.addWidget(comp.phone, 1,0)
         self.phone_text = QLabel()
         comp.main_grid.addWidget(self.phone_text, 1,1)
-        self.phone_text.setText(self.profile[13])
+        self.phone_text.setText(self.profile["phone_number"])
 
 
         comp.main_grid.addWidget(comp.email, 2,0)
         self.email_text = QLabel()
         comp.main_grid.addWidget(self.email_text, 2,1)
-        self.email_text.setText(self.profile[14])
+        self.email_text.setText(self.profile["email"])
 
         self.vbox.addWidget(comp.main_group_box)
 
@@ -204,90 +202,13 @@ class VIEW_DETAILS(QMainWindow):
         comp.main_grid.addWidget(comp.dor, 0,0)
         self.dor_text = QLabel()
         comp.main_grid.addWidget(self.dor_text, 0,1)
-        self.dor_text.setText(str(self.profile[15]))
+        self.dor_text.setText(str(self.profile["date_of_registration"]))
 
 
         self.vbox.addWidget(comp.main_group_box)
 
-    def _create_pdf(self):
-        packet_1 = io.BytesIO()
-        can_1 = canvas.Canvas(packet_1, pagesize=A4)
-
-        for image in os.listdir('./face_recog_android/media/image/staff'):
-            name = f"{self.profile[3]}_{self.profile[1]}".lower()
-            folder_name = image
-            if folder_name == name:
-                pic = f'./face_recog_android/media/image/staff/{folder_name}/{folder_name}.jpg'
-                can_1.drawInlineImage(pic,446,540, width=3.7*cm,height=3.7*cm)
-
-        can_1.setFont("Helvetica", 10)
-        # # last_name
-        can_1.drawString(270, 626, self.l_name_text.text())
-        
-        # # middle_name
-        can_1.drawString(270, 588, self.m_name_text.text())
-        
-        # # first_name
-        can_1.drawString(270, 550, self.f_name_text.text())
-
-        # # profession
-        can_1.drawString(158, 510, self.profession_text.text())
-
-        # # age
-        can_1.drawString(158, 480, self.age_text.text())
-        
-        # # gender
-        can_1.drawString(158, 448, self.gender_text.text())
-        
-        # # dob
-        can_1.drawString(158, 404, self.dob_text.text()[8:])
-        can_1.drawString(295, 404, self.dob_text.text()[5:7])
-        can_1.drawString(429, 404, self.dob_text.text()[:4])
-        
-        # # nationality
-        can_1.drawString(158, 360, self.nationality_text.text())
-        
-        # # state of origin
-        can_1.drawString(158, 328, self.state_origin_text.text())
-        
-        # # Marital status
-        can_1.drawString(158, 284, self.marital_text.text())
-
-        # # cell phone
-        can_1.drawString(240, 160, self.phone_text.text())
-
-        # m dor
-        can_1.drawString(216, 56, self.dor_text.text())
-
-
-        can_1.setFont("Helvetica", 9)
-        # # lga_origin
-        can_1.drawString(364, 328, self.lga_origin_text.text())
-        # # home address
-        can_1.drawString(240, 190, self.address_text.text())
-        # # email
-        can_1.drawString(240, 130, self.email_text.text())
-
-
-        can_1.save()
-
-        # move to the beginning of the StringIO buffer
-        packet_1.seek(0)
-        new_pdf_1 = PdfFileReader(packet_1)
-
-        # read your existing PDF
-        existing_pdf = PdfFileReader(open("./face_recog_android/assets/doc/staff_details.pdf", "rb"))
-        self.output = PdfFileWriter()
-
-        # add the "watermark" (which is the new pdf) on the existing page
-        page_1 = existing_pdf.getPage(0)
-
-        page_1.mergePage(new_pdf_1.getPage(0))
-
-        self.output.addPage(page_1)
-
     def _save_file(self):
-        self._create_pdf()
+        r = requests.get(url=f"{APP_URL}/recognize/d_staf/")
 
         name = QFileDialog.getSaveFileName(self, filter='(*.pdf)')
 

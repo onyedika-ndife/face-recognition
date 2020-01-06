@@ -1,11 +1,13 @@
 import cv2
 import os
+import requests
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 class REGISTER_STAFF(QDialog):
     def __init__(self, main_layout, components):
         super().__init__()
@@ -194,40 +196,42 @@ class REGISTER_STAFF(QDialog):
         _next.clicked.connect(self.register_staff_details)
 
     def register_staff_details(self):
-        # Assigning Variables
-        first_name = self.comp.f_name_input.text()
-        middle_name = self.comp.m_name_input.text()
-        last_name = self.comp.l_name_input.text()
-        date_of_birth = self.comp.dob_date_label.text()
-        age = self.comp.age_input.text()
-        gender = (
-            self.comp.gender_1.text()
-            if self.comp.gender_1.isChecked()
-            else self.comp.gender_2.text()
-        )
-        nationality = self.comp.nationality_input.text()
-        state_of_origin = self.comp.state_origin_input.text()
-        lga_origin = self.comp.lga_origin_input.text()
-        marital = self.comp.marital_select.currentText()
-        profession = self.comp.profession_input.text()
-        address= self.comp.address_input.text()
-        phone = self.comp.phone_input.text()
-        email = self.comp.email_input.text()
-        date_of_reg = self.comp.dor_text.text()
+        data = {
+            "first_name":str(self.comp.f_name_input.text()),
+            "middle_name":str(self.comp.m_name_input.text()),
+            "last_name":str(self.comp.l_name_input.text()),
+            "date_of_birth":str(self.comp.dob_date_label.text()),
+            "age":str(self.comp.age_input.text()),
+            "gender":str((
+                self.comp.gender_1.text()
+                if self.comp.gender_1.isChecked()
+                else self.comp.gender_2.text()
+            )),
+            "nationality":str(self.comp.nationality_input.text()),
+            "state_of_origin":str(self.comp.state_origin_input.text()),
+            "lga_origin":str(self.comp.lga_origin_input.text()),
+            "marital_status":str(self.comp.marital_select.currentText()),
+            # Assigning Variables
+            "profession": str(self.comp.profession_input.text()),
+            # Assigning Variables
+            "address":str(self.comp.address_input.text()),
+            "phone_number":str(self.comp.phone_input.text()),
+            "email":str(self.comp.email_input.text()),
+            # Assigning Variables
+            "date_of_registration":str(self.comp.dor_text.text()),
+        }
 
-        self.comp.datab.cur.execute(
-            f"INSERT INTO recognize_staff(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status, profession,address,phone_number,email,date_of_registration,pic) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}','{profession}','{address}','{phone}','{email}','{date_of_reg}','a')"
-        )
-        self.comp.datab.conn.commit()
-
+        # sending post request and saving response as response object 
+        r = requests.post(url = f"{APP_URL}/register/staff/", data = data)
+        
         self.register_face()
 
     def register_face(self):
-        self.comp.datab.cur.execute("SELECT * FROM recognize_staff")
-        self.latest_register = self.comp.datab.cur.fetchall()[-1]
+        r = requests.get(url = f"{APP_URL}/register/staff/")
 
-        self._id = self.latest_register[0]
-        self.name = f"{self.latest_register[3]}_{self.latest_register[1]}".lower()
+        staff = r.json()
+
+        self._id = staff["id"]
 
         self.face_cascade = cv2.CascadeClassifier(
             "./assets/classifier/haarcascade_frontalface_alt2.xml"
@@ -298,24 +302,17 @@ class REGISTER_STAFF(QDialog):
 
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
-        if not os.path.exists(
-            f"./face_recog_android/media/image/staff/{str(self.name)}"
-        ):
-            os.makedirs(
-                f"./face_recog_android/media/image/staff/{str(self.name)}"
-            )
         cv2.imwrite(
-            f"./face_recog_android/media/image/staff/{str(self.name)}/{str(self.name)}.jpg",
+            "./assets/img/temp/temp.jpg",
             image_cropped,
         )
-
+        
         self.timer.stop()
         self.cam.release()
 
-        self.comp.datab.cur.execute(f"UPDATE recognize_staff SET pic = 'image/staff/{str(self.name)}/{str(self.name)}.jpg'")
-
-        self.comp.datab.conn.commit()
-        self.comp.datab.conn.close()
+        for image in os.listdir("./assets/img/temp/"):
+            file = {"image":open(f"./assets/img/temp/{image}", "rb").read()}
+            r = requests.put(url = f"{APP_URL}/register/staff/{self._id}", files=file)
 
 
         self.main_layout.setCurrentIndex(0)
