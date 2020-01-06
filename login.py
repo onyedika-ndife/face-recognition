@@ -102,7 +102,16 @@ if __name__ == "__main__":
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("Information")
-        msg.setText("Connect to the Internet to use app")
+        msg.setText("Connect to the Internet to use app!")
+        msg.show()
+
+        if msg.exec_() or msg == QMessageBox.Ok:
+            sys.exit()
+    except requests.exceptions.Timeout as e:
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle("Information")
+        msg.setText("Poor Network Connection!")
         msg.show()
 
         if msg.exec_() or msg == QMessageBox.Ok:
