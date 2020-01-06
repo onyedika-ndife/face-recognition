@@ -12,7 +12,7 @@ from django.conf import settings as django_settings
 
 
 # create views
-@api_view(["POST", "GET"])
+@api_view(["POST"])
 @csrf_exempt
 def _verify_stud(request):
     students = STUDENTS.objects.all()
@@ -34,7 +34,7 @@ def _verify_stud(request):
                 return HttpResponse(image_processed)
 
 
-@api_view(["POST", "GET"])
+@api_view(["POST"])
 @csrf_exempt
 def _verify_staff(request):
     staff = STAFF.objects.all()
@@ -57,7 +57,7 @@ def _verify_staff(request):
                 return HttpResponse(image_processed)
 
 
-@api_view(["POST", "GET"])
+@api_view(["POST"])
 @csrf_exempt
 def api_verify_stud(request):
     students = STUDENTS.objects.all()
@@ -82,7 +82,7 @@ def api_verify_stud(request):
                 return HttpResponse(image_processed)
 
 
-@api_view(["POST", "GET"])
+@api_view(["POST"])
 @csrf_exempt
 def api_verify_staff(request):
     staff = STAFF.objects.all()
