@@ -66,8 +66,6 @@ class LOGIN(QDialog):
         self.setLayout(self.main_grid)
 
     def _handle_login(self):
-        # self.datab.cur.execute("SELECT * FROM admin")
-
         user_name = str(self.user_name_input.text())
         pass_word = str(self.pass_word_input.text())
 

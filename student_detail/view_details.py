@@ -103,10 +103,9 @@ class VIEW_DETAILS(QMainWindow):
         
         r = requests.get(url=self.profile["pic"], stream=True)
 
-        r.raw.decode_content = True # handle spurious Content-Encoding
-        im = Image.open(r.raw)
-
-        pic = QImage(im)
+        pic = QImage()
+        pic.loadFromData(r.content)
+        
         comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
         
         self.sd_detail_view.addWidget(comp.m_num, 0, 0)

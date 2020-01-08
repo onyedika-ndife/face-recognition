@@ -22,6 +22,9 @@ server Session.sql
 
 Face_Base Session.sql
 
-temp.jpg
-
 db.sqlite3
+
+assets/img/temp/temp.jpg
+
+face_recog_server/media/pdf/staff_detail.pdf
+face_recog_server/media/pdf/student_detail.pdf

@@ -11,7 +11,9 @@ from PyQt5.QtWidgets import (
     QGridLayout,
     QLabel,
     QPushButton,
-    QHBoxLayout
+    QHBoxLayout,
+    QCommandLinkButton,
+    QMessageBox,
 )
 
 from .view_details import VIEW_DETAILS
@@ -31,16 +33,23 @@ class VERIFY(QWidget):
 
         self.main_layout = main_layout
 
-        self._video_view()
+        self._video_view(self.previous)
 
-    def _video_view(self):
+    def _video_view(self, prev):
         self.video_widget = QWidget()
         self.video_init_layout = QVBoxLayout()
+
+        self.back_btn = QCommandLinkButton()
+        self.back_btn.setIcon(QIcon("./assets/img/Back.png"))
+        self.back_btn.setIconSize(QSize(30, 30))
+        self.back_btn.clicked.connect(self._go_back)
+        self.back_btn.setMaximumWidth(45)
 
         # Create Camera View
         self.cam_view = QLabel()
         self.cam_btn = QPushButton("Capture")
 
+        self.video_init_layout.addWidget(self.back_btn)
         self.video_init_layout.addWidget(self.cam_view)
         self.video_init_layout.addWidget(self.cam_btn)
         self.video_widget.setLayout(self.video_init_layout)
@@ -160,7 +169,19 @@ class VERIFY(QWidget):
             r = requests.post(url=f"{APP_URL}/recognize/staff/", files=file)
 
             if r.text == "Unknown Individual":
-                self.previous()
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Alert!!")
+                msg.setText("Unknown Individual!")
+                msg.exec_()
+
+                if msg.exec_() or msg == QMessageBox.Ok:
+                    self.previous()
             else:
                 profile = r.json()
                 self.MAIN_VIEW(self.previous, profile)
+
+    def _go_back(self):
+        self.timer.stop()
+        self.cam.release()
+        self.previous()

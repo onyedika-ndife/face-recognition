@@ -128,10 +128,9 @@ class VIEW_DETAILS(QMainWindow):
 
         r = requests.get(url=self.profile["pic"], stream=True)
 
-        r.raw.decode_content = True # handle spurious Content-Encoding
-        im = Image.open(r.raw)
+        pic = QImage()
+        pic.loadFromData(r.content)
 
-        pic = QImage(im)
         comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
 
 

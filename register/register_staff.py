@@ -235,7 +235,7 @@ class REGISTER_STAFF(QDialog):
         for value in data.values():
             if value == "":
                 msg = QMessageBox()
-                msg.setIcon(QMessageBox.Information)
+                msg.setIcon(QMessageBox.Warning)
                 msg.setWindowTitle("Empty Entry")
                 msg.setText("Please Check Entries!")
                 msg.show()
