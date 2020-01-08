@@ -51,9 +51,9 @@ def _register_student(request):
         return Response(serializer.data[-1])
 
 
-@api_view(["PUT"])
+@api_view(["POST"])
 def _update_student(request, pk):
-    if request.method == "PUT":
+    if request.method == "POST":
         try:
             file = request.FILES["image"]
         except BaseException:
@@ -109,9 +109,9 @@ def _register_staff(request):
         return Response(serializer.data[-1])
 
 
-@api_view(["PUT"])
+@api_view(["POST"])
 def _update_staff(request, pk):
-    if request.method == "PUT":
+    if request.method == "POST":
         staff = STAFF.objects.get(pk=pk)
         try:
             file = request.FILES["image"]

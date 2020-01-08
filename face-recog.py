@@ -112,7 +112,7 @@ if __name__ == "__main__":
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("Information")
         msg.setText("Poor Network Connection!")
-        msg.show()
+        msg.exec_()
 
         if msg.exec_() or msg == QMessageBox.Ok:
             sys.exit()

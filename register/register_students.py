@@ -12,7 +12,9 @@ from PyQt5.QtWidgets import (
     QGridLayout,
     QLabel,
     QPushButton,
-    QHBoxLayout
+    QHBoxLayout,
+    QStackedLayout,
+    QMessageBox
 )
 
 # APP_URL = "http://127.0.0.1:8000"
@@ -441,14 +443,19 @@ class REGISTER_STUDENT(QDialog):
             "date_of_registration":str(self.comp.dor_text.text()),
         }
 
-        # sending post request and saving response as response object 
-        r = requests.post(url = f"{APP_URL}/register/student/", data = data)
-
-        # self.comp.datab.cur.execute(
-        #     f"INSERT INTO recognize_students(first_name, middle_name, last_name,age,date_of_birth, gender, nationality, state_of_origin, lga_origin,marital_status,jamb_number,college,department,level,matric_number,address,phone_number,email,parent_name,parent_email,parent_phone,date_of_registration) VALUES('{first_name}','{middle_name}','{last_name}',{age},'{date_of_birth}','{gender}','{nationality}','{state_of_origin}','{lga_origin}','{marital}','{jamb_number}','{college}','{dept}','{level}','{matric_number}','{address}','{phone}','{email}','{p_name}','{p_email}','{p_phone}','{date_of_reg}')"
-        # )
-
-        self.register_face()
+        for value in data.values():
+            if value == "":
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setWindowTitle("Empty Entry")
+                msg.setText("Please Check Entries!")
+                msg.show()
+                if msg.exec_() or msg ==  QMessageBox.Ok:
+                    break
+            else:
+                # sending post request and saving response as response object 
+                r = requests.post(url = f"{APP_URL}/register/student/", data = data)
+                self.register_face()
 
 
     def register_face(self):
@@ -537,7 +544,7 @@ class REGISTER_STUDENT(QDialog):
 
         for image in os.listdir("./assets/img/temp/"):
             file = {"image":open(image, "rb").read()}
-            r = requests.put(url = f"{APP_URL}/register/student/{self._id}", files=file)
+            r = requests.post(url = f"{APP_URL}/register/student/{self._id}", files=file)
 
 
 

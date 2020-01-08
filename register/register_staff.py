@@ -12,7 +12,9 @@ from PyQt5.QtWidgets import (
     QGridLayout,
     QLabel,
     QPushButton,
-    QHBoxLayout
+    QHBoxLayout,
+    QStackedLayout,
+    QMessageBox
 )
 
 # APP_URL = "http://127.0.0.1:8000"
@@ -230,10 +232,19 @@ class REGISTER_STAFF(QDialog):
             "date_of_registration": str(self.comp.dor_text.text()),
         }
 
-        # sending post request and saving response as response object
-        r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
-
-        self.register_face()
+        for value in data.values():
+            if value == "":
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Information)
+                msg.setWindowTitle("Empty Entry")
+                msg.setText("Please Check Entries!")
+                msg.show()
+                if msg.exec_() or msg ==  QMessageBox.Ok:
+                    break
+            else:
+                # sending post request and saving response as response object
+                r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
+                self.register_face()
 
     def register_face(self):
         r = requests.get(url=f"{APP_URL}/register/staff/")
@@ -320,7 +331,7 @@ class REGISTER_STAFF(QDialog):
 
         for image in os.listdir("./assets/img/temp/"):
             file = {"image": open(f"./assets/img/temp/{image}", "rb").read()}
-            r = requests.put(url=f"{APP_URL}/register/staff/{self._id}", files=file)
+            r = requests.post(url=f"{APP_URL}/register/staff/{self._id}", files=file)
 
         self.main_layout.setCurrentIndex(0)
 

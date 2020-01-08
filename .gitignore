@@ -22,4 +22,6 @@ server Session.sql
 
 Face_Base Session.sql
 
+temp.jpg
+
 db.sqlite3
