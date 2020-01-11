@@ -19,8 +19,8 @@ from PyQt5.QtWidgets import (
 from register.register_main import REGISTER_MAIN
 from register.register_students import REGISTER_STUDENT
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
 
 
 class EDIT_DETAILS(QMainWindow):

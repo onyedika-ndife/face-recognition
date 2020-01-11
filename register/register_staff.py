@@ -17,8 +17,8 @@ from PyQt5.QtWidgets import (
     QMessageBox
 )
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
 
 
 class REGISTER_STAFF(QDialog):
@@ -235,7 +235,7 @@ class REGISTER_STAFF(QDialog):
         for value in data.values():
             if value == "":
                 msg = QMessageBox()
-                msg.setIcon(QMessageBox.Warning)
+                msg.setIconPixmap(QPixmap("./assets/icons/no_entry.png"))
                 msg.setWindowTitle("Empty Entry")
                 msg.setText("Please Check Entries!")
                 msg.show()

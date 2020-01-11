@@ -17,15 +17,14 @@ from PyQt5.QtWidgets import (
     QScrollArea,
     QToolBar,
     QVBoxLayout,
-    QWidget,    
+    QWidget,
     QTextEdit,
-
 )
 
 from register.register_main import REGISTER_MAIN
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
 class VIEW_DETAILS(QMainWindow):
     def __init__(self, title, prev_scrn, profile, main_layout):
         super().__init__()
@@ -55,7 +54,9 @@ class VIEW_DETAILS(QMainWindow):
         self.file_menu = self.main_menu.addMenu("File")
         self.edit_menu = self.main_menu.addMenu("Edit")
 
-        self.export = QAction(QIcon("./assets/icons/export_pdf.png"), "Export PDF", self)
+        self.export = QAction(
+            QIcon("./assets/icons/export_pdf.png"), "Export PDF", self
+        )
         self.export.setShortcut("Ctrl+S")
 
         self.edit_action = QAction(
@@ -78,7 +79,6 @@ class VIEW_DETAILS(QMainWindow):
         self.toolbar.addAction(self.exit_action)
         self.toolbar.addAction(self.edit_action)
         self.toolbar.addAction(self.export)
-
 
         self.main_widget = QWidget()
         self.vbox = QVBoxLayout()
@@ -279,7 +279,6 @@ class VIEW_DETAILS(QMainWindow):
                 outputStream.close()
         else:
             file = "Student_Details"
-
 
     def _edit_screen(self):
         from student_detail.edit_details import EDIT_DETAILS

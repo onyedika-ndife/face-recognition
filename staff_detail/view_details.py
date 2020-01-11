@@ -3,10 +3,8 @@ import os
 import requests
 from PIL import Image
 from PyQt5.Qt import QFileInfo
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
-from PyQt5.QtCore import QSize, QTimer, QUrl
-from PyQt5.QtGui import QIcon, QImage, QPixmap, QPainter
-from PyQt5.QtPrintSupport import QPrinter, QPrintPreviewDialog
+from PyQt5.QtCore import QSize, QTimer
+from PyQt5.QtGui import QIcon, QImage, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
     QFileDialog,
@@ -26,8 +24,8 @@ from PyQt5.QtWidgets import (
 
 from register.register_main import REGISTER_MAIN
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
+# APP_URL = "http://127.0.0.1:8000"
+APP_URL = "https://face-recog-server.herokuapp.com"
 class VIEW_DETAILS(QMainWindow):
     def __init__(self, title, prev_scrn, profile, main_layout):
         super().__init__()
