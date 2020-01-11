@@ -66,7 +66,7 @@ def _update_student(request, pk):
             )
 
             cv2.imwrite(
-                f"{django_settings.MEDIA_URL}image/student/{student.last_name}_{student.first_name}/{student.last_name}_{student.first_name}.jpg".lower(),
+                f"{django_settings.MEDIA_ROOT}image/student/{student.last_name}_{student.first_name}/{student.last_name}_{student.first_name}.jpg".lower(),
                 image,
             )
 
@@ -123,7 +123,7 @@ def _update_staff(request, pk):
             )
 
             cv2.imwrite(
-                f"{django_settings.MEDIA_URL}image/staff/{staff.last_name}_{staff.first_name}/{staff.last_name}_{staff.first_name}.jpg".lower(),
+                f"{django_settings.MEDIA_ROOT}image/staff/{staff.last_name}_{staff.first_name}/{staff.last_name}_{staff.first_name}.jpg".lower(),
                 image,
             )
 

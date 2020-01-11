@@ -24,7 +24,11 @@ Face_Base Session.sql
 
 db.sqlite3
 
-assets/img/temp/temp.jpg
+assets/temp/temp.jpg
 
 face_recog_server/media/pdf/staff_detail.pdf
 face_recog_server/media/pdf/student_detail.pdf
+
+print.png
+.pdf
+face_recog_server/db.sqlite3

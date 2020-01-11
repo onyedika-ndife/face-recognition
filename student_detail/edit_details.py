@@ -1,21 +1,31 @@
 import requests
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QAction, QGridLayout, QGroupBox, QHBoxLayout,
-                             QLabel, QMainWindow, QPushButton, QScrollArea,
-                             QToolBar, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (
+    QAction,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QPushButton,
+    QScrollArea,
+    QToolBar,
+    QVBoxLayout,
+    QWidget,
+)
 
 from register.register_main import REGISTER_MAIN
 from register.register_students import REGISTER_STUDENT
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 class EDIT_DETAILS(QMainWindow):
     def __init__(self, title, prev_scrn, profile, main_layout):
         super().__init__()
         self.title = title
         self.title.setWindowTitle("EDIT STUDENT DETAILS")
-        
+
         self.main_layout = main_layout
 
         self.previous = prev_scrn
@@ -25,32 +35,32 @@ class EDIT_DETAILS(QMainWindow):
     def MAIN_VIEW(self, profile):
         self.comp = REGISTER_MAIN.components()
 
-        self.profile = profile
+        _id = int(profile["id"])
+
+        r = requests.get(url=f"{APP_URL}/users/students/{_id}")
+
+        self.profile = r.json()
 
         self.main_menu = self.menuBar()
         self.toolbar = QToolBar()
 
         self.file_menu = self.main_menu.addMenu("File")
 
-        self.save_action = QAction(
-            QIcon("./assets/img/Save.png"), "Save File", self
-        )
-        self.save_action.setShortcut("Ctrl+S")
+        self.export = QAction(QIcon("./assets/icons/export_pdf.png"), "Export as PDF", self)
+        self.export.setShortcut("Ctrl+S")
 
-        self.exit_action = QAction(
-            QIcon("./assets/img/Exit.png"), "Exit", self
-        )
+        self.exit_action = QAction(QIcon("./assets/icons/exit.png"), "Exit", self)
         self.exit_action.setShortcut("Ctrl+Q")
 
-        self.file_menu.addAction(self.save_action)
+        self.file_menu.addAction(self.export)
         self.file_menu.addAction(self.exit_action)
 
-        self.save_action.triggered.connect(self._save_as_file)
+        self.export.triggered.connect(self._save_as_file)
         self.exit_action.triggered.connect(lambda: self.previous())
 
         self.toolbar = self.addToolBar("Toolbar")
         self.toolbar.addAction(self.exit_action)
-        self.toolbar.addAction(self.save_action)
+        self.toolbar.addAction(self.export)
 
         self.main_widget = QWidget()
         self.vbox = QVBoxLayout()
@@ -64,7 +74,6 @@ class EDIT_DETAILS(QMainWindow):
         self.other_detail()
 
         self.main_widget.setLayout(self.vbox)
-
 
         self.scroll = QScrollArea()
         self.scroll.setWidget(self.main_widget)
@@ -92,7 +101,7 @@ class EDIT_DETAILS(QMainWindow):
         self.comp.profile_pic.setMaximumWidth(220)
 
         self.sd_detail_view.addWidget(self.comp.m_num, 0, 0)
-        self.sd_detail_view.addWidget(self.comp.m_num_input , 0, 1)
+        self.sd_detail_view.addWidget(self.comp.m_num_input, 0, 1)
         self.comp.m_num_input.setText(self.profile["matric_number"])
 
         self.sd_detail_view.addWidget(self.comp.j_num, 1, 0)
@@ -103,7 +112,11 @@ class EDIT_DETAILS(QMainWindow):
         self.sd_detail_view.addWidget(self.comp.college_select, 2, 1)
         self.comp.college_select.setCurrentText(self.profile["college"])
         self.school()
-        self.comp.college_select.currentIndexChanged.connect(lambda:REGISTER_STUDENT.school(self,self.comp.college_select.currentIndex()))
+        self.comp.college_select.currentIndexChanged.connect(
+            lambda: REGISTER_STUDENT.school(
+                self, self.comp.college_select.currentIndex()
+            )
+        )
 
         self.sd_detail_view.addWidget(self.comp.dept, 3, 0)
         self.sd_detail_view.addWidget(self.comp.dept_select, 3, 1)
@@ -115,7 +128,7 @@ class EDIT_DETAILS(QMainWindow):
 
         self.pd_detail_view = QGridLayout()
         self.name = QLabel("Name:")
-        self.name.setObjectName('Label')
+        self.name.setObjectName("Label")
 
         _grid.addWidget(self.name, 1, 0)
 
@@ -123,11 +136,9 @@ class EDIT_DETAILS(QMainWindow):
         self.pd_detail_view.addWidget(self.comp.l_name_input, 0, 1)
         self.comp.l_name_input.setText(self.profile["last_name"])
 
-
         self.pd_detail_view.addWidget(self.comp.m_name, 1, 0)
         self.pd_detail_view.addWidget(self.comp.m_name_input, 1, 1)
         self.comp.m_name_input.setText(self.profile["middle_name"])
-
 
         self.pd_detail_view.addWidget(self.comp.f_name, 2, 0)
         self.pd_detail_view.addWidget(self.comp.f_name_input, 2, 1)
@@ -146,26 +157,21 @@ class EDIT_DETAILS(QMainWindow):
         else:
             self.comp.gender_2.setChecked(True)
 
-
         _grid.addWidget(self.comp.dob_label, 4, 0)
         _grid.addLayout(self.comp.dob_layout, 4, 1)
         self.comp.dob_date_label.setText(str(self.profile["date_of_birth"]))
-
 
         _grid.addWidget(self.comp.nationality, 5, 0)
         _grid.addWidget(self.comp.nationality_input, 5, 1)
         self.comp.nationality_input.setText(self.profile["nationality"])
 
-
         _grid.addWidget(self.comp.state_origin, 6, 0)
         _grid.addWidget(self.comp.state_origin_input, 6, 1)
         self.comp.state_origin_input.setText(self.profile["state_of_origin"])
 
-
         _grid.addWidget(self.comp.lga_origin, 7, 0)
         _grid.addWidget(self.comp.lga_origin_input, 7, 1)
         self.comp.lga_origin_input.setText(self.profile["lga_origin"])
-
 
         _grid.addWidget(self.comp.marital, 8, 0)
         _grid.addWidget(self.comp.marital_select, 8, 1)
@@ -174,22 +180,21 @@ class EDIT_DETAILS(QMainWindow):
         self.vbox.addWidget(_group_box)
 
     def contact_details(self):
-        _group_box = QGroupBox('Contact Details')
+        _group_box = QGroupBox("Contact Details")
         _grid = QGridLayout()
 
         _group_box.setLayout(_grid)
 
-        _grid.addWidget(self.comp.address, 0,0)
-        _grid.addWidget(self.comp.address_input, 0,1)
+        _grid.addWidget(self.comp.address, 0, 0)
+        _grid.addWidget(self.comp.address_input, 0, 1)
         self.comp.address_input.setText(self.profile["address"])
 
-        _grid.addWidget(self.comp.phone, 1,0)
-        _grid.addWidget(self.comp.phone_input, 1,1)
+        _grid.addWidget(self.comp.phone, 1, 0)
+        _grid.addWidget(self.comp.phone_input, 1, 1)
         self.comp.phone_input.setText(self.profile["phone_number"])
 
-
-        _grid.addWidget(self.comp.email, 2,0)
-        _grid.addWidget(self.comp.email_input, 2,1)
+        _grid.addWidget(self.comp.email, 2, 0)
+        _grid.addWidget(self.comp.email_input, 2, 1)
         self.comp.email_input.setText(self.profile["email"])
 
         self.vbox.addWidget(_group_box)
@@ -200,19 +205,16 @@ class EDIT_DETAILS(QMainWindow):
 
         _group_box.setLayout(_grid)
 
-
-        _grid.addWidget(self.comp.p_name, 0,0)
-        _grid.addWidget(self.comp.p_name_input, 0,1)
+        _grid.addWidget(self.comp.p_name, 0, 0)
+        _grid.addWidget(self.comp.p_name_input, 0, 1)
         self.comp.p_name_input.setText(self.profile["parent_name"])
 
-
-        _grid.addWidget(self.comp.p_email, 1,0)
-        _grid.addWidget(self.comp.p_email_input, 1,1)
+        _grid.addWidget(self.comp.p_email, 1, 0)
+        _grid.addWidget(self.comp.p_email_input, 1, 1)
         self.comp.p_email_input.setText(self.profile["parent_email"])
 
-
-        _grid.addWidget(self.comp.p_phone, 2,0)
-        _grid.addWidget(self.comp.p_phone_input, 2,1)
+        _grid.addWidget(self.comp.p_phone, 2, 0)
+        _grid.addWidget(self.comp.p_phone_input, 2, 1)
         self.comp.p_phone_input.setText(self.profile["parent_phone"])
 
         self.vbox.addWidget(_group_box)
@@ -221,61 +223,61 @@ class EDIT_DETAILS(QMainWindow):
         _group_box = QGroupBox("Parent's/Sponsor's Details")
         _grid = QGridLayout()
 
-        _grid.addWidget(self.comp.dor, 0,0)
+        _grid.addWidget(self.comp.dor, 0, 0)
         self.dor_text = QLabel()
-        _grid.addWidget(self.dor_text, 0,1)
+        _grid.addWidget(self.dor_text, 0, 1)
         self.dor_text.setText(str(self.profile["date_of_registration"]))
 
         _group_box.setLayout(_grid)
 
-
         self.vbox.addWidget(_group_box)
 
-        self.save_2_db = QPushButton('SAVE')
-        self.save_2_db.setIcon(QIcon('./assets/img/Save_DB.png'))
-        self.save_2_db.setIconSize(QSize(20,20))
-        
+        self.save_2_db = QPushButton("SAVE")
+        self.save_2_db.setIcon(QIcon("./assets/icons/save_2_db.png"))
+        self.save_2_db.setIconSize(QSize(20, 20))
+
         self.vbox.addWidget(self.save_2_db)
 
         self.save_2_db.clicked.connect(self._save)
-
 
     def _save_2_db(self):
         _id = int(self.profile["id"])
 
         data = {
-            "first_name":str(self.comp.f_name_input.text()),
-            "middle_name":str(self.comp.m_name_input.text()),
-            "last_name":str(self.comp.l_name_input.text()),
-            "date_of_birth":str(self.comp.dob_date_label.text()),
-            "age":str(self.comp.age_input.text()),
-            "gender":str((
-                self.comp.gender_1.text()
-                if self.comp.gender_1.isChecked()
-                else self.comp.gender_2.text()
-            )),
-            "nationality":str(self.comp.nationality_input.text()),
-            "state_of_origin":str(self.comp.state_origin_input.text()),
-            "lga_origin":str(self.comp.lga_origin_input.text()),
-            "marital_status":str(self.comp.marital_select.currentText()),
+            "first_name": str(self.comp.f_name_input.text()),
+            "middle_name": str(self.comp.m_name_input.text()),
+            "last_name": str(self.comp.l_name_input.text()),
+            "date_of_birth": str(self.comp.dob_date_label.text()),
+            "age": str(self.comp.age_input.text()),
+            "gender": str(
+                (
+                    self.comp.gender_1.text()
+                    if self.comp.gender_1.isChecked()
+                    else self.comp.gender_2.text()
+                )
+            ),
+            "nationality": str(self.comp.nationality_input.text()),
+            "state_of_origin": str(self.comp.state_origin_input.text()),
+            "lga_origin": str(self.comp.lga_origin_input.text()),
+            "marital_status": str(self.comp.marital_select.currentText()),
             # Assigning Variables
-            "jamb_number":str(self.comp.j_num_input.text()),
-            "college":str(self.comp.college_select.currentText()),
-            "department":str(self.comp.dept_select.currentText()),
-            "level":str(self.comp.level_select.currentText()),
-            "matric_number":str(self.comp.m_num_input.text()),
+            "jamb_number": str(self.comp.j_num_input.text()),
+            "college": str(self.comp.college_select.currentText()),
+            "department": str(self.comp.dept_select.currentText()),
+            "level": str(self.comp.level_select.currentText()),
+            "matric_number": str(self.comp.m_num_input.text()),
             # Assigning Variables
-            "address":str(self.comp.address_input.text()),
-            "phone_number":str(self.comp.phone_input.text()),
-            "email":str(self.comp.email_input.text()),
+            "address": str(self.comp.address_input.text()),
+            "phone_number": str(self.comp.phone_input.text()),
+            "email": str(self.comp.email_input.text()),
             # Assigning Variables
-            "parent_name":str(self.comp.p_name_input.text()),
-            "parent_email":str(self.comp.p_email_input.text()),
-            "parent_phone":str(self.comp.p_phone_input.text()),
-            "date_of_registration":str(self.comp.dor_text.text()),
+            "parent_name": str(self.comp.p_name_input.text()),
+            "parent_email": str(self.comp.p_email_input.text()),
+            "parent_phone": str(self.comp.p_phone_input.text()),
+            "date_of_registration": str(self.comp.dor_text.text()),
         }
 
-        r = requests.post(url=f"{APP_URL}/users/staff/{_id}", data=data)
+        r = requests.post(url=f"{APP_URL}/users/students/{_id}", data=data)
 
     def _save(self):
         self._save_2_db()
@@ -283,19 +285,36 @@ class EDIT_DETAILS(QMainWindow):
 
     def _save_as_file(self):
         self._save_2_db()
-        self._verify_screen()
+        
+        from student_detail.view_details import VIEW_DETAILS
+        view_details = VIEW_DETAILS._save_file(self)
+
 
     def _verify_screen(self):
         from student_detail.view_details import VIEW_DETAILS
 
-        view_details = VIEW_DETAILS(self.title, self.previous, self.profile, self.main_layout)
-
+        view_details = VIEW_DETAILS(
+            self.title, self.previous, self.profile, self.main_layout
+        )
 
     def school(self):
-        if self.comp.college_select.currentIndex() == 0 or self.comp.college_select.currentIndex() == 1 or self.comp.college_select.currentIndex() == 4 or self.comp.college_select.currentIndex() == 6 or self.comp.college_select.currentIndex() == 7 or self.comp.college_select.currentIndex() == 9 or self.comp.college_select.currentIndex() == 10:
+        if (
+            self.comp.college_select.currentIndex() == 0
+            or self.comp.college_select.currentIndex() == 1
+            or self.comp.college_select.currentIndex() == 4
+            or self.comp.college_select.currentIndex() == 6
+            or self.comp.college_select.currentIndex() == 7
+            or self.comp.college_select.currentIndex() == 9
+            or self.comp.college_select.currentIndex() == 10
+        ):
             self.comp.level_select.clear()
             self.comp.level_select.addItems(["100L", "200L", "300L", "400L"])
-        elif self.comp.college_select.currentIndex() == 2 or self.comp.college_select.currentIndex() == 3 or self.comp.college_select.currentIndex() == 5 or self.comp.college_select.currentIndex() == 8:
+        elif (
+            self.comp.college_select.currentIndex() == 2
+            or self.comp.college_select.currentIndex() == 3
+            or self.comp.college_select.currentIndex() == 5
+            or self.comp.college_select.currentIndex() == 8
+        ):
             self.comp.level_select.clear()
             self.comp.level_select.addItems(["100L", "200L", "300L", "400L", "500L"])
         elif self.comp.college_select.currentIndex() == 11:

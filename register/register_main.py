@@ -26,12 +26,12 @@ class REGISTER_MAIN(QWidget):
     def reg_stud_win(self, main_layout, components):
         self.stud_dialog = REGISTER_STUDENT(main_layout, components)
         self.main_widget.addTab(self.stud_dialog, "Register Student")
-        self.main_widget.setTabIcon(0, QIcon("./assets/img/Register.png"))
+        self.main_widget.setTabIcon(0, QIcon("./assets/icons/register.png"))
 
     def reg_staf_win(self, main_layout, components):
         self.staf_dialog = REGISTER_STAFF(main_layout, components)
         self.main_widget.addTab(self.staf_dialog, "Register Staff")
-        self.main_widget.setTabIcon(1, QIcon("./assets/img/Register.png"))
+        self.main_widget.setTabIcon(1, QIcon("./assets/icons/register.png"))
 
     class components:
         def __init__(self):
@@ -71,7 +71,7 @@ class REGISTER_MAIN(QWidget):
             self.dob_date_label = QLabel("Choose Date..")
             self.dob_date_label.setStyleSheet("font-weight: normal;")
             self.dob_date_choose = QPushButton()
-            self.dob_date_choose.setIcon(QIcon("./assets/img/Calendar.png"))
+            self.dob_date_choose.setIcon(QIcon("./assets/icons/calendar.png"))
             self.dob_date_choose.setIconSize(QSize(25, 25))
             self.dob_layout = QHBoxLayout()
             self.dob_date_choose.clicked.connect(self.calender_show)

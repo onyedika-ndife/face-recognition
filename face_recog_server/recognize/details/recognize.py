@@ -37,28 +37,33 @@ def _recog_stud(student, image):
     face_locations = face_recognition.face_locations(unknown_image)
     face_encodings = face_recognition.face_encodings(unknown_image, face_locations)
 
-    for (top, right, bottom, left), face_encoding in zip(
-        face_locations, face_encodings
-    ):
+    if face_locations == []:
+        return "Unable to find face"
+    else:
+        for (top, right, bottom, left), face_encoding in zip(
+            face_locations, face_encodings
+        ):
 
-        matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+            matches = face_recognition.compare_faces(
+                known_face_encodings, face_encoding
+            )
 
-        face_distances = face_recognition.face_distance(
-            known_face_encodings, face_encoding
-        )
+            face_distances = face_recognition.face_distance(
+                known_face_encodings, face_encoding
+            )
 
-        _id = None
+            _id = None
 
-        best_match_index = np.argmin(face_distances)
+            best_match_index = np.argmin(face_distances)
 
-        if matches[best_match_index]:
-            _id = known_face_id[best_match_index]
+            if matches[best_match_index]:
+                _id = known_face_id[best_match_index]
 
-            if student.id == _id:
-                _create_stud_pdf(student)
-                return student.id
-        else:
-            return "Unknown Individual"
+                if student.id == _id:
+                    _create_stud_pdf(student)
+                    return student.id
+            else:
+                return "Unknown Individual"
 
 
 def _recog_staf(staff, image):
@@ -90,25 +95,30 @@ def _recog_staf(staff, image):
     face_locations = face_recognition.face_locations(unknown_image)
     face_encodings = face_recognition.face_encodings(unknown_image, face_locations)
 
-    for (top, right, bottom, left), face_encoding in zip(
-        face_locations, face_encodings
-    ):
+    if face_locations == []:
+        return "Unable to find face"
+    else:
+        for (top, right, bottom, left), face_encoding in zip(
+            face_locations, face_encodings
+        ):
 
-        matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+            matches = face_recognition.compare_faces(
+                known_face_encodings, face_encoding
+            )
 
-        face_distances = face_recognition.face_distance(
-            known_face_encodings, face_encoding
-        )
+            face_distances = face_recognition.face_distance(
+                known_face_encodings, face_encoding
+            )
 
-        _id = None
+            _id = None
 
-        best_match_index = np.argmin(face_distances)
+            best_match_index = np.argmin(face_distances)
 
-        if matches[best_match_index]:
-            _id = known_face_id[best_match_index]
+            if matches[best_match_index]:
+                _id = known_face_id[best_match_index]
 
-            if staff.id == _id:
-                _create_staf_pdf(staff)
-                return staff.id
-        else:
-            return "Unknown Individual"
+                if staff.id == _id:
+                    _create_staf_pdf(staff)
+                    return staff.id
+            else:
+                return "Unknown Individual"

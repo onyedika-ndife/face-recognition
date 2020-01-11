@@ -10,12 +10,12 @@ from PyQt5.QtWidgets import (
     QApplication,
 )
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from MainWindow import main_window
 
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 
 
 class LOGIN(QDialog):
@@ -98,8 +98,8 @@ if __name__ == "__main__":
         r = requests.get(url=f"{APP_URL}")
     except requests.exceptions.ConnectionError as e:
         msg = QMessageBox()
-        msg.setIcon(QMessageBox.Information)
-        msg.setWindowTitle("Information")
+        msg.setIconPixmap(QPixmap("./assets/icons/no_connection.png"))
+        msg.setWindowTitle("Error!")
         msg.setText("Connect to the Internet to use app!")
         msg.show()
 
@@ -107,7 +107,7 @@ if __name__ == "__main__":
             sys.exit()
     except requests.exceptions.Timeout as e:
         msg = QMessageBox()
-        msg.setIcon(QMessageBox.Information)
+        msg.setIconPixmap(QPixmap("./assets/icons/network_timeout.png"))
         msg.setWindowTitle("Information")
         msg.setText("Poor Network Connection!")
         msg.exec_()

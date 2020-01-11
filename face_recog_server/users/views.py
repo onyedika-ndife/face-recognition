@@ -23,7 +23,7 @@ def _staff_all(request):
     return Response(serializer.data)
 
 
-@api_view(["PUT"])
+@api_view(["POST", "GET"])
 def _update_stud(request, pk):
     if request.method == "POST":
         student = STUDENTS.objects.get(pk=pk)
@@ -54,9 +54,15 @@ def _update_stud(request, pk):
         student.save()
 
         return HttpResponse("Student Profile Updated!")
+    elif request.method == "GET":
+        student = STUDENTS.objects.get(pk=pk)
+
+        serializer = STUDENT_SERIALIZERS(student, context={"request": request})
+
+        return Response(serializer.data)
 
 
-@api_view(["PUT"])
+@api_view(["POST", "GET"])
 def _update_staf(request, pk):
     if request.method == "POST":
         staff = STAFF.objects.get(pk=pk)
@@ -80,3 +86,18 @@ def _update_staf(request, pk):
         staff.save()
 
         return HttpResponse("Staff Updated!")
+
+    elif request.method == "GET":
+        staff = STAFF.objects.get(pk=pk)
+
+        serializer = STAFF_SERIALIZERS(staff, context={"request": request})
+
+        return Response(serializer.data)
+
+
+def clear_all(request):
+    stud = STUDENTS.objects.all()
+
+    stud.delete()
+
+    return HttpResponse("Cleared")

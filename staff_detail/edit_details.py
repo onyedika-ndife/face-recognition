@@ -19,8 +19,8 @@ from PyQt5.QtWidgets import (
 from register.register_main import REGISTER_MAIN
 from register.register_students import REGISTER_STUDENT
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 
 
 class EDIT_DETAILS(QMainWindow):
@@ -38,28 +38,32 @@ class EDIT_DETAILS(QMainWindow):
     def MAIN_VIEW(self, profile):
         self.comp = REGISTER_MAIN.components()
 
-        self.profile = profile
+        _id = int(profile["id"])
+
+        r = requests.get(url=f"{APP_URL}/users/staff/{_id}")
+
+        self.profile = r.json()
 
         self.main_menu = self.menuBar()
         self.toolbar = QToolBar()
 
         self.file_menu = self.main_menu.addMenu("File")
 
-        self.save_action = QAction(QIcon("./assets/img/Save.png"), "Save File", self)
-        self.save_action.setShortcut("Ctrl+S")
+        self.export = QAction(QIcon("./assets/icons/export_pdf.png"), "Export PDF", self)
+        self.export.setShortcut("Ctrl+S")
 
-        self.exit_action = QAction(QIcon("./assets/img/Exit.png"), "Exit", self)
+        self.exit_action = QAction(QIcon("./assets/icons/exit.png"), "Exit", self)
         self.exit_action.setShortcut("Ctrl+Q")
 
-        self.file_menu.addAction(self.save_action)
+        self.file_menu.addAction(self.export)
         self.file_menu.addAction(self.exit_action)
 
-        self.save_action.triggered.connect(self._save_as_file)
+        self.export.triggered.connect(self._save_as_file)
         self.exit_action.triggered.connect(lambda: self.previous())
 
         self.toolbar = self.addToolBar("Toolbar")
         self.toolbar.addAction(self.exit_action)
-        self.toolbar.addAction(self.save_action)
+        self.toolbar.addAction(self.export)
 
         self.main_widget = QWidget()
         self.vbox = QVBoxLayout()
@@ -180,7 +184,7 @@ class EDIT_DETAILS(QMainWindow):
         self.vbox.addWidget(_group_box)
 
         self.save_2_db = QPushButton("SAVE")
-        self.save_2_db.setIcon(QIcon("./assets/img/Save_DB.png"))
+        self.save_2_db.setIcon(QIcon("./assets/icons/save_2_db.png"))
         self.save_2_db.setIconSize(QSize(20, 20))
 
         self.vbox.addWidget(self.save_2_db)
@@ -225,7 +229,9 @@ class EDIT_DETAILS(QMainWindow):
 
     def _save_as_file(self):
         self._save_2_db()
-        self._verify_screen()
+
+        from staff_detail.view_details import VIEW_DETAILS
+        view_details = VIEW_DETAILS._save_file(self)
 
     def _verify_screen(self):
         from staff_detail.view_details import VIEW_DETAILS

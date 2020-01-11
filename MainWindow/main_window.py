@@ -1,9 +1,17 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QStackedLayout, QCommandLinkButton, QStackedWidget
+from PyQt5.QtWidgets import (
+    QWidget,
+    QPushButton,
+    QGridLayout,
+    QStackedLayout,
+    QCommandLinkButton,
+    QStackedWidget,
+)
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
 from register.register_main import REGISTER_MAIN
 from student_detail.student_details import VERIFY as Student_Verify
 from staff_detail.staff_details import VERIFY as Staff_Verify
+
 
 class MAIN_WINDOW(QWidget):
     def __init__(self):
@@ -25,15 +33,15 @@ class MAIN_WINDOW(QWidget):
         self.initial_layout = QGridLayout()
 
         self.register = QPushButton("Register")
-        self.register.setIcon(QIcon("./assets/img/Add User Group Woman Man_96px.png"))
+        self.register.setIcon(QIcon("./assets/icons/add_users.png"))
         self.register.setIconSize(QSize(50, 50))
 
-        self.stud_det = QPushButton("Student Details")
-        self.stud_det.setIcon(QIcon("./assets/img/Student.png"))
+        self.stud_det = QPushButton("Student")
+        self.stud_det.setIcon(QIcon("./assets/icons/student.png"))
         self.stud_det.setIconSize(QSize(50, 50))
 
-        self.staf_det = QPushButton("Staff Details")
-        self.staf_det.setIcon(QIcon("./assets/img/Staff.png"))
+        self.staf_det = QPushButton("Staff")
+        self.staf_det.setIcon(QIcon("./assets/icons/staff.png"))
         self.staf_det.setIconSize(QSize(50, 50))
 
         self.register.setObjectName("btn")
@@ -61,7 +69,7 @@ class MAIN_WINDOW(QWidget):
         self.main_grid_widget = QWidget()
         self.main_grid = QGridLayout()
         self.back_btn = QCommandLinkButton()
-        self.back_btn.setIcon(QIcon("./assets/img/Back.png"))
+        self.back_btn.setIcon(QIcon("./assets/icons/back.png"))
         self.back_btn.setIconSize(QSize(30, 30))
         self.main_grid_widget.setLayout(self.main_grid)
 

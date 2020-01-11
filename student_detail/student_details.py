@@ -20,8 +20,8 @@ from .view_details import VIEW_DETAILS
 from .edit_details import EDIT_DETAILS
 
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 
 
 class VERIFY(QWidget):
@@ -41,7 +41,7 @@ class VERIFY(QWidget):
         self.video_init_layout = QVBoxLayout()
 
         self.back_btn = QCommandLinkButton()
-        self.back_btn.setIcon(QIcon("./assets/img/Back.png"))
+        self.back_btn.setIcon(QIcon("./assets/icons/back.png"))
         self.back_btn.setIconSize(QSize(30, 30))
         self.back_btn.clicked.connect(self._go_back)
         self.back_btn.setMaximumWidth(45)
@@ -116,14 +116,14 @@ class VERIFY(QWidget):
         self.initial_layout = QVBoxLayout()
         self.main_widget = QWidget()
 
-        self.view_details_btn = QPushButton("View Details")
-        self.edit_details_btn = QPushButton("Edit Details")
+        self.view_details_btn = QPushButton("View Profile")
+        self.edit_details_btn = QPushButton("Edit Profile")
 
         self.view_details_btn.setObjectName("btn")
         self.edit_details_btn.setObjectName("btn")
 
-        self.view_details_btn.setIcon(QIcon("./assets/img/View Details.png"))
-        self.edit_details_btn.setIcon(QIcon("./assets/img/Edit Details.png"))
+        self.view_details_btn.setIcon(QIcon("./assets/icons/view_profile.png"))
+        self.edit_details_btn.setIcon(QIcon("./assets/icons/edit_profile.png"))
 
         self.view_details_btn.setIconSize(QSize(50, 50))
         self.edit_details_btn.setIconSize(QSize(50, 50))
@@ -161,21 +161,28 @@ class VERIFY(QWidget):
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
 
-        cv2.imwrite("./assets/img/temp/temp.jpg", image_cropped)
+        cv2.imwrite("./assets/temp/temp.jpg", image_cropped)
 
         self.timer.stop()
         self.cam.release()
 
-        for image in os.listdir("./assets/img/temp/"):
-            file = {"image": open(f"./assets/img/temp/{image}", "rb").read()}
+        for image in os.listdir("./assets/temp/"):
+            file = {"image": open(f"./assets/temp/{image}", "rb").read()}
             r = requests.post(url=f"{APP_URL}/recognize/student/", files=file)
 
             if r.text == "Unknown Individual":
                 msg = QMessageBox()
-                msg.setIcon(QMessageBox.Critical)
+                msg.setIconPixmap(QPixmap("./assets/icons/user_unknown.png"))
                 msg.setWindowTitle("Alert!!")
                 msg.setText("Unknown Individual!")
-                msg.exec_()
+
+                if msg.exec_() or msg == QMessageBox.Ok:
+                    self.previous()
+            elif r.text == "Unable to find face":
+                msg = QMessageBox()
+                msg.setIconPixmap(QPixmap("./assets/icons/user_unknown.png"))
+                msg.setWindowTitle("Alert!!")
+                msg.setText("Unable to find face!")
 
                 if msg.exec_() or msg == QMessageBox.Ok:
                     self.previous()

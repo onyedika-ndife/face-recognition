@@ -51,7 +51,6 @@ def _verify_staff(request):
             image_processed = _recog_staf(staf, image_file)
 
             if image_processed == serializer.data[count]["id"]:
-                s = serializer.data[count]
                 return Response(serializer.data[count])
             else:
                 return HttpResponse(image_processed)
@@ -62,9 +61,7 @@ def _verify_staff(request):
 def api_verify_stud(request):
     students = STUDENTS.objects.all()
 
-    serializer = API_STUDENT_SERIALIZERS(
-        students, many=True, context={"request": request}
-    )
+    serializer = API_STUDENT_SERIALIZERS(students, context={"request": request})
 
     if request.method == "POST":
         image_file = request.FILES["image"]
@@ -87,7 +84,7 @@ def api_verify_stud(request):
 def api_verify_staff(request):
     staff = STAFF.objects.all()
 
-    serializer = API_STAFF_SERIALIZERS(staff, many=True, context={"request": request})
+    serializer = API_STAFF_SERIALIZERS(staff, context={"request": request})
 
     if request.method == "POST":
         image_file = request.FILES["image"]

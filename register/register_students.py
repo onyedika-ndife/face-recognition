@@ -17,8 +17,8 @@ from PyQt5.QtWidgets import (
     QMessageBox
 )
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 class REGISTER_STUDENT(QDialog):
     def __init__(self, main_layout, components):
         super().__init__()
@@ -265,7 +265,7 @@ class REGISTER_STUDENT(QDialog):
 
         # When next button is clicked
         _next.clicked.connect(self.register_student_details)
-        _next.setIcon(QIcon("./assets/img/Capture.png"))
+        _next.setIcon(QIcon("./assets/icons/capture.png"))
         _next.setIconSize(QSize(20,20))
 
 
@@ -453,13 +453,14 @@ class REGISTER_STUDENT(QDialog):
                 if msg.exec_() or msg ==  QMessageBox.Ok:
                     break
             else:
-                # sending post request and saving response as response object 
-                r = requests.post(url = f"{APP_URL}/register/student/", data = data)
-                self.register_face()
+                break
+        # sending post request and saving response as response object 
+        r = requests.post(url = f"{APP_URL}/register/students/", data = data)
+        self.register_face()
 
 
     def register_face(self):
-        r = requests.get(url = f"{APP_URL}/register/student/")
+        r = requests.get(url = f"{APP_URL}/register/students/")
 
         student = r.json()
 
@@ -535,16 +536,16 @@ class REGISTER_STUDENT(QDialog):
         image_cropped = self.image[0:480, 80:560]
 
         cv2.imwrite(
-            "./assets/img/temp/temp.jpg",
+            "./assets/temp/temp.jpg",
             image_cropped,
         )
         
         self.timer.stop()
         self.cam.release()
 
-        for image in os.listdir("./assets/img/temp/"):
-            file = {"image":open(image, "rb").read()}
-            r = requests.post(url = f"{APP_URL}/register/student/{self._id}", files=file)
+        for image in os.listdir("./assets/temp/"):
+            file = {"image":open(f"./assets/temp/{image}", "rb").read()}
+            r = requests.post(url = f"{APP_URL}/register/students/{self._id}", files=file)
 
 
 

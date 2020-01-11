@@ -17,8 +17,8 @@ from PyQt5.QtWidgets import (
     QMessageBox
 )
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 
 
 class REGISTER_STAFF(QDialog):
@@ -176,7 +176,7 @@ class REGISTER_STAFF(QDialog):
         btn_view = QHBoxLayout()
         _next = QPushButton("Capture Face")
         _prev = QPushButton("Previous")
-        _next.setIcon(QIcon("./assets/img/Capture.png"))
+        _next.setIcon(QIcon("./assets/icons/capture.png"))
         _next.setIconSize(QSize(20, 20))
 
         btn_view.addWidget(_prev)
@@ -242,9 +242,10 @@ class REGISTER_STAFF(QDialog):
                 if msg.exec_() or msg ==  QMessageBox.Ok:
                     break
             else:
-                # sending post request and saving response as response object
-                r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
-                self.register_face()
+                break
+            # sending post request and saving response as response object
+            r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
+            self.register_face()
 
     def register_face(self):
         r = requests.get(url=f"{APP_URL}/register/staff/")
@@ -323,14 +324,14 @@ class REGISTER_STAFF(QDialog):
     def snap(self):
         image_cropped = self.image[0:480, 80:560]
         cv2.imwrite(
-            "./assets/img/temp/temp.jpg", image_cropped,
+            "./assets/temp/temp.jpg", image_cropped,
         )
 
         self.timer.stop()
         self.cam.release()
 
-        for image in os.listdir("./assets/img/temp/"):
-            file = {"image": open(f"./assets/img/temp/{image}", "rb").read()}
+        for image in os.listdir("./assets/temp/"):
+            file = {"image": open(f"./assets/temp/{image}", "rb").read()}
             r = requests.post(url=f"{APP_URL}/register/staff/{self._id}", files=file)
 
         self.main_layout.setCurrentIndex(0)
