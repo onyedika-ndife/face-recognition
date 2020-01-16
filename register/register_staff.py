@@ -236,16 +236,17 @@ class REGISTER_STAFF(QDialog):
             if value == "":
                 msg = QMessageBox()
                 msg.setIconPixmap(QPixmap("./assets/icons/no_entry.png"))
-                msg.setWindowTitle("Empty Entry")
+                msg.setWindowTitle("Empty Field")
+                msg.setWindowIcon(QIcon("./assets/icons/error.png"))
                 msg.setText("Please Check Entries!")
                 msg.show()
                 if msg.exec_() or msg ==  QMessageBox.Ok:
                     break
             else:
                 break
-            # sending post request and saving response as response object
-            r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
-            self.register_face()
+        # sending post request and saving response as response object
+        r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
+        self.register_face()
 
     def register_face(self):
         r = requests.get(url=f"{APP_URL}/register/staff/")
@@ -283,6 +284,9 @@ class REGISTER_STAFF(QDialog):
         if not self.timer.isActive():
             self.cam = cv2.VideoCapture(0)
             self.timer.start(1)
+            if not self.cam.isOpened():
+                self.cam = cv2.VideoCapture(1)
+
 
     def _video(self):
         ret, self.image = self.cam.read()

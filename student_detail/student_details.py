@@ -174,6 +174,7 @@ class VERIFY(QWidget):
                 msg = QMessageBox()
                 msg.setIconPixmap(QPixmap("./assets/icons/user_unknown.png"))
                 msg.setWindowTitle("Alert!!")
+                msg.setWindowIcon(QIcon("./assets/icons/error.png"))
                 msg.setText("Unknown Individual!")
 
                 if msg.exec_() or msg == QMessageBox.Ok:
@@ -182,6 +183,7 @@ class VERIFY(QWidget):
                 msg = QMessageBox()
                 msg.setIconPixmap(QPixmap("./assets/icons/user_unknown.png"))
                 msg.setWindowTitle("Alert!!")
+                msg.setWindowIcon(QIcon("./assets/icons/error.png"))
                 msg.setText("Unable to find face!")
 
                 if msg.exec_() or msg == QMessageBox.Ok:

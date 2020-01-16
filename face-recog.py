@@ -100,6 +100,7 @@ if __name__ == "__main__":
         msg = QMessageBox()
         msg.setIconPixmap(QPixmap("./assets/icons/no_connection.png"))
         msg.setWindowTitle("Error!")
+        msg.setWindowIcon(QIcon("./assets/icons/error.png"))
         msg.setText("Connect to the Internet to use app!")
         msg.show()
 
@@ -109,6 +110,7 @@ if __name__ == "__main__":
         msg = QMessageBox()
         msg.setIconPixmap(QPixmap("./assets/icons/network_timeout.png"))
         msg.setWindowTitle("Information")
+        msg.setWindowIcon(QIcon("./assets/icons/error.png"))
         msg.setText("Poor Network Connection!")
         msg.exec_()
 
