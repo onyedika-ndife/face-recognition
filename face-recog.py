@@ -127,6 +127,7 @@ if __name__ == "__main__":
         msg.setIconPixmap(QPixmap("./assets/icons/network_timeout.png"))
         msg.setWindowIcon(QIcon("./assets/icons/error.png"))
         msg.setWindowTitle("Information")
+        msg.setWindowIcon(QIcon("./assets/icons/error.png"))
         msg.setText("Poor Network Connection!")
         msg.show()
 

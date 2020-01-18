@@ -219,7 +219,8 @@ class REGISTER_STAFF(QDialog):
             if value == "":
                 msg = QMessageBox()
                 msg.setIconPixmap(QPixmap("./assets/icons/no_entry.png"))
-                msg.setWindowTitle("Empty Entry")
+                msg.setWindowTitle("Empty Field")
+                msg.setWindowIcon(QIcon("./assets/icons/error.png"))
                 msg.setText("Please Check Entries!")
                 msg.show()
                 if msg.exec_() or msg ==  QMessageBox.Ok:
