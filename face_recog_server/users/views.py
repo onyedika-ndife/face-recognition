@@ -1,8 +1,15 @@
+import os
+
+import cv2
+import numpy as np
+from django.conf import settings as django_settings
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import STUDENTS, STAFF
-from .serializers import STUDENT_SERIALIZERS, STAFF_SERIALIZERS
+
+from .models import STAFF, STUDENTS
+from .serializers import STAFF_SERIALIZERS, STUDENT_SERIALIZERS
+
 
 # Create your views here.
 @api_view(["GET"])
@@ -51,9 +58,33 @@ def _update_stud(request, pk):
         student.parent_phone = request.POST.get("parent_phone")
         student.date_of_registration = request.POST.get("date_of_registration")
 
-        student.save()
+        for image in os.listdir(
+            f"{django_settings.MEDIA_ME}image/student/{student.last_name}_{student.first_name}/".lower()
+        ):
+            os.remove(
+                f"{django_settings.MEDIA_ME}image/student/{student.last_name}_{student.first_name}/{image}".lower()
+            )
+
+        try:
+            file = request.FILES["image"]
+        except BaseException:
+            return HttpResponse("No file uploaded!")
+        else:
+            image = cv2.imdecode(
+                np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED
+            )
+
+            cv2.imwrite(
+                f"{django_settings.MEDIA_ME}image/student/{student.last_name}_{student.first_name}/{student.last_name}_{student.first_name}.jpg".lower(),
+                image,
+            )
+
+            student.pic = f"image/student/{student.last_name}_{student.first_name}/{student.last_name}_{student.first_name}.jpg".lower()
+
+            student.save()
 
         return HttpResponse("Student Profile Updated!")
+
     elif request.method == "GET":
         student = STUDENTS.objects.get(pk=pk)
 

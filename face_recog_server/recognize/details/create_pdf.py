@@ -14,11 +14,11 @@ def _create_stud_pdf(student):
     can_1 = canvas.Canvas(packet_1, pagesize=A4)
     can_2 = canvas.Canvas(packet_2, pagesize=A4)
 
-    for image in os.listdir(f"{django_settings.MEDIA_ROOT}image/student"):
+    for image in os.listdir(f"{django_settings.MEDIA_ME}image/student"):
         full_name = f"{student.last_name}_{student.first_name}".lower()
         folder_name = image
         if folder_name == full_name:
-            pic = f"{django_settings.MEDIA_ROOT}image/student/{folder_name}/{folder_name}.jpg"
+            pic = f"{django_settings.MEDIA_ME}image/student/{folder_name}/{folder_name}.jpg"
 
             can_1.drawInlineImage(pic, 451, 545, width=3.7 * cm, height=3.7 * cm)
 
@@ -121,7 +121,7 @@ def _create_stud_pdf(student):
     output.addPage(page_1)
     output.addPage(page_2)
 
-    outputStream = open(f"{django_settings.MEDIA_ROOT}pdf/student_detail.pdf", "wb")
+    outputStream = open(f"{django_settings.MEDIA_ME}pdf/student_detail.pdf", "wb")
     output.write(outputStream)
     outputStream.close()
 
@@ -130,11 +130,13 @@ def _create_staf_pdf(staff):
     packet_1 = io.BytesIO()
     can_1 = canvas.Canvas(packet_1, pagesize=A4)
 
-    for image in os.listdir(f"{django_settings.MEDIA_ROOT}image/staff"):
+    for image in os.listdir(f"{django_settings.MEDIA_ME}image/staff"):
         full_name = f"{staff.last_name}_{staff.first_name}".lower()
         folder_name = image
         if folder_name == full_name:
-            pic = f"{django_settings.MEDIA_ROOT}image/staff/{folder_name}/{folder_name}.jpg"
+            pic = (
+                f"{django_settings.MEDIA_ME}image/staff/{folder_name}/{folder_name}.jpg"
+            )
 
             can_1.drawInlineImage(pic, 446, 540, width=3.7 * cm, height=3.7 * cm)
 
@@ -204,6 +206,6 @@ def _create_staf_pdf(staff):
 
     output.addPage(page_1)
 
-    outputStream = open(f"{django_settings.MEDIA_ROOT}pdf/staff_detail.pdf", "wb")
+    outputStream = open(f"{django_settings.MEDIA_ME}pdf/staff_detail.pdf", "wb")
     output.write(outputStream)
     outputStream.close()

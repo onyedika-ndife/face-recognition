@@ -1,12 +1,12 @@
 import os
 
 import requests
-from PIL import Image
 from PyQt5.Qt import QFileInfo
 from PyQt5.QtCore import QSize, QTimer
 from PyQt5.QtGui import QIcon, QImage, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
+    QDialog,
     QFileDialog,
     QGridLayout,
     QGroupBox,
@@ -15,33 +15,31 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QPushButton,
     QScrollArea,
+    QTextEdit,
     QToolBar,
     QVBoxLayout,
     QWidget,
-    QTextEdit,
-    QDialog,
 )
 
+from components.components import COMPONENTS
 from register.register_main import REGISTER_MAIN
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 class VIEW_DETAILS(QMainWindow):
-    def __init__(self, title, prev_scrn, profile, main_layout):
+    def __init__(self, title, prev_scrn, profile, super_layout):
         super().__init__()
         self.title = title
         self.title.setWindowTitle("VIEW STAFF DETAILS")
 
-        self.main_layout = main_layout
+        self.super_layout = super_layout
 
         self.previous = prev_scrn
 
         self.MAIN_VIEW(profile)
 
     def MAIN_VIEW(self, profile):
-        components = REGISTER_MAIN.components
-
-        comp = REGISTER_MAIN.components()
+        self.comp = COMPONENTS()
 
         _id = int(profile["id"])
 
@@ -81,135 +79,141 @@ class VIEW_DETAILS(QMainWindow):
         self.toolbar.addAction(self.edit_action)
         self.toolbar.addAction(self.export)
 
-        self.main_widget = QWidget()
+        main_widget = QWidget()
         self.vbox = QVBoxLayout()
 
-        self.personal_details(components)
+        self.personal_details()
 
-        self.contact_details(components)
+        self.contact_details()
 
-        self.other_detail(components)
+        self.other_detail()
 
-        self.main_widget.setLayout(self.vbox)
+        main_widget.setLayout(self.vbox)
 
-        self.scroll = QScrollArea()
-        self.scroll.setWidget(self.main_widget)
-        self.scroll.setWidgetResizable(True)
+        scroll = QScrollArea()
+        scroll.setWidget(main_widget)
+        scroll.setWidgetResizable(True)
 
-        self.setCentralWidget(self.scroll)
+        self.setCentralWidget(scroll)
 
-        self.main_layout.addWidget(self)
-        self.main_layout.setCurrentWidget(self)
+        self.super_layout.addWidget(self)
+        self.super_layout.setCurrentWidget(self)
 
-    def personal_details(self, component):
-        comp = component()
+    def personal_details(self):
+        group_box = QGroupBox()
+        grid = QGridLayout()
+        group_box.setLayout(grid)
 
-        comp.main_group_box.setTitle("Personal Details")
+        group_box.setTitle("Personal Details")
 
         # for views containing school detail of student
-        self.pd_view = QHBoxLayout()
-        self.pd_detail_view = QGridLayout()
+        pd_view = QHBoxLayout()
+        pd_detail_view = QGridLayout()
 
-        comp.main_grid.addLayout(self.pd_view, 0, 0, 1, 0)
+        grid.addLayout(pd_view, 0, 0, 1, 0)
 
-        self.pd_view.addLayout(self.pd_detail_view)
-        self.pd_view.addWidget(comp.profile_pic)
+        pd_view.addLayout(pd_detail_view)
+        pd_view.addWidget(self.comp.profile_pic)
 
-        self.pd_detail_view.addWidget(comp.l_name, 0, 0)
-        self.l_name_text = QLabel()
-        self.pd_detail_view.addWidget(self.l_name_text, 0, 1)
-        self.l_name_text.setText(self.profile["last_name"])
+        pd_detail_view.addWidget(self.comp.l_name, 0, 0)
+        l_name_text = QLabel()
+        pd_detail_view.addWidget(l_name_text, 0, 1)
+        l_name_text.setText(self.profile["last_name"])
 
-        self.pd_detail_view.addWidget(comp.m_name, 1, 0)
-        self.m_name_text = QLabel()
-        self.pd_detail_view.addWidget(self.m_name_text, 1, 1)
-        self.m_name_text.setText(self.profile["middle_name"])
+        pd_detail_view.addWidget(self.comp.m_name, 1, 0)
+        m_name_text = QLabel()
+        pd_detail_view.addWidget(m_name_text, 1, 1)
+        m_name_text.setText(self.profile["middle_name"])
 
-        self.pd_detail_view.addWidget(comp.f_name, 2, 0)
-        self.f_name_text = QLabel()
-        self.pd_detail_view.addWidget(self.f_name_text, 2, 1)
-        self.f_name_text.setText(self.profile["first_name"])
+        pd_detail_view.addWidget(self.comp.f_name, 2, 0)
+        f_name_text = QLabel()
+        pd_detail_view.addWidget(f_name_text, 2, 1)
+        f_name_text.setText(self.profile["first_name"])
 
-        self.pd_detail_view.addWidget(comp.profession, 3, 0)
-        self.profession_text = QLabel()
-        self.pd_detail_view.addWidget(self.profession_text, 3, 1)
-        self.profession_text.setText(self.profile["profession"])
+        pd_detail_view.addWidget(self.comp.profession, 3, 0)
+        profession_text = QLabel()
+        pd_detail_view.addWidget(profession_text, 3, 1)
+        profession_text.setText(self.profile["profession"])
 
-        self.pd_detail_view.addWidget(comp.age, 4, 0)
-        self.age_text = QLabel()
-        self.pd_detail_view.addWidget(self.age_text, 4, 1)
-        self.age_text.setText(str(self.profile["age"]))
+        pd_detail_view.addWidget(self.comp.age, 4, 0)
+        age_text = QLabel()
+        pd_detail_view.addWidget(age_text, 4, 1)
+        age_text.setText(str(self.profile["age"]))
 
         r = requests.get(url=self.profile["pic"], stream=True)
 
         pic = QImage()
         pic.loadFromData(r.content)
 
-        comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
+        self.comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
 
-        comp.main_grid.addWidget(comp.dob_label, 1, 0)
-        self.dob_text = QLabel()
-        comp.main_grid.addWidget(self.dob_text, 1, 1)
-        self.dob_text.setText(str(self.profile["date_of_birth"]))
+        grid.addWidget(self.comp.dob_label, 1, 0)
+        dob_text = QLabel()
+        grid.addWidget(dob_text, 1, 1)
+        dob_text.setText(str(self.profile["date_of_birth"]))
 
-        comp.main_grid.addWidget(comp.gender, 2, 0)
-        self.gender_text = QLabel()
-        comp.main_grid.addWidget(self.gender_text, 2, 1)
-        self.gender_text.setText(self.profile["gender"])
+        grid.addWidget(self.comp.gender, 2, 0)
+        gender_text = QLabel()
+        grid.addWidget(gender_text, 2, 1)
+        gender_text.setText(self.profile["gender"])
 
-        comp.main_grid.addWidget(comp.nationality, 3, 0)
-        self.nationality_text = QLabel()
-        comp.main_grid.addWidget(self.nationality_text, 3, 1)
-        self.nationality_text.setText(self.profile["nationality"])
+        grid.addWidget(self.comp.nationality, 3, 0)
+        nationality_text = QLabel()
+        grid.addWidget(nationality_text, 3, 1)
+        nationality_text.setText(self.profile["nationality"])
 
-        comp.main_grid.addWidget(comp.state_origin, 4, 0)
-        self.state_origin_text = QLabel()
-        comp.main_grid.addWidget(self.state_origin_text, 4, 1)
-        self.state_origin_text.setText(self.profile["state_of_origin"])
+        grid.addWidget(self.comp.state_origin, 4, 0)
+        state_origin_text = QLabel()
+        grid.addWidget(state_origin_text, 4, 1)
+        state_origin_text.setText(self.profile["state_of_origin"])
 
-        comp.main_grid.addWidget(comp.lga_origin, 5, 0)
-        self.lga_origin_text = QLabel()
-        comp.main_grid.addWidget(self.lga_origin_text, 5, 1)
-        self.lga_origin_text.setText(self.profile["lga_origin"])
+        grid.addWidget(self.comp.lga_origin, 5, 0)
+        lga_origin_text = QLabel()
+        grid.addWidget(lga_origin_text, 5, 1)
+        lga_origin_text.setText(self.profile["lga_origin"])
 
-        comp.main_grid.addWidget(comp.marital, 6, 0)
-        self.marital_text = QLabel()
-        comp.main_grid.addWidget(self.marital_text, 6, 1)
-        self.marital_text.setText(self.profile["marital_status"])
+        grid.addWidget(self.comp.marital, 6, 0)
+        marital_text = QLabel()
+        grid.addWidget(marital_text, 6, 1)
+        marital_text.setText(self.profile["marital_status"])
 
-        self.vbox.addWidget(comp.main_group_box)
+        self.vbox.addWidget(group_box)
 
-    def contact_details(self, component):
-        comp = component()
+    def contact_details(self):
+        group_box = QGroupBox()
+        grid = QGridLayout()
+        group_box.setLayout(grid)
 
-        comp.main_group_box.setTitle("Contact Details")
+        group_box.setTitle("Contact Details")
 
-        comp.main_grid.addWidget(comp.address, 0, 0)
-        self.address_text = QLabel()
-        comp.main_grid.addWidget(self.address_text, 0, 1)
-        self.address_text.setText(self.profile["address"])
+        grid.addWidget(self.comp.address, 0, 0)
+        address_text = QLabel()
+        grid.addWidget(address_text, 0, 1)
+        address_text.setText(self.profile["address"])
 
-        comp.main_grid.addWidget(comp.phone, 1, 0)
-        self.phone_text = QLabel()
-        comp.main_grid.addWidget(self.phone_text, 1, 1)
-        self.phone_text.setText(self.profile["phone_number"])
+        grid.addWidget(self.comp.phone, 1, 0)
+        phone_text = QLabel()
+        grid.addWidget(phone_text, 1, 1)
+        phone_text.setText(self.profile["phone_number"])
 
-        comp.main_grid.addWidget(comp.email, 2, 0)
-        self.email_text = QLabel()
-        comp.main_grid.addWidget(self.email_text, 2, 1)
-        self.email_text.setText(self.profile["email"])
+        grid.addWidget(self.comp.email, 2, 0)
+        email_text = QLabel()
+        grid.addWidget(email_text, 2, 1)
+        email_text.setText(self.profile["email"])
 
-        self.vbox.addWidget(comp.main_group_box)
+        self.vbox.addWidget(group_box)
 
-    def other_detail(self, component):
-        comp = component()
+    def other_detail(self):
+        group_box = QGroupBox()
+        grid = QGridLayout()
+        group_box.setLayout(grid)
 
-        comp.main_grid.addWidget(comp.dor, 0, 0)
-        self.dor_text = QLabel()
-        comp.main_grid.addWidget(self.dor_text, 0, 1)
-        self.dor_text.setText(str(self.profile["date_of_registration"]))
+        grid.addWidget(self.comp.dor, 0, 0)
+        dor_text = QLabel()
+        grid.addWidget(dor_text, 0, 1)
+        dor_text.setText(str(self.profile["date_of_registration"]))
 
-        self.vbox.addWidget(comp.main_group_box)
+        self.vbox.addWidget(group_box)
 
     def _save_file(self):
         r = requests.get(url=f"{APP_URL}/recognize/d_staf/")
@@ -234,6 +238,5 @@ class VIEW_DETAILS(QMainWindow):
         from staff_detail.edit_details import EDIT_DETAILS
 
         edit_details = EDIT_DETAILS(
-            self.title, self.previous, self.profile, self.main_layout
+            self.title, self.previous, self.profile, self.super_layout
         )
-

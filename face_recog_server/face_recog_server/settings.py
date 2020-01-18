@@ -129,15 +129,17 @@ STATIC_ME = "assets/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
+MEDIA_ME = "media/"
+
 MEDIA_URL = "/media/"
 
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-django_heroku.settings(locals())
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# django_heroku.settings(locals())
 
-import dj_database_url
+# import dj_database_url
 
-DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)

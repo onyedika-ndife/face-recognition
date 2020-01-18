@@ -18,9 +18,9 @@ def _recog_stud(student, image):
     known_id = student.id
     name = f"{student.last_name}_{student.first_name}".lower()
 
-    for image in os.listdir(f"{django_settings.MEDIA_ROOT}image/student/{name}"):
+    for image in os.listdir(f"{django_settings.MEDIA_ME}image/student/{name}"):
         _image = face_recognition.load_image_file(
-            f"{django_settings.MEDIA_ROOT}image/student/{name}/{image}"
+            f"{django_settings.MEDIA_ME}image/student/{name}/{image}"
         )
         _image_face_encoding = face_recognition.face_encodings(_image)[0]
 
@@ -76,9 +76,9 @@ def _recog_staf(staff, image):
     known_id = staff.id
     name = f"{staff.last_name}_{staff.first_name}".lower()
 
-    for image in os.listdir(f"{django_settings.MEDIA_ROOT}image/staff/{name}"):
+    for image in os.listdir(f"{django_settings.MEDIA_ME}image/staff/{name}"):
         _image = face_recognition.load_image_file(
-            f"{django_settings.MEDIA_ROOT}image/staff/{name}/{image}"
+            f"{django_settings.MEDIA_ME}image/staff/{name}/{image}"
         )
         _image_face_encoding = face_recognition.face_encodings(_image)[0]
 

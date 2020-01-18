@@ -27,9 +27,4 @@ urlpatterns = [
     path("register/", include("register.urls")),
     path("recognize/", include("recognize.urls")),
     path("api/", include("recognize.api_urls")),
-]
-
-
-urlpatterns += staticfiles_urlpatterns()
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,46 +1,29 @@
-import cv2
 import os
-import requests
 
+import cv2
+import requests
 from PyQt5.QtCore import QSize, QTimer
-from PyQt5.QtGui import QIcon, QPixmap, QImage
-from PyQt5.QtWidgets import (
-    QWidget,
-    QDialog,
-    QVBoxLayout,
-    QGroupBox,
-    QGridLayout,
-    QLabel,
-    QPushButton,
-    QHBoxLayout,
-    QStackedLayout,
-    QMessageBox
-)
+from PyQt5.QtGui import QIcon, QImage, QPixmap
+from PyQt5.QtWidgets import (QDialog, QGridLayout, QGroupBox, QHBoxLayout,
+                             QLabel, QMessageBox, QPushButton, QStackedLayout,
+                             QVBoxLayout, QWidget)
 
 # APP_URL = "http://127.0.0.1:8000"
 APP_URL = "https://face-recog-server.herokuapp.com"
 
 
 class REGISTER_STAFF(QDialog):
-    def __init__(self, main_layout, components):
+    def __init__(self, super_layout, components):
         super().__init__()
-        self.main_layout = main_layout
-
+        self.super_layout = super_layout
+        self.comp = components()
         self.setWindowTitle("REGISTER STAFF")
-
-        comp = components()
-
-        # For other screens
         self.stacked = QStackedLayout()
+        self.setupUI()
 
-        self.setupUI(comp)
-
-    def setupUI(self, components):
-        self.comp = components
-
-        self.personal_details()
-
+    def setupUI(self):
         self.setLayout(self.stacked)
+        self.personal_details()
 
     def personal_details(self):
         vbox = QVBoxLayout()
@@ -243,9 +226,9 @@ class REGISTER_STAFF(QDialog):
                     break
             else:
                 break
-            # sending post request and saving response as response object
-            r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
-            self.register_face()
+        # sending post request and saving response as response object
+        r = requests.post(url=f"{APP_URL}/register/staff/", data=data)
+        self.register_face()
 
     def register_face(self):
         r = requests.get(url=f"{APP_URL}/register/staff/")
@@ -254,85 +237,23 @@ class REGISTER_STAFF(QDialog):
 
         self._id = staff["id"]
 
-        self.face_cascade = cv2.CascadeClassifier(
-            "./assets/classifier/haarcascade_frontalface_alt2.xml"
+        self.comp._start_video(self.super_layout)
+        self.comp.video_init_layout.removeWidget(self.comp.back_btn)
+        self.comp.cam_btn.clicked.connect(
+            lambda: self.snap(self.comp.image, self.comp.timer, self.comp.cam)
         )
 
-        self.video_widget = QWidget()
-        self.video_init_layout = QVBoxLayout()
-
-        # Create Camera View
-        self.cam_view = QLabel()
-        self.cam_btn = QPushButton("Capture")
-
-        self.video_init_layout.addWidget(self.cam_view)
-        self.video_init_layout.addWidget(self.cam_btn)
-        self.video_widget.setLayout(self.video_init_layout)
-
-        self.cam_btn.clicked.connect(self.snap)
-
-        self.main_layout.addWidget(self.video_widget)
-        self.main_layout.setCurrentWidget(self.video_widget)
-
-        # create a timer
-        self.timer = QTimer()
-
-        # set timer timeout callback function
-        self.timer.timeout.connect(self._video)
-
-        if not self.timer.isActive():
-            self.cam = cv2.VideoCapture(0)
-            self.timer.start(1)
-
-    def _video(self):
-        ret, self.image = self.cam.read()
-
-        image_copy = self.image.copy()
-
-        # Capture Image-by-Image
-        gray = cv2.cvtColor(image_copy, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(
-            gray,
-            scaleFactor=1.1,
-            minNeighbors=5,
-            minSize=(40, 40),
-            flags=cv2.CASCADE_SCALE_IMAGE,
-        )
-        for (x, y, w, h) in faces:
-            cv2.rectangle(image_copy, (x, y), (x + w, y + h), (255, 255, 255), 1)
-
-        self.image_shown = cv2.cvtColor(image_copy, cv2.COLOR_BGR2RGB)
-
-        # get image infos
-        self.height, self.width, self.channel = self.image_shown.shape
-        self.step = self.channel * self.width
-
-        # create QImage from image
-        self.qImg = QImage(
-            self.image_shown.data,
-            self.width,
-            self.height,
-            self.step,
-            QImage.Format_RGB888,
-        )
-
-        # Set the data from qImg to cam_view
-        self.cam_view.setPixmap(QPixmap.fromImage(self.qImg))
-
-        # self.train_faces.TRAINER(self._id, self.name)
-
-    def snap(self):
-        image_cropped = self.image[0:480, 80:560]
+    def snap(self, image, timer, cam):
+        image_cropped = image[0:480, 80:560]
         cv2.imwrite(
             "./assets/temp/temp.jpg", image_cropped,
         )
 
-        self.timer.stop()
-        self.cam.release()
+        timer.stop()
+        cam.release()
 
-        for image in os.listdir("./assets/temp/"):
-            file = {"image": open(f"./assets/temp/{image}", "rb").read()}
+        for img in os.listdir("./assets/temp/"):
+            file = {"image": open(f"./assets/temp/{img}", "rb").read()}
             r = requests.post(url=f"{APP_URL}/register/staff/{self._id}", files=file)
 
-        self.main_layout.setCurrentIndex(0)
-
+        self.super_layout.setCurrentIndex(0)

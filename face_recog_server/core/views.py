@@ -12,9 +12,11 @@ def user_login(request):
         for admin in admins:
             if admin.username == user_name and admin.password == pass_word:
                 print("Success")
-                return HttpResponse("Success!!")
+                return HttpResponse("Authentication Success")
+            elif admin.username == user_name and not admin.password == pass_word:
+                return HttpResponse("Incorrect Password")
             else:
                 print("Failed")
-                return HttpResponse("Invalid login details!!")
+                return HttpResponse("Invalid Login Details")
     elif request.method == "GET":
-        return HttpResponse("Connected!!")
+        return HttpResponse("Server Connected")

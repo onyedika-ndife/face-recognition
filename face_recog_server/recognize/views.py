@@ -61,7 +61,7 @@ def _verify_staff(request):
 def api_verify_stud(request):
     students = STUDENTS.objects.all()
 
-    serializer = API_STUDENT_SERIALIZERS(students, context={"request": request})
+    serializer = API_STUDENT_SERIALIZERS(students, many=True, context={"request": request})
 
     if request.method == "POST":
         image_file = request.FILES["image"]
@@ -84,7 +84,7 @@ def api_verify_stud(request):
 def api_verify_staff(request):
     staff = STAFF.objects.all()
 
-    serializer = API_STAFF_SERIALIZERS(staff, context={"request": request})
+    serializer = API_STAFF_SERIALIZERS(staff, many=True, context={"request": request})
 
     if request.method == "POST":
         image_file = request.FILES["image"]
@@ -103,13 +103,13 @@ def api_verify_staff(request):
 
 def show_full_details_student(request):
     if request.method == "GET":
-        pdf = f"{django_settings.MEDIA_ROOT}pdf/student_detail.pdf"
-        response = HttpResponse(pdf, content_type="application/pdf")
+        pdf = f"{django_settings.MEDIA_ME}pdf/student_detail.pdf"
+        response = HttpResponse(open(pdf, "rb").read(), content_type="application/pdf")
         return response
 
 
 def show_full_details_staff(request):
     if request.method == "GET":
-        pdf = f"{django_settings.MEDIA_ROOT}pdf/staff_detail.pdf"
+        pdf = f"{django_settings.MEDIA_ME}pdf/staff_detail.pdf"
         response = HttpResponse(open(pdf, "rb").read(), content_type="application/pdf")
         return response

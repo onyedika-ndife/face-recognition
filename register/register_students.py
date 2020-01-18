@@ -14,30 +14,25 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QHBoxLayout,
     QStackedLayout,
-    QMessageBox
+    QMessageBox,
 )
 
 # APP_URL = "http://127.0.0.1:8000"
 APP_URL = "https://face-recog-server.herokuapp.com"
+
+
 class REGISTER_STUDENT(QDialog):
     def __init__(self, main_layout, components):
         super().__init__()
         self.main_layout = main_layout
-
         self.setWindowTitle("REGISTER STUDENT")
-        components = components()
-
         # For other screens
         self.stacked = QStackedLayout()
-
         self.setupUI(components)
 
-
     def setupUI(self, components):
-        self.comp = components
-
+        self.comp = components()
         self.personal_details()
-        
         # SETTING LAYOUTS
         self.setLayout(self.stacked)
 
@@ -47,8 +42,6 @@ class REGISTER_STUDENT(QDialog):
         group_box = QGroupBox("Personal Details")
 
         _next = QPushButton("Next")
-        
-        # _next.setLayoutDirection()
 
         # ADDING WIDGETS
         grid.addWidget(self.comp.f_name, 0, 0)
@@ -81,11 +74,10 @@ class REGISTER_STUDENT(QDialog):
         grid.addWidget(self.comp.lga_origin, 9, 0)
         grid.addWidget(self.comp.lga_origin_input, 9, 1)
 
-        grid.addWidget(_next, 10,0,1,0)
+        grid.addWidget(_next, 10, 0, 1, 0)
 
         group_box.setLayout(grid)
         vbox.addWidget(group_box)
-
 
         self.pd_main_widget = QWidget()
         self.pd_main_widget.setLayout(vbox)
@@ -123,7 +115,7 @@ class REGISTER_STUDENT(QDialog):
         grid.addWidget(self.comp.m_num, 4, 0)
         grid.addWidget(self.comp.m_num_input, 4, 1)
 
-        grid.addLayout(btn_view, 5,0,1,0)
+        grid.addLayout(btn_view, 5, 0, 1, 0)
 
         # On change of College
         self.comp.college_select.currentIndexChanged.connect(self.school)
@@ -137,16 +129,13 @@ class REGISTER_STUDENT(QDialog):
         self.stacked.addWidget(self.sd_main_widget)
         self.stacked.setCurrentWidget(self.sd_main_widget)
 
-
         # When prev button is clicked
-        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.pd_main_widget))
-        
+        _prev.clicked.connect(
+            lambda: self.stacked.setCurrentWidget(self.pd_main_widget)
+        )
 
         # When next button is clicked
         _next.clicked.connect(self.contact_details)
-        
-        # _next.setLayoutDirection
-
 
     def contact_details(self):
         vbox = QVBoxLayout()
@@ -169,8 +158,7 @@ class REGISTER_STUDENT(QDialog):
         grid.addWidget(self.comp.email, 2, 0)
         grid.addWidget(self.comp.email_input, 2, 1)
 
-        grid.addLayout(btn_view, 3,0,1,0)
-
+        grid.addLayout(btn_view, 3, 0, 1, 0)
 
         group_box.setLayout(grid)
         vbox.addWidget(group_box)
@@ -182,12 +170,12 @@ class REGISTER_STUDENT(QDialog):
         self.stacked.setCurrentWidget(self.cd_main_widget)
 
         # When prev button is clicked
-        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.sd_main_widget))
-        
+        _prev.clicked.connect(
+            lambda: self.stacked.setCurrentWidget(self.sd_main_widget)
+        )
 
         # When next button is clicked
         _next.clicked.connect(self.parent_details)
-        
 
     def parent_details(self):
         vbox = QVBoxLayout()
@@ -210,8 +198,7 @@ class REGISTER_STUDENT(QDialog):
         grid.addWidget(self.comp.p_phone, 2, 0)
         grid.addWidget(self.comp.p_phone_input, 2, 1)
 
-        grid.addLayout(btn_view, 3,0,1,0)
-
+        grid.addLayout(btn_view, 3, 0, 1, 0)
 
         group_box.setLayout(grid)
         vbox.addWidget(group_box)
@@ -223,13 +210,12 @@ class REGISTER_STUDENT(QDialog):
         self.stacked.setCurrentWidget(self.psd_main_widget)
 
         # When prev button is clicked
-        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.cd_main_widget))
-        
-        
+        _prev.clicked.connect(
+            lambda: self.stacked.setCurrentWidget(self.cd_main_widget)
+        )
 
         # When next button is clicked
         _next.clicked.connect(self.done)
-        
 
     def done(self):
         vbox = QVBoxLayout()
@@ -243,11 +229,10 @@ class REGISTER_STUDENT(QDialog):
         btn_view.addWidget(_prev)
         btn_view.addWidget(_next)
 
-
         grid.addWidget(self.comp.dor, 0, 0)
         grid.addWidget(self.comp.dor_text, 0, 1)
 
-        grid.addLayout(btn_view, 1,0,1,0)
+        grid.addLayout(btn_view, 1, 0, 1, 0)
 
         group_box.setLayout(grid)
         vbox.addWidget(group_box)
@@ -259,14 +244,92 @@ class REGISTER_STUDENT(QDialog):
         self.stacked.setCurrentWidget(self.d_main_widget)
 
         # When prev button is clicked
-        _prev.clicked.connect(lambda: self.stacked.setCurrentWidget(self.psd_main_widget))
-        
-
+        _prev.clicked.connect(
+            lambda: self.stacked.setCurrentWidget(self.psd_main_widget)
+        )
 
         # When next button is clicked
         _next.clicked.connect(self.register_student_details)
         _next.setIcon(QIcon("./assets/icons/capture.png"))
-        _next.setIconSize(QSize(20,20))
+        _next.setIconSize(QSize(20, 20))
+
+    def register_student_details(self):
+        # Assigning Variables
+        data = {
+            "first_name": str(self.comp.f_name_input.text()),
+            "middle_name": str(self.comp.m_name_input.text()),
+            "last_name": str(self.comp.l_name_input.text()),
+            "date_of_birth": str(self.comp.dob_date_label.text()),
+            "age": str(self.comp.age_input.text()),
+            "gender": str(
+                (
+                    self.comp.gender_1.text()
+                    if self.comp.gender_1.isChecked()
+                    else self.comp.gender_2.text()
+                )
+            ),
+            "nationality": str(self.comp.nationality_input.text()),
+            "state_of_origin": str(self.comp.state_origin_input.text()),
+            "lga_origin": str(self.comp.lga_origin_input.text()),
+            "marital_status": str(self.comp.marital_select.currentText()),
+            # Assigning Variables
+            "jamb_number": str(self.comp.j_num_input.text()),
+            "college": str(self.comp.college_select.currentText()),
+            "department": str(self.comp.dept_select.currentText()),
+            "level": str(self.comp.level_select.currentText()),
+            "matric_number": str(self.comp.m_num_input.text()),
+            # Assigning Variables
+            "address": str(self.comp.address_input.text()),
+            "phone_number": str(self.comp.phone_input.text()),
+            "email": str(self.comp.email_input.text()),
+            # Assigning Variables
+            "parent_name": str(self.comp.p_name_input.text()),
+            "parent_email": str(self.comp.p_email_input.text()),
+            "parent_phone": str(self.comp.p_phone_input.text()),
+            "date_of_registration": str(self.comp.dor_text.text()),
+        }
+
+        for value in data.values():
+            if value == "":
+                msg = QMessageBox()
+                msg.setIconPixmap(QPixmap("./assets/icons/no_entry.png"))
+                msg.setWindowTitle("Empty Entry")
+                msg.setText("Please Check Entries!")
+                msg.show()
+                if msg.exec_() or msg == QMessageBox.Ok:
+                    break
+            else:
+                break
+        # sending post request and saving response as response object
+        r = requests.post(url=f"{APP_URL}/register/students/", data=data)
+        self.register_face()
+
+    def register_face(self):
+        r = requests.get(url=f"{APP_URL}/register/students/")
+
+        student = r.json()
+
+        self._id = student["id"]
+
+        self.comp._start_video(self.super_layout)
+        self.comp.video_init_layout.removeWidget(self.comp.back_btn)
+        self.comp.cam_btn.clicked.connect(
+            lambda: self.snap(self.comp.image, self.comp.timer, self.comp.cam)
+        )
+
+    def snap(self, image, timer, cam):
+        image_cropped = image[0:480, 80:560]
+
+        cv2.imwrite("./assets/temp/temp.jpg", image_cropped)
+
+        timer.stop()
+        cam.release()
+
+        for img in os.listdir("./assets/temp/"):
+            file = {"image": open(f"./assets/temp/{img}", "rb").read()}
+            r = requests.post(url=f"{APP_URL}/register/students/{self._id}", files=file)
+
+        self.main_layout.setCurrentIndex(0)
 
 
     def school(self, i):
@@ -408,145 +471,3 @@ class REGISTER_STUDENT(QDialog):
                     "VERTINARY PUBLIC HEALTH AND PREVENTIVE MEDICINE",
                 ]
             )
-
-    def register_student_details(self):
-        # Assigning Variables
-        data = {
-            "first_name":str(self.comp.f_name_input.text()),
-            "middle_name":str(self.comp.m_name_input.text()),
-            "last_name":str(self.comp.l_name_input.text()),
-            "date_of_birth":str(self.comp.dob_date_label.text()),
-            "age":str(self.comp.age_input.text()),
-            "gender":str((
-                self.comp.gender_1.text()
-                if self.comp.gender_1.isChecked()
-                else self.comp.gender_2.text()
-            )),
-            "nationality":str(self.comp.nationality_input.text()),
-            "state_of_origin":str(self.comp.state_origin_input.text()),
-            "lga_origin":str(self.comp.lga_origin_input.text()),
-            "marital_status":str(self.comp.marital_select.currentText()),
-            # Assigning Variables
-            "jamb_number":str(self.comp.j_num_input.text()),
-            "college":str(self.comp.college_select.currentText()),
-            "department":str(self.comp.dept_select.currentText()),
-            "level":str(self.comp.level_select.currentText()),
-            "matric_number":str(self.comp.m_num_input.text()),
-            # Assigning Variables
-            "address":str(self.comp.address_input.text()),
-            "phone_number":str(self.comp.phone_input.text()),
-            "email":str(self.comp.email_input.text()),
-            # Assigning Variables
-            "parent_name":str(self.comp.p_name_input.text()),
-            "parent_email":str(self.comp.p_email_input.text()),
-            "parent_phone":str(self.comp.p_phone_input.text()),
-            "date_of_registration":str(self.comp.dor_text.text()),
-        }
-
-        for value in data.values():
-            if value == "":
-                msg = QMessageBox()
-                msg.setIconPixmap(QPixmap("./assets/icons/no_entry.png"))
-                msg.setWindowTitle("Empty Entry")
-                msg.setText("Please Check Entries!")
-                msg.show()
-                if msg.exec_() or msg ==  QMessageBox.Ok:
-                    break
-            else:
-                break
-        # sending post request and saving response as response object 
-        r = requests.post(url = f"{APP_URL}/register/students/", data = data)
-        self.register_face()
-
-
-    def register_face(self):
-        r = requests.get(url = f"{APP_URL}/register/students/")
-
-        student = r.json()
-
-        self._id = student['id']
-
-        self.face_cascade = cv2.CascadeClassifier(
-            "./assets/classifier/haarcascade_frontalface_alt2.xml"
-        )
-
-        self.video_widget = QWidget()
-        self.video_init_layout = QVBoxLayout()
-
-        # Create Camera View
-        self.cam_view = QLabel()
-        self.cam_btn = QPushButton('Capture')
-
-
-        self.video_init_layout.addWidget(self.cam_view)
-        self.video_init_layout.addWidget(self.cam_btn)
-        self.video_widget.setLayout(self.video_init_layout)
-
-        self.cam_btn.clicked.connect(self.snap)
-
-        self.main_layout.addWidget(self.video_widget)
-        self.main_layout.setCurrentWidget(self.video_widget)
-
-        # create a timer
-        self.timer = QTimer()
-
-        # set timer timeout callback function
-        self.timer.timeout.connect(self._video)
-
-        if not self.timer.isActive():
-            self.cam = cv2.VideoCapture(0)
-            self.timer.start(1)
-
-    def _video(self):
-        ret, self.image = self.cam.read()
-
-        image_copy = self.image.copy()
-
-        # Capture Image-by-Image
-        gray = cv2.cvtColor(image_copy, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(
-            gray,
-            scaleFactor=1.1,
-            minNeighbors=5,
-            minSize=(40, 40),
-            flags=cv2.CASCADE_SCALE_IMAGE,
-        )
-        for (x, y, w, h) in faces:
-            cv2.rectangle(image_copy, (x, y), (x + w, y + h), (255, 255, 255), 1)
-
-        self.image_shown = cv2.cvtColor(image_copy, cv2.COLOR_BGR2RGB)
-
-        # get image infos
-        self.height, self.width, self.channel = self.image_shown.shape
-        self.step = self.channel * self.width
-
-        # create QImage from image
-        self.qImg = QImage(
-            self.image_shown.data,
-            self.width,
-            self.height,
-            self.step,
-            QImage.Format_RGB888,
-        )
-
-        # Set the data from qImg to cam_view
-        self.cam_view.setPixmap(QPixmap.fromImage(self.qImg))        
-
-    def snap(self):
-        image_cropped = self.image[0:480, 80:560]
-
-        cv2.imwrite(
-            "./assets/temp/temp.jpg",
-            image_cropped,
-        )
-        
-        self.timer.stop()
-        self.cam.release()
-
-        for image in os.listdir("./assets/temp/"):
-            file = {"image":open(f"./assets/temp/{image}", "rb").read()}
-            r = requests.post(url = f"{APP_URL}/register/students/{self._id}", files=file)
-
-
-
-        self.main_layout.setCurrentIndex(0)

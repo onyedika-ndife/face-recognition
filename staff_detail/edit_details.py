@@ -1,7 +1,9 @@
 import requests
+import cv2
+import os
 
 from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap, QImage
 from PyQt5.QtWidgets import (
     QAction,
     QScrollArea,
@@ -16,27 +18,26 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
 )
 
-from register.register_main import REGISTER_MAIN
-from register.register_students import REGISTER_STUDENT
+from components.components import COMPONENTS
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
+APP_URL = "http://127.0.0.1:8000"
+# APP_URL = "https://face-recog-server.herokuapp.com"
 
 
 class EDIT_DETAILS(QMainWindow):
-    def __init__(self, title, prev_scrn, profile, main_layout):
+    def __init__(self, title, prev_scrn, profile, super_layout):
         super().__init__()
         self.title = title
         self.title.setWindowTitle("EDIT STUDENT DETAILS")
 
-        self.main_layout = main_layout
+        self.super_layout = super_layout
 
         self.previous = prev_scrn
 
         self.MAIN_VIEW(profile)
 
     def MAIN_VIEW(self, profile):
-        self.comp = REGISTER_MAIN.components()
+        self.comp = COMPONENTS()
 
         _id = int(profile["id"])
 
@@ -82,8 +83,8 @@ class EDIT_DETAILS(QMainWindow):
 
         self.setCentralWidget(self.scroll)
 
-        self.main_layout.addWidget(self)
-        self.main_layout.setCurrentWidget(self)
+        self.super_layout.addWidget(self)
+        self.super_layout.setCurrentWidget(self)
 
     def personal_details(self):
         _group_box = QGroupBox("Personal Details")
@@ -98,8 +99,21 @@ class EDIT_DETAILS(QMainWindow):
         _grid.addLayout(self.sd_view, 0, 0, 1, 0)
 
         self.sd_view.addLayout(self.sd_detail_view)
-        self.sd_view.addWidget(self.comp.profile_pic)
-        self.comp.profile_pic.setMaximumWidth(220)
+        self.sd_view.addLayout(self.comp.pro_pic_view)
+
+        r = requests.get(url=self.profile["pic"], stream=True)
+
+        pic = QImage()
+        pic.loadFromData(r.content)
+
+        self.comp.profile_pic.setPixmap(QPixmap.fromImage(pic))
+
+        self.comp.change_pro.clicked.connect(lambda: self.comp._start_video(self.super_layout))
+
+        self.comp.cam_btn.clicked.connect(
+            lambda: self.snap(self.comp.image, self.comp.timer, self.comp.cam)
+        )
+
 
         self.sd_detail_view.addWidget(self.comp.l_name, 0, 0)
         self.sd_detail_view.addWidget(self.comp.l_name_input, 0, 1)
@@ -189,43 +203,44 @@ class EDIT_DETAILS(QMainWindow):
 
         self.vbox.addWidget(self.save_2_db)
 
-        self.save_2_db.clicked.connect(self._save)
+        self.save_2_db.clicked.connect(self._save_2_db)
 
     def _save_2_db(self):
         _id = int(self.profile["id"])
 
-        data = {
-            "first_name": str(self.comp.f_name_input.text()),
-            "middle_name": str(self.comp.m_name_input.text()),
-            "last_name": str(self.comp.l_name_input.text()),
-            "date_of_birth": str(self.comp.dob_date_label.text()),
-            "age": str(self.comp.age_input.text()),
-            "gender": str(
-                (
-                    self.comp.gender_1.text()
-                    if self.comp.gender_1.isChecked()
-                    else self.comp.gender_2.text()
-                )
-            ),
-            "nationality": str(self.comp.nationality_input.text()),
-            "state_of_origin": str(self.comp.state_origin_input.text()),
-            "lga_origin": str(self.comp.lga_origin_input.text()),
-            "marital_status": str(self.comp.marital_select.currentText()),
-            # Assigning Variables
-            "profession": str(self.comp.profession_input.text()),
-            # Assigning Variables
-            "address": str(self.comp.address_input.text()),
-            "phone_number": str(self.comp.phone_input.text()),
-            "email": str(self.comp.email_input.text()),
-            # Assigning Variables
-            "date_of_registration": str(self.comp.dor_text.text()),
-        }
+        for image in os.listdir("./assets/temp/"):
 
-        r = requests.post(url=f"{APP_URL}/users/staff/{_id}", data=data)
+            entries = {
+                "first_name": str(self.comp.f_name_input.text()),
+                "middle_name": str(self.comp.m_name_input.text()),
+                "last_name": str(self.comp.l_name_input.text()),
+                "date_of_birth": str(self.comp.dob_date_label.text()),
+                "age": str(self.comp.age_input.text()),
+                "gender": str(
+                    (
+                        self.comp.gender_1.text()
+                        if self.comp.gender_1.isChecked()
+                        else self.comp.gender_2.text()
+                    )
+                ),
+                "nationality": str(self.comp.nationality_input.text()),
+                "state_of_origin": str(self.comp.state_origin_input.text()),
+                "lga_origin": str(self.comp.lga_origin_input.text()),
+                "marital_status": str(self.comp.marital_select.currentText()),
+                # Assigning Variables
+                "profession": str(self.comp.profession_input.text()),
+                # Assigning Variables
+                "address": str(self.comp.address_input.text()),
+                "phone_number": str(self.comp.phone_input.text()),
+                "email": str(self.comp.email_input.text()),
+                # Assigning Variables
+                "date_of_registration": str(self.comp.dor_text.text()),
+            }
 
-    def _save(self):
-        self._save_2_db()
-        self.previous()
+            file = {"image": open(f"./assets/temp/{image}", "rb").read()}
+
+            r = requests.post(url=f"{APP_URL}/users/staff/{_id}", data=entries, files=file)
+
 
     def _save_as_file(self):
         self._save_2_db()
@@ -233,10 +248,16 @@ class EDIT_DETAILS(QMainWindow):
         from staff_detail.view_details import VIEW_DETAILS
         view_details = VIEW_DETAILS._save_file(self)
 
-    def _verify_screen(self):
-        from staff_detail.view_details import VIEW_DETAILS
-
-        view_details = VIEW_DETAILS(
-            self.title, self.previous, self.profile, self.main_layout
+    def snap(self, image, timer, cam):
+        image_cropped = image[0:480, 80:560]
+        cv2.imwrite(
+            "./assets/temp/temp.jpg", image_cropped,
         )
+
+        timer.stop()
+        cam.release()
+
+        self.super_layout.setCurrentWidget(self)
+
+        self.comp.profile_pic.setPixmap(QPixmap.fromImage(QImage("./assets/temp/temp.jpg")))
 
