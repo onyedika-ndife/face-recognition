@@ -135,6 +135,7 @@ if __name__ == "__main__":
             sys.exit()
 
     view = LOGIN()
+    view.setWindowIcon(QIcon("./assets/icons/login.png"))
     view.show()
     view.raise_()
 
