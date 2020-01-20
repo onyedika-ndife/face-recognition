@@ -17,10 +17,6 @@ from PyQt5.QtWidgets import (
     QMessageBox,
 )
 
-# APP_URL = "http://127.0.0.1:8000"
-APP_URL = "https://face-recog-server.herokuapp.com"
-
-
 class REGISTER_STUDENT(QDialog):
     def __init__(self, main_layout, components):
         super().__init__()
@@ -300,12 +296,14 @@ class REGISTER_STUDENT(QDialog):
                     break
             else:
                 break
-        # sending post request and saving response as response object
-        r = requests.post(url=f"{APP_URL}/register/students/", data=data)
-        self.register_face()
+
+        if self.comp.isConnected():
+            # sending post request and saving response as response object
+            r = requests.post(url=f"{self.comp.APP_URL}/register/students/", data=data)
+            self.register_face()
 
     def register_face(self):
-        r = requests.get(url=f"{APP_URL}/register/students/")
+        r = requests.get(url=f"{self.comp.APP_URL}/register/students/")
 
         student = r.json()
 
@@ -327,7 +325,7 @@ class REGISTER_STUDENT(QDialog):
 
         for img in os.listdir("./assets/temp/"):
             file = {"image": open(f"./assets/temp/{img}", "rb").read()}
-            r = requests.post(url=f"{APP_URL}/register/students/{self._id}", files=file)
+            r = requests.post(url=f"{self.comp.APP_URL}/register/students/{self._id}", files=file)
 
         self.main_layout.setCurrentIndex(0)
 

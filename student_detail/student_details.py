@@ -21,11 +21,6 @@ from components.components import COMPONENTS
 from .view_details import VIEW_DETAILS
 from .edit_details import EDIT_DETAILS
 
-
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
-
-
 class VERIFY(QWidget):
     def __init__(self, title, super_layout, grid_widget, stacked, prev):
         super().__init__()
@@ -95,38 +90,37 @@ class VERIFY(QWidget):
         )
 
     def snap(self, image, timer, cam):
-        image_cropped = image[0:480, 80:560]
+        if self.comp.isConnected():
+            image_cropped = image[0:480, 80:560]
 
-        cv2.imwrite("./assets/temp/temp.jpg", image_cropped)
+            cv2.imwrite("./assets/temp/temp.jpg", image_cropped)
 
-        timer.stop()
-        cam.release()
+            timer.stop()
+            cam.release()
 
-        for img in os.listdir("./assets/temp/"):
-            file = {"image": open(f"./assets/temp/{img}", "rb").read()}
-            r = requests.post(url=f"{APP_URL}/recognize/student/", files=file)
+            for img in os.listdir("./assets/temp/"):
+                file = {"image": open(f"./assets/temp/{img}", "rb").read()}
+                r = requests.post(url=f"{self.comp.APP_URL}/recognize/student/", files=file)
 
-            if r.text == "Unknown Individual":
-                msg = QMessageBox()
-                msg.setIconPixmap(QPixmap("./assets/icons/user_unknown.png"))
-                msg.setWindowTitle("Alert!!")
-                msg.setWindowIcon(QIcon("./assets/icons/error.png"))
-                msg.setText("Unknown Individual!")
+                if r.text == "Unknown Individual":
+                    self.comp.msg.setIconPixmap(QPixmap("./assets/icons/user_unknown.png"))
+                    self.comp.msg.setWindowTitle("Alert!!")
+                    self.comp.msg.setWindowIcon(QIcon("./assets/icons/error.png"))
+                    self.comp.msg.setText("Unknown Individual!")
 
-                if msg.exec_() or msg == QMessageBox.Ok:
-                    self.previous()
-            elif r.text == "Unable to find face":
-                msg = QMessageBox()
-                msg.setIconPixmap(QPixmap("./assets/icons/user_unknown.png"))
-                msg.setWindowTitle("Alert!!")
-                msg.setWindowIcon(QIcon("./assets/icons/error.png"))
-                msg.setText("Unable to find face!")
+                    if self.comp.msg.exec_() or self.comp.msg == QMessageBox.Ok:
+                        self.previous()
+                elif r.text == "Unable to find face":
+                    self.comp.msg.setIconPixmap(QPixmap("./assets/icons/user_unknown.png"))
+                    self.comp.msg.setWindowTitle("Alert!!")
+                    self.comp.msg.setWindowIcon(QIcon("./assets/icons/error.png"))
+                    self.comp.msg.setText("Unable to find face!")
 
-                if msg.exec_() or msg == QMessageBox.Ok:
-                    self.previous()
-            else:
-                profile = r.json()
-                self.MAIN_VIEW(self.previous, profile)
+                    if self.comp.msg.exec_() or self.comp.msg == QMessageBox.Ok:
+                        self.previous()
+                else:
+                    profile = r.json()
+                    self.MAIN_VIEW(self.previous, profile)
 
     def _go_back(self, timer, cam):
         timer.stop()

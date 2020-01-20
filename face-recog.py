@@ -1,5 +1,4 @@
 import sys
-
 import qdarkstyle
 import requests
 from PyQt5.QtCore import Qt
@@ -14,12 +13,8 @@ from PyQt5.QtWidgets import (
     QPushButton,
 )
 
-from main_window import main_window
-
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
-
-
+from main_window.main_window import MAIN_WINDOW
+from components.components import COMPONENTS
 class LOGIN(QDialog):
     def __init__(self):
         super().__init__()
@@ -29,6 +24,8 @@ class LOGIN(QDialog):
         self.setStyleSheet(open("./assets/css/login.css").read())
 
         self.setWindowTitle("LOGIN")
+
+        self.comp = COMPONENTS()
 
         self._component()
 
@@ -66,77 +63,56 @@ class LOGIN(QDialog):
 
         data = {"user_name": user_name, "pass_word": pass_word}
 
-        r = requests.post(url=f"{APP_URL}", data=data)
-
-        msg = QMessageBox()
+        r = requests.post(url=f"{self.comp.APP_URL}", data=data)
 
         if r.text == "Authentication Success":
             self.hide()
-            self.app_view = main_window.MAIN_WINDOW()
+            self.app_view = MAIN_WINDOW()
             self.app_view.show()
         elif self.user_name_input.text() == "" and self.pass_word_input.text() == "":
-            msg.setWindowTitle("Error!")
-            msg.setText("Username and Password cannot be empty")
-            msg.show()
-            msg.exec_()
+            self.comp.msg.setWindowTitle("Error!")
+            self.comp.msg.setWindowIcon(QIcon("./assets/icons/no_entry.png"))
+            self.comp.msg.setText("Username and Password cannot be empty")
+            self.comp.msg.show()
+            self.comp.msg.exec_()
         elif (
             self.user_name_input.text() == "" and not self.pass_word_input.text() == ""
         ):
-            msg.setWindowTitle("Error!")
-            msg.setText("Username cannot be empty")
-            msg.show()
-            msg.exec_()
+            self.comp.msg.setWindowTitle("Error!")
+            self.comp.msg.setWindowIcon(QIcon("./assets/icons/no_entry.png"))
+            self.comp.msg.setText("Username cannot be empty")
+            self.comp.msg.show()
+            self.comp.msg.exec_()
         elif (
             not self.user_name_input.text() == "" and self.pass_word_input.text() == ""
         ):
-            msg.setWindowTitle("Error!")
-            msg.setText("Password cannot be empty")
-            msg.show()
-            msg.exec_()
+            self.comp.msg.setWindowTitle("Error!")
+            self.comp.msg.setWindowIcon(QIcon("./assets/icons/no_entry.png"))
+            self.comp.msg.setText("Password cannot be empty")
+            self.comp.msg.show()
+            self.comp.msg.exec_()
         elif r.text == "Incorrect Password":
-            msg.setWindowTitle("Error!")
-            msg.setText("Incorrect Password")
-            msg.show()
-            msg.exec_()
+            self.comp.msg.setWindowTitle("Error!")
+            self.comp.msg.setWindowIcon(QIcon("./assets/icons/error.png"))
+            self.comp.msg.setText("Incorrect Password")
+            self.comp.msg.show()
+            self.comp.msg.exec_()
         else:
-            msg.setWindowTitle("Error!")
-            msg.setText("Username and Password are Incorrect")
-            msg.show()
-            msg.exec_()
+            self.comp.msg.setWindowTitle("Error!")
+            self.comp.msg.setWindowIcon(QIcon("./assets/icons/error.png"))
+            self.comp.msg.setText("Username and Password are Incorrect")
+            self.comp.msg.show()
+            self.comp.msg.exec_()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
-    try:
-        r = requests.get(url=f"{APP_URL}")
-        print(r.text)
-    except requests.exceptions.ConnectionError as e:
-        msg = QMessageBox()
-        msg.setIconPixmap(QPixmap("./assets/icons/no_connection.png"))
-        msg.setWindowTitle("Error!")
-        msg.setWindowIcon(QIcon("./assets/icons/error.png"))
-        msg.setText("Connect to the Internet to use app!")
-        msg.show()
-
-        if msg.exec_() or msg == QMessageBox.Ok:
-            sys.exit()
-    except requests.exceptions.Timeout as e:
-        msg = QMessageBox()
-        msg.setIconPixmap(QPixmap("./assets/icons/network_timeout.png"))
-        msg.setWindowIcon(QIcon("./assets/icons/error.png"))
-        msg.setWindowTitle("Information")
-        msg.setWindowIcon(QIcon("./assets/icons/error.png"))
-        msg.setText("Poor Network Connection!")
-        msg.show()
-
-        if msg.exec_() or msg == QMessageBox.Ok:
-            sys.exit()
-
     view = LOGIN()
     view.setWindowIcon(QIcon("./assets/icons/login.png"))
-    view.show()
-    view.raise_()
 
+    if COMPONENTS().isConnected():
+        view.show()
+        view.raise_()
     sys.exit(app.exec_())

@@ -1,4 +1,5 @@
 import cv2
+import requests
 from PyQt5.QtCore import QSize, QDate, Qt, QTimer
 from PyQt5.QtGui import QIcon, QIntValidator, QImage, QPixmap
 from PyQt5.QtWidgets import (
@@ -14,12 +15,15 @@ from PyQt5.QtWidgets import (
     QCalendarWidget,
     QVBoxLayout,
     QCommandLinkButton,
+    QMessageBox
 )
-
 
 class COMPONENTS(QWidget):
     def __init__(self):
         super().__init__()
+        self.APP_URL = "http://127.0.0.1:8000"
+        # self.APP_URL = "https://face-recog-server.herokuapp.com"
+        self.msg = QMessageBox()
 
         self.grid = QGridLayout()
         self.group_box = QGroupBox()
@@ -304,3 +308,26 @@ class COMPONENTS(QWidget):
 
         # Set the data from qImg to cam_view
         self.cam_view.setPixmap(QPixmap.fromImage(self.qImg))
+
+    def isConnected(self):
+        try:
+            r = requests.get(url=f"{self.APP_URL}")
+            print(r.text)
+            return True
+        except requests.exceptions.ConnectionError as e:
+            self.msg.setIconPixmap(QPixmap("./assets/icons/no_connection.png"))
+            self.msg.setWindowTitle("Error!")
+            self.msg.setWindowIcon(QIcon("./assets/icons/error.png"))
+            self.msg.setText("Connect to the Internet to use app!")
+            self.msg.show()
+            self.msg.exec_()
+            return False
+        except requests.exceptions.Timeout as e:
+            self.msg.setIconPixmap(QPixmap("./assets/icons/network_timeout.png"))
+            self.msg.setWindowIcon(QIcon("./assets/icons/error.png"))
+            self.msg.setWindowTitle("Information")
+            self.msg.setWindowIcon(QIcon("./assets/icons/error.png"))
+            self.msg.setText("Poor Network Connection!")
+            self.msg.show()
+            self.msg.exec_()
+            return False

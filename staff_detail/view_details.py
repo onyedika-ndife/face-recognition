@@ -22,10 +22,7 @@ from PyQt5.QtWidgets import (
 )
 
 from components.components import COMPONENTS
-from register.register_main import REGISTER_MAIN
 
-APP_URL = "http://127.0.0.1:8000"
-# APP_URL = "https://face-recog-server.herokuapp.com"
 class VIEW_DETAILS(QMainWindow):
     def __init__(self, title, prev_scrn, profile, super_layout):
         super().__init__()
@@ -43,7 +40,7 @@ class VIEW_DETAILS(QMainWindow):
 
         _id = int(profile["id"])
 
-        r = requests.get(url=f"{APP_URL}/users/staff/{_id}")
+        r = requests.get(url=f"{self.comp.APP_URL}/users/staff/{_id}")
 
         self.profile = r.json()
 
@@ -216,23 +213,24 @@ class VIEW_DETAILS(QMainWindow):
         self.vbox.addWidget(group_box)
 
     def _save_file(self):
-        r = requests.get(url=f"{APP_URL}/recognize/d_staf/")
+        if self.comp.isConnected():
+            r = requests.get(url=f"{self.comp.APP_URL}/recognize/d_staf/")
 
-        name = QFileDialog.getSaveFileName(self, "Export PDF", filter="(*.pdf)")
+            name = QFileDialog.getSaveFileName(self, "Export PDF", filter="(*.pdf)")
 
-        file_name = f"{name[0]}"
+            file_name = f"{name[0]}"
 
-        if file_name.endswith(".pdf"):
-            file = file_name.replace(".pdf", "")
-        else:
-            file = file_name
+            if file_name.endswith(".pdf"):
+                file = file_name.replace(".pdf", "")
+            else:
+                file = file_name
 
-        if file != "":
-            with open(f"{file}.pdf", "wb") as outputStream:
-                outputStream.write(r.content)
-                outputStream.close()
-        else:
-            file = "Staff_Details"
+            if file != "":
+                with open(f"{file}.pdf", "wb") as outputStream:
+                    outputStream.write(r.content)
+                    outputStream.close()
+            else:
+                file = "Staff_Details"
 
     def _edit_screen(self):
         from staff_detail.edit_details import EDIT_DETAILS
