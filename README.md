@@ -2,7 +2,7 @@
 
 Face Recognition PC
 
-Final Year Project by Ndife Onyedika Michael
+Project by Ndife Onyedika Michael
 
 ## Overview
 
