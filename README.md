@@ -13,7 +13,7 @@ Final Year Project by Ndife Onyedika Michael
 ## Installing
 
 ```bash
-$ git clone https://gitlab.com/ndife-onyedika/face-recognition.git
+
 $ cd face-recognition
 $ python3 -m venv venv
 (venv) $ pip install -r requirements.txt
